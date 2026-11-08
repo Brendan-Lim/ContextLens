@@ -95,3 +95,14 @@ The branch is intended to be safe to merge after review and green automated chec
 ### Concurrent-ref audit boundary
 
 Staged and tracked-file audits passed with zero findings. The shared repository's all-ref history audit then found **four history-only `unreviewed-asset` findings** for Claude Code's new `docs/media/readme/` media, which had been committed concurrently on main. This branch intentionally retains its baseline publication policy and does not copy or change another agent's approvals. The independent Gitleaks scan of all shared reachable history returned zero findings. A separate, full, non-shallow single-branch clone of this review branch is used for its final complete-history publication audit; results below apply to that branch and its ancestors, not certification of concurrent product/media work.
+
+## Published review branch and final results
+
+- Implementation commit: [`70ba081cb880ba862728b88c838cac97c0f519fe`](https://github.com/Brendan-Lim/ContextLens/commit/70ba081cb880ba862728b88c838cac97c0f519fe).
+- Review PR: [#1 — Reject stale Hand Off inputs and validate package integrity](https://github.com/Brendan-Lim/ContextLens/pull/1), against main. It remains open and is not merged.
+- [Full PR CI 42508792402](https://github.com/Brendan-Lim/ContextLens/actions/runs/42508792402) passed on the merge preview with main `f2d6d6069e6bdc8d3e570a8d34bc635bd433f7d5`: **116 Swift tests**, **67 script tests** (the isolated branch's 63 plus concurrent main's four additional tests), **49 benchmark tests**, **13 independently schema-validated packages**, **10 deterministic replays**, and **10 browser defects / 10 known-good controls**. Existing build, portability, archive and DMG checks also passed; this is not native capture acceptance.
+- [PR Publication Security 42508792397](https://github.com/Brendan-Lim/ContextLens/actions/runs/42508792397) passed, including the merged main policy for its concurrent assets. This does not attribute those media changes or their review to this branch.
+- The independent branch clone is full/non-shallow: its complete reachable-history audit inspected **624 path/blob versions / 562 blobs**, with **zero findings**. Tracked audit: **534 file versions**, zero findings. Independent Gitleaks: **zero findings**. Public link audit: **88 Markdown files / 128 local links**, zero findings. A report-only follow-up adds the links in this section and is scanned again before push.
+- GitHub's PR file list confirms exactly the 11 Hand Off files listed above, with no forbidden product/release paths. The PR was reported mergeable (`CLEAN`) after these checks. Only the isolated review branch was pushed; main and the concurrent checkout/index were not written to.
+
+**Review disposition:** safe to merge after human review and green current checks. Preserve all manual native/release acceptance, prepare new release binaries after merge, and do not auto-merge this PR.
