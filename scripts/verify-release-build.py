@@ -16,7 +16,7 @@ with tempfile.TemporaryDirectory(prefix='contextlens-release-regression-') as te
     shutil.copytree(app, broken)
     binary_dir = Path(run(str(ROOT / 'scripts/swift.sh'), 'build', '-c', 'release', '--arch', 'arm64', '--show-bin-path').strip())
     unstripped = binary_dir / 'ContextLens'
-    require(b'/Users/' in unstripped.read_bytes(), 'Regression fixture requires a normal unstripped local build')
+    require(str(ROOT).encode() in unstripped.read_bytes(), 'Regression fixture requires an unstripped checkout build')
     shutil.copy2(unstripped, broken / 'Contents/MacOS/ContextLens')
     run('codesign', '--force', '--sign', '-', '--timestamp=none', broken)
     try:

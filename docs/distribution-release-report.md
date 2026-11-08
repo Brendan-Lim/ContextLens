@@ -1,6 +1,6 @@
 # Distribution release report — 8 November 2026
 
-**State B: release infrastructure prepared; Apple credentials pending.** No public binary release or installable Homebrew cask is claimed. Initial source and the pending tap are public. Final infrastructure publication/hosted verification is recorded below as it completes.
+**State B: release infrastructure prepared; Apple credentials pending.** No public binary release or installable Homebrew cask is claimed. Initial source, release infrastructure and the pending tap are public. Available local checks and hosted CI passed; signing and real installation remain unverified.
 
 ## A. Initial GitHub publication
 
@@ -45,8 +45,8 @@ Workflows: `.github/workflows/ci.yml` (main pushes, PRs to main, optional manual
 | Verification | Evidence / result |
 |---|---|
 | Initial hosted source gate | [Run 42459309989](https://github.com/Brendan-Lim/ContextLens/actions/runs/42459309989), **passed** |
-| Tap hosted template gate | [Run 42459961923](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42459961923), **passed** |
-| New infrastructure CI | Pending push/run at report preparation; updated after hosted execution |
+| Tap hosted template gate | [Initial run 42459961923](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42459961923) and [candidate-commit audit workflow run 42460311343](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42460311343), **passed** |
+| New infrastructure CI | [Run 42460312944](https://github.com/Brendan-Lim/ContextLens/actions/runs/42460312944), **passed** on infrastructure commit `46deeaa9a0a7e997877f983a095f486c3d30b7ec` |
 | Release signing workflow | Not dispatched with unavailable credentials; notarization/publication remain unverified |
 | `scripts/verify.sh` | **80 Swift tests, 49 Python tests, 13 packages including independent JSON Schema validation, 10 deterministic replays — passed** |
 | `python3 -m unittest discover -s scripts/tests -v` | **9 release/archive-safety tests passed** |
@@ -56,7 +56,9 @@ Workflows: `.github/workflows/ci.yml` (main pushes, PRs to main, optional manual
 | Pending cask validation | Ruby syntax and template metadata checks **passed**; no install test implied |
 | Publication scan | Indexed-file targeted pattern scan and manual metadata/image review; repeated before final push |
 
-The initial packaging attempt failed because unstripped Mach-O debug object records contained absolute developer paths. The build now strips staged executables before signing. `scripts/verify-release-build.py` reintroduces that exact defect in a disposable bundle and requires the verifier to reject it, while the final bundle passes. The original SwiftPM products and existing apps are preserved.
+A fresh clone from the published GitHub repository into `/tmp/contextlens-clean-source` built successfully and passed 80 Swift tests, 49 Python tests, 13 package checks and ten replays. That clean clone lacked the optional jsonschema development dependency, so its gate explicitly reported the independent schema cross-check as unavailable; the primary workspace and hosted CI did perform it. The clean-clone CLI help also passed.
+
+The initial packaging attempt failed because unstripped Mach-O debug object records contained absolute developer paths. The build now strips staged executables before signing. `scripts/verify-release-build.py` reintroduces that exact defect in a disposable bundle and requires the verifier to reject it, while the final bundle passes. The original SwiftPM products and existing apps are preserved. A fresh-clone regression run then exposed a `/Users`-only path assumption. The verifier now rejects the actual checkout root as well; the unstripped `/tmp` fixture failed before that correction and passed the rejection check afterward. Both checkout locations and all nine release tests pass with the correction.
 
 The default local browser check initially failed because Playwright's expected headless shell was not installed. This environment issue was resolved for local verification using:
 
@@ -80,6 +82,8 @@ python3 scripts/release.py package dist/ContextLens.app /tmp/new-contextlens-arc
 
 Use a new archive output directory. Public packaging rejects archive replacement, development signatures, altered checksums, invalid receipt trust, archive traversal and symlinks. Tests cover these boundaries. Local detailed logs/snapshots remain OS-temporary evidence and were not published as historical execution dumps.
 
+Source release infrastructure was committed and pushed as [`46deeaa9a0a7e997877f983a095f486c3d30b7ec`](https://github.com/Brendan-Lim/ContextLens/commit/46deeaa9a0a7e997877f983a095f486c3d30b7ec), `build: add macOS release packaging and Homebrew distribution`. The remote main SHA matched after push. The checkout-root portability correction and final verification report follow in subsequent commits; no force push was used.
+
 ## E. GitHub Releases
 
 **No actual release, tag or trusted archive is published.** GitHub returned HTTP 404 for release tag `v0.3.0`; release listing was empty. There is no release URL or public archive SHA-256 to provide. The workflow will create a new matching tag at the checked source commit and publish complete assets through a draft after all gates pass. Existing tags/releases cause failure, and no asset-clobber path exists.
@@ -87,6 +91,7 @@ Use a new archive output directory. Public packaging rejects archive replacement
 ## F. Homebrew
 
 - Created and pushed [Brendan-Lim/homebrew-tap](https://github.com/Brendan-Lim/homebrew-tap), initial commit [`296a83b87e22b7e6f7c4ee2beab935ab0928277e`](https://github.com/Brendan-Lim/homebrew-tap/commit/296a83b87e22b7e6f7c4ee2beab935ab0928277e).
+- Latest tap follow-up: `cd526e3`, auditing the exact candidate checkout rather than a potentially stale remote copy.
 - Available: `Casks/contextlens.rb.in`, explicit pending README, Ruby/template validator and passing hosted workflow. **No `Casks/contextlens.rb` exists**.
 - Exact Homebrew command/DSL syntax checked against installed Homebrew 7.0.10 and official documentation. The template links the embedded CLI and restricts architecture/OS appropriately. It does not contain a fabricated checksum or nonexistent concrete release URL.
 - The real update script attempted `v0.3.0`, received HTTP 404, stopped and left the tap without a cask. It requires actual downloaded assets and expected-team signature/notarization checks before writing anything.

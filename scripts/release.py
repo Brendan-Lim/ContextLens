@@ -70,7 +70,8 @@ def verify(app, mode='development', notarized=False):
             path = library.strip().split(' (', 1)[0]
             require(path.startswith(('/System/Library/', '/usr/lib/', '@rpath/', '@executable_path/', '@loader_path/')), 'Nonportable linked library')
         # Read internally so a finding never prints an embedded private path.
-        require(b'/Users/' not in binary.read_bytes() and b'/private/var/folders/' not in binary.read_bytes(), 'Developer-specific path embedded in executable')
+        contents = binary.read_bytes()
+        require(not any(path in contents for path in [b'/Users/', b'/private/var/folders/', str(ROOT).encode()]), 'Developer-specific path embedded in executable')
         run('codesign', '--verify', '--strict', binary)
         if mode == 'distribution':
             signature = run('codesign', '-d', '--verbose=4', binary)
