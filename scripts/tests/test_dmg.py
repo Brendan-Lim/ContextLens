@@ -1,6 +1,7 @@
 import importlib.util
 from pathlib import Path
 import sys
+import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -34,6 +35,20 @@ class DiskImageSafetyTests(unittest.TestCase):
             self.assertNotEqual(inventory(app), first)
             (app / 'escape').symlink_to('/Applications')
             with self.assertRaisesRegex(ValueError, 'symlink'): inventory(app)
+
+    def test_forced_cleanup_is_not_reported_as_a_clean_detach(self):
+        calls = []
+        def execute(*args):
+            calls.append(args)
+            if args[:2] == ('hdiutil', 'detach') and '-force' not in args:
+                raise subprocess.CalledProcessError(1, args)
+            return ''
+        with patch('dmg.run', side_effect=execute), patch('dmg.os.path.ismount', return_value=True):
+            with self.assertRaises(subprocess.CalledProcessError):
+                with mounted('/tmp/synthetic.dmg'):
+                    pass
+        self.assertEqual(calls[-1][:3], ('hdiutil', 'detach', '-force'))
+        self.assertEqual(calls[-1][-1], calls[-2][-1])
 
     def test_existing_image_is_not_touched_even_before_app_verification(self):
         with tempfile.TemporaryDirectory() as temporary:

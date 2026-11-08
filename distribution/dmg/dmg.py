@@ -60,6 +60,7 @@ def mounted(image, readonly=True):
                 except subprocess.CalledProcessError:
                     # This path belongs only to the image attached in this context.
                     run('hdiutil', 'detach', '-force', mount)
+                    raise  # Cleanup succeeded, but clean unmount verification failed.
 
 
 def configure(mount):

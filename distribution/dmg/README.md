@@ -16,7 +16,7 @@ The selected **Twin Glass** design is a 720 × 440 point icy-blue surface with t
 
 ## Build and verify
 
-Requires macOS, Xcode native tools, Python 3.9+ and two **build-only MIT** dependencies: [ds-store](https://github.com/al45stair/ds_store) 1.3.1 and [mac-alias](https://github.com/al45stair/mac_alias) 2.2.2. Exact wheels are hash-pinned in `requirements.txt`; neither enters the app or disk image.
+Requires macOS, Xcode native tools, Python 3.9+ and two **build-only MIT** dependencies: [ds-store](https://github.com/dmgbuild/ds_store) 1.3.1 and [mac-alias](https://github.com/dmgbuild/mac_alias) 2.2.2. Exact wheels are hash-pinned in `requirements.txt`; neither enters the app or disk image.
 
 ```sh
 python3 -m venv .build/dmg-python

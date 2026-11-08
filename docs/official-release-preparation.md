@@ -64,7 +64,7 @@ Local host: Apple Silicon, macOS **26.6.2 (25G83)**. No live model calls, person
 | Benchmark Python | **49 passed**, baseline `scripts/verify.sh` |
 | Packages / independent schemas | **13 validated**, including Draft 2020-12 validation |
 | Deterministic production replay | **10 passed** |
-| Publication/release/Python regressions | **52 tests passed**, `python3 -m unittest discover -s scripts/tests -v` |
+| Publication/release/Python regressions | **53 tests passed**, `python3 -m unittest discover -s scripts/tests -v` |
 | Additional experiment Python | **4 + 8 passed**, `python3 -m unittest discover -s Experiments/visual-to-code/tests -v` and equivalent `Experiments/code-aware-efficiency/tests` |
 | Node unit/export/mapper | **16 passed**, `node --test Experiments/visual-to-code/tests/unit.test.mjs Experiments/visual-to-code/tests/export.test.mjs Experiments/code-aware-efficiency/tests/mapper.test.mjs` |
 | Owned browser fixtures | **10 defects reproduced / 10 controls passed**, `CHROMIUM_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' node Benchmarks/runners/verify-fixtures.mjs` |
@@ -80,7 +80,7 @@ Local host: Apple Silicon, macOS **26.6.2 (25G83)**. No live model calls, person
 | Real Gatekeeper / Open Anyway / fresh Screen Recording | **Pending isolated interactive Mac** |
 | Real selected-window capture/closure/app exit, annotation/Hand Off/recovery/pending-save behavior | **Pending isolated interactive Mac** |
 
-Initial native mount attempts were sandbox-blocked; permitted private mounts subsequently succeeded. The browser initially could not bind loopback under the sandbox; the permitted headless owned-fixture run passed. Installer integration checks caught incorrect Python record/path type comparisons and a noncanonical mount alias path before final bytes were accepted. Cleanup ran on those failures. No failed check is being counted as acceptance. Hosted security CI also caught a timezone-dependent acceptance fixture before promotion: the date-only gate now requires an ISO timestamp with timezone, with a regression for UTC−12 through UTC+14 and rejection of naive/future timestamps.
+Initial native mount attempts were sandbox-blocked; permitted private mounts subsequently succeeded. The browser initially could not bind loopback under the sandbox; the permitted headless owned-fixture run passed. Installer integration checks caught incorrect Python record/path type comparisons and a noncanonical mount alias path before final bytes were accepted. Cleanup ran on those failures. A failing-then-passing regression also verifies that forced-detach cleanup cannot be reported as a clean unmount; normal detach failure now fails validation even if forced cleanup succeeds. No failed check is being counted as acceptance. Hosted security CI also caught a timezone-dependent acceptance fixture before promotion: the date-only gate now requires an ISO timestamp with timezone, with a regression for UTC−12 through UTC+14 and rejection of naive/future timestamps.
 
 ## F. Remaining blockers
 
@@ -91,3 +91,21 @@ Automated mounting/copying is packaging evidence, not native app acceptance. No 
 ## G. GitHub results
 
 Implementation and independent tap-preparation commits, pushed branch SHAs and CI URLs are recorded after verified publication of source. The existing preview is [v0.3.0-preview.1](https://github.com/Brendan-Lim/ContextLens/releases/tag/v0.3.0-preview.1). No new binary release is claimed.
+
+### Verified source and local package follow-up
+
+- Main implementation: [`e0bbf4d69dd3087d8c9eb790401f32685eb6340d`](https://github.com/Brendan-Lim/ContextLens/commit/e0bbf4d69dd3087d8c9eb790401f32685eb6340d).
+- Timezone correction: [`3a59ebe324d95517923461d1ebcdcc749373f9c1`](https://github.com/Brendan-Lim/ContextLens/commit/3a59ebe324d95517923461d1ebcdcc749373f9c1). Its [Publication Security run](https://github.com/Brendan-Lim/ContextLens/actions/runs/42504314081) passed; the original date-only fixture failure remains [visible](https://github.com/Brendan-Lim/ContextLens/actions/runs/42504132239).
+- Independent tap preparation: [`25a4e6a1086e4c2a1e58fbc6da89fe452021fe69`](https://github.com/Brendan-Lim/homebrew-tap/commit/25a4e6a1086e4c2a1e58fbc6da89fe452021fe69). [Tap validation](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42504134693) and [Publication Security](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42504134702) both passed. Validation repeated the real disposable preview installation/link/help/quarantine/existing-app refusal/uninstall-preservation checks, style, online audit and fetch. The preview cask was not modified.
+
+The clean **local engineering candidate** at source `e0bbf4d` passed `scripts/build-app.sh --unnotarized-stable --output .build/official-candidate` and `.build/dmg-python/bin/python scripts/unnotarized-release.py package .build/official-candidate/ContextLens.app .build/official-candidate-assets`. These are local artifacts, not published release checksums or native acceptance:
+
+| Asset | SHA-256 |
+|---|---|
+| Local ZIP | `7cc6956b497413c800ec5db4b86538539f2eb553edbfe52c97a38ca29d41f339` |
+| Local DMG | `e12e8d64b036b848a43ac3024263bb950b36a6507765969f6df23bc78b1e0981` |
+| Shared normalized bundle inventory | `f92231e7458f8963124c839024c6f657ff1d5718af54bcd7e0629537cb2f25c1` |
+
+`shasum -a 256 -c SHA256SUMS`, run inside `.build/official-candidate-assets`, passed for ZIP, DMG and provenance. Both package round trips passed with exactly matching bundle files and signatures. An actual stable updater attempt received HTTP 404 for unpublished `v0.3.1`, failed before writing a cask and left the tap clean. Source provenance records Xcode 26.6 / Swift 6.3.3 / macOS 26.6.2 for this local build. Hosted candidates use their own recorded toolchain and hashes.
+
+Staged/current/history publication audits and independent Gitleaks passed for both source repositories. The implementation history audit inspected 604 path/blob versions / 542 blobs with zero findings. The public link audit covers 87 Markdown files / 128 local links with zero findings; the external check initially identified two obsolete dependency repository URLs, which were corrected to the current upstream organizations. GitHub-rendered README HTML was reviewed at 1120 and 390 pixel widths with local media: all five images decoded, and page width matched the viewport in both previews. This is README layout QA using GitHub-rendered markup and representative styling, not a native app or Finder screenshot.
