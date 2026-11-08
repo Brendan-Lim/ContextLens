@@ -116,7 +116,7 @@ All on the local host above, run on 9 November 2026. The full gate (`scripts/ci.
 
 The first CI attempt failed on a single finding: a link to this report before the report existed. It was rerun after the report was added; no other check changed.
 
-<!-- COMMITS -->
+**GitHub.** Implementation commit [`fa6a6a5`](https://github.com/Brendan-Lim/ContextLens/commit/fa6a6a5d) was pushed to `main` without a force push. Hosted [Publication Security run 42507460385](https://github.com/Brendan-Lim/ContextLens/actions/runs/42507460385) and [CI run 42507460430](https://github.com/Brendan-Lim/ContextLens/actions/runs/42507460430) both passed. This report's results follow in a docs-only commit. The Homebrew tap did not need any change and was not touched. No tag, release, release asset or cask was created or modified.
 
 ## F. Next actions for you
 
