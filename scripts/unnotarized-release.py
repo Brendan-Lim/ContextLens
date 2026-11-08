@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Explicit official ad-hoc channel. Candidate packaging never authorizes stable publication."""
 import argparse
-from datetime import date
+from datetime import datetime, timezone
 import hashlib
 import importlib.util
 import json
@@ -133,8 +133,10 @@ def acceptance(evidence, receipt):
         require(evidence.get(key) == receipt.get(key), 'Acceptance differs from candidate: ' + key)
     require(evidence.get('blockers') == [], 'All release-blocking findings must be resolved')
     require(descriptive(evidence.get('testedBy')), 'A real tester attestation is required')
-    require(isinstance(evidence.get('testedAt'), str) and re.fullmatch(r'\d{4}-\d{2}-\d{2}', evidence['testedAt']), 'ISO test date required')
-    require(date(2026, 1, 1) <= date.fromisoformat(evidence['testedAt']) <= date.today(), 'Invalid/future acceptance date')
+    require(isinstance(evidence.get('testedAt'), str) and 'T' in evidence['testedAt'], 'ISO test timestamp with timezone required')
+    tested_at = datetime.fromisoformat(evidence['testedAt'].replace('Z', '+00:00'))
+    require(tested_at.tzinfo is not None, 'Acceptance timestamp must identify its timezone')
+    require(datetime(2026, 1, 1, tzinfo=timezone.utc) <= tested_at <= datetime.now(timezone.utc), 'Invalid/future acceptance timestamp')
     require(evidence.get('architecture') == 'arm64' and isinstance(evidence.get('macOS'), str)
             and re.fullmatch(r'\d+\.\d+(?:\.\d+)?', evidence['macOS'])
             and int(evidence['macOS'].split('.')[0]) >= 14, 'Supported test machine required')

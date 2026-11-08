@@ -1,4 +1,5 @@
 import copy
+from datetime import datetime, timedelta, timezone
 import importlib.util
 import json
 from pathlib import Path
@@ -35,7 +36,7 @@ class OfficialGateTests(unittest.TestCase):
                     build=official.metadata()['build'], sourceCommit='a' * 40,
                     bundleInventorySHA256='b' * 64, assets={'sample.zip': 'c' * 64},
                     isolatedEnvironment=True, testedBy='release-maintainer',
-                    testedAt='2026-11-09', macOS='15.8.2', architecture='arm64',
+                    testedAt=(datetime.now(timezone.utc) - timedelta(minutes=1)).isoformat(), macOS='15.8.2', architecture='arm64',
                     blockers=[], cases={case: dict(status='pass', observation='Observed on disposable Mac; retained synthetic evidence.',
                                                  evidence='isolated-run/case-01') for case in official.CASES})
 
@@ -103,6 +104,18 @@ class OfficialGateTests(unittest.TestCase):
             self.assertIn(expected, text)
         for forbidden in ['zap ', 'xattr ', 'spctl ', ':no_check', '--no-quarantine']:
             self.assertNotIn(forbidden, text)
+
+    def test_acceptance_uses_instants_across_tester_and_runner_timezones(self):
+        evidence, receipt = self.evidence(), self.receipt()
+        tested_at = datetime.fromisoformat(evidence['testedAt'])
+        for offset in [-12, 0, 8, 14]:
+            evidence['testedAt'] = tested_at.astimezone(timezone(timedelta(hours=offset))).isoformat()
+            official.acceptance(evidence, receipt)
+        for value in [tested_at.replace(tzinfo=None).isoformat(), tested_at.date().isoformat(),
+                      (datetime.now(timezone.utc) + timedelta(days=1)).isoformat()]:
+            evidence['testedAt'] = value
+            with self.subTest(value=value), self.assertRaises(ValueError):
+                official.acceptance(evidence, receipt)
 
 
 if __name__ == '__main__': unittest.main()

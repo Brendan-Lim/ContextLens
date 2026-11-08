@@ -64,7 +64,7 @@ Local host: Apple Silicon, macOS **26.6.2 (25G83)**. No live model calls, person
 | Benchmark Python | **49 passed**, baseline `scripts/verify.sh` |
 | Packages / independent schemas | **13 validated**, including Draft 2020-12 validation |
 | Deterministic production replay | **10 passed** |
-| Publication/release/Python regressions | **51 tests**, `python3 -m unittest discover -s scripts/tests -v`; final run recorded before commit |
+| Publication/release/Python regressions | **52 tests passed**, `python3 -m unittest discover -s scripts/tests -v` |
 | Additional experiment Python | **4 + 8 passed**, `python3 -m unittest discover -s Experiments/visual-to-code/tests -v` and equivalent `Experiments/code-aware-efficiency/tests` |
 | Node unit/export/mapper | **16 passed**, `node --test Experiments/visual-to-code/tests/unit.test.mjs Experiments/visual-to-code/tests/export.test.mjs Experiments/code-aware-efficiency/tests/mapper.test.mjs` |
 | Owned browser fixtures | **10 defects reproduced / 10 controls passed**, `CHROMIUM_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' node Benchmarks/runners/verify-fixtures.mjs` |
@@ -80,7 +80,7 @@ Local host: Apple Silicon, macOS **26.6.2 (25G83)**. No live model calls, person
 | Real Gatekeeper / Open Anyway / fresh Screen Recording | **Pending isolated interactive Mac** |
 | Real selected-window capture/closure/app exit, annotation/Hand Off/recovery/pending-save behavior | **Pending isolated interactive Mac** |
 
-Initial native mount attempts were sandbox-blocked; permitted private mounts subsequently succeeded. The browser initially could not bind loopback under the sandbox; the permitted headless owned-fixture run passed. Installer integration checks caught incorrect Python record/path type comparisons and a noncanonical mount alias path before final bytes were accepted. Cleanup ran on those failures. No failed check is being counted as acceptance.
+Initial native mount attempts were sandbox-blocked; permitted private mounts subsequently succeeded. The browser initially could not bind loopback under the sandbox; the permitted headless owned-fixture run passed. Installer integration checks caught incorrect Python record/path type comparisons and a noncanonical mount alias path before final bytes were accepted. Cleanup ran on those failures. No failed check is being counted as acceptance. Hosted security CI also caught a timezone-dependent acceptance fixture before promotion: the date-only gate now requires an ISO timestamp with timezone, with a regression for UTC−12 through UTC+14 and rejection of naive/future timestamps.
 
 ## F. Remaining blockers
 
