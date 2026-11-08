@@ -10,6 +10,8 @@ public struct ExportPlan: Sendable {
     public let source: URL
     public let options: ExportOptions
     public let summary: ExportSummary
+    private let candidates: [Frame]
+    private let sourceDigests: [String: SHA256.Digest]
 
     public static func prepare(_ original: Session, source: URL, options: ExportOptions = ExportOptions()) throws -> ExportPlan {
         try original.validate()
@@ -19,12 +21,14 @@ public struct ExportPlan: Sendable {
         let candidates = selected.filter { !options.annotatedOnly || annotatedIDs.contains($0.id) }
         var fingerprints: [String: String] = [:]
         var sizes: [String: Int64] = [:]
+        var sourceDigests: [String: SHA256.Digest] = [:]
         for frame in candidates {
             try Task.checkCancellation()
             let url = try SessionStore.resolve(frame.imagePath, in: source)
-            let image = try Images.load(url)
+            let snapshot = try Images.snapshot(url), image = snapshot.image
             guard image.width == frame.width, image.height == frame.height else { throw LensError.invalid("Image dimensions disagree with metadata for \(frame.id).") }
             if options.excludeDuplicates && !options.annotatedOnly { fingerprints[frame.id] = try pixelFingerprint(image) }
+            sourceDigests[frame.id] = snapshot.digest
             sizes[frame.id] = (try FileManager.default.attributesOfItem(atPath: url.path)[.size] as? NSNumber)?.int64Value ?? 0
         }
         var included = candidates
@@ -47,7 +51,26 @@ public struct ExportPlan: Sendable {
                                     unlabelledAnnotations: visible.filter { $0.instruction.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }.count,
                                     excludedUnannotated: selected.count-candidates.count, excludedDuplicates: candidates.count-included.count,
                                     estimatedSourceBytes: included.reduce(0) { $0 + (sizes[$1.id] ?? 0) })
-        return ExportPlan(sourceSession: original, session: filtered, source: source, options: options, summary: summary)
+        return ExportPlan(sourceSession: original, session: filtered, source: source, options: options, summary: summary,
+                          candidates: candidates, sourceDigests: sourceDigests)
+    }
+
+    /// Read and verify exactly the pixels that the exporter will render.
+    func image(for frame: Frame) throws -> CGImage {
+        let snapshot = try Images.snapshot(SessionStore.resolve(frame.imagePath, in: source))
+        guard snapshot.image.width == frame.width, snapshot.image.height == frame.height,
+              sourceDigests[frame.id] == snapshot.digest else {
+            throw LensError.invalid("Source image changed after export preparation for \(frame.id). Refresh Hand Off and try again.")
+        }
+        return snapshot.image
+    }
+    /// Duplicate omissions are decisions about source pixels too, even though no file is exported.
+    func verifyOmittedCandidates() throws {
+        let included = Set(session.frames.map(\.id))
+        for frame in candidates where !included.contains(frame.id) {
+            try Task.checkCancellation()
+            try autoreleasepool { _ = try image(for: frame) }
+        }
     }
 
     /// Hash decoded, dimensioned sRGB pixels. PNG compression/metadata never determine duplicates.

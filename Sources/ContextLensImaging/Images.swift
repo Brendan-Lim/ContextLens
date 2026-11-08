@@ -3,11 +3,20 @@ import CoreGraphics
 import ImageIO
 import UniformTypeIdentifiers
 import ContextLensCore
+import CryptoKit
 
 public enum Images {
     public static func load(_ url: URL) throws -> CGImage {
         // Read through Foundation so file errors are reported directly before ImageIO decodes in memory.
         let data = try Data(contentsOf: url, options: .mappedIfSafe)
+        return try decode(data, url: url)
+    }
+    /// The digest and decoded image describe the same read, never separate filesystem lookups.
+    static func snapshot(_ url: URL) throws -> (image: CGImage, digest: SHA256.Digest) {
+        let data = try Data(contentsOf: url)
+        return (try decode(data, url: url), SHA256.hash(data: data))
+    }
+    private static func decode(_ data: Data, url: URL) throws -> CGImage {
         guard let source = CGImageSourceCreateWithData(data as CFData, nil), let image = CGImageSourceCreateImageAtIndex(source, 0, nil) else {
             throw LensError.invalid("Cannot decode image: \(url.lastPathComponent)")
         }

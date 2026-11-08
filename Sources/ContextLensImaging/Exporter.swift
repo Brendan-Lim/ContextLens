@@ -14,11 +14,12 @@ public enum Exporter {
             log.debug("Export attempt ms=\(ms, privacy: .public) frames=\(plan.session.frames.count, privacy: .public)")
         }
         try Task.checkCancellation()
-        let session = plan.session, source = plan.source
+        let session = plan.session
         try session.validate()
         guard !FileManager.default.fileExists(atPath: destination.path) else { throw LensError.invalid("Export destination already exists. Choose a new folder.") }
         let selected = session.frames.filter(\.selected)
         guard !selected.isEmpty else { throw LensError.invalid("No frames match the export filters. Include unannotated frames or add an annotation.") }
+        try plan.verifyOmittedCandidates()
         let stage = destination.deletingLastPathComponent().appendingPathComponent(".contextlens-\(UUID().uuidString)")
         let fm = FileManager.default
         try fm.createDirectory(at: stage, withIntermediateDirectories: true)
@@ -28,8 +29,7 @@ public enum Exporter {
         for var frame in selected {
             try Task.checkCancellation()
             try autoreleasepool {
-            let image = try Images.load(SessionStore.resolve(frame.imagePath, in: source))
-            guard image.width == frame.width, image.height == frame.height else { throw LensError.invalid("Image dimensions disagree with metadata for \(frame.id).") }
+            let image = try plan.image(for: frame)
             let annotations = session.annotations.filter { $0.frameID == frame.id }
             let safeImage = try Images.render(image, annotations: annotations, overlays: false)
             frame.imagePath = "frames/\(frame.id).png"

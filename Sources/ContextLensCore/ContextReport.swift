@@ -126,7 +126,9 @@ public enum ContextReport {
         return v == "middle" ? (h == "center" ? "center" : "\(h) side") : (h == "center" ? v : "\(v) \(h)")
     }
     private static func clean(_ s: String) -> String { s.replacingOccurrences(of: "\n", with: " ").replacingOccurrences(of: "\r", with: " ") }
-    private static func quote(_ s: String) -> String { "> " + s.replacingOccurrences(of: "\r\n", with: "\n").replacingOccurrences(of: "\n", with: "\n> ") }
+    private static func quote(_ s: String) -> String {
+        "> " + s.replacingOccurrences(of: "\r\n", with: "\n").replacingOccurrences(of: "\r", with: "\n").replacingOccurrences(of: "\n", with: "\n> ")
+    }
     /// The prompt a person pastes into a coding agent. A task, when given, leads, because it is the request.
     public static func instruction(path: String, task: String? = nil) -> String {
         let entry = URL(fileURLWithPath: path, isDirectory: true).appendingPathComponent("context.md").path
