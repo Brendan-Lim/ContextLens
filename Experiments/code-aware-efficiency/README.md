@@ -1,6 +1,6 @@
 # Code-aware agent efficiency — prepared study
 
-Four independent React/TypeScript UI defects, eight matched A/B attempts, **zero new model calls**. Read the report (local output `../../docs/code-aware-agent-efficiency.md`), [frozen plan](reports/study/plan.json), and [preflight receipt](reports/preflight.json).
+Four independent React/TypeScript UI defects, eight matched A/B attempts, **zero new model calls**. Read the report (local output `../../docs/code-aware-agent-efficiency.md`), frozen plan (local-only evidence `reports/study/plan.json`), and preflight receipt (local-only evidence `reports/preflight.json`).
 
 
 ## Files

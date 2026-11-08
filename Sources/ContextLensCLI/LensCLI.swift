@@ -78,7 +78,22 @@ import ContextLensCapture
             case "windows":
                 for w in try await WindowCapture.windows() { print("\(w.id)\t\(w.app)\t\(w.title)") }
             default:
-                print("ContextLens CLI\n  demo NEW_SESSION_FOLDER\n  validate SESSION_FOLDER\n  export SESSION_FOLDER NEW_EXPORT_FOLDER [--all-frames] [--keep-duplicates]\n  windows\nNo network requests or agent execution are performed.")
+                // Preserve the existing no-argument/unknown-command behavior; --help and -h
+                // reach the same supported help path without enumerating windows or capturing.
+                print("""
+                ContextLens CLI
+                  --help, -h
+                  demo NEW_SESSION_FOLDER
+                  validate SESSION_FOLDER
+                  export SESSION_FOLDER NEW_EXPORT_FOLDER [--all-frames] [--keep-duplicates]
+                  replay EVENTS_JSON NEW_SESSION_FOLDER
+                  profile
+                  stress-fixture NEW_FOLDER COUNT [--gradient]
+                  profile-images SESSION_FOLDER
+                  permissions
+                  windows
+                No network requests or agent execution are performed.
+                """)
             }
         } catch { fputs("ContextLens: \(error.localizedDescription)\n", stderr); exit(1) }
     }

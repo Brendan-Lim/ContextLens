@@ -68,7 +68,7 @@ The goal is a **rigorous** pass: every claim in the README and docs either prove
    - States saved per minute for the same runs, and whether continuous scrolling becomes one "Scrolled" state.
    - Mark Up responsiveness on 2× frames: typing a note re-renders the editor image (`AppModel.renderEditor`), so measure keystroke-to-frame latency and zoom/pan frame rate.
    - Export time and package size for a 100-state session (`contextlens-cli export`).
-   - Comparator microbenchmark: `dist/contextlens-cli profile` (earlier result: [Benchmarks/reports/frame-comparison.json](Benchmarks/reports/frame-comparison.json)).
+   - Comparator microbenchmark: `dist/contextlens-cli profile` (earlier result: Benchmarks/reports/frame-comparison.json (local-only evidence `Benchmarks/reports/frame-comparison.json`)).
 
    Done when each metric has a number, the exact command, the machine and macOS version, saved as JSON under `Benchmarks/reports/`.
 7. **Report.** One markdown summary: what passed, what failed (with reproduction commands), what needs a person, and the performance table. Keep measured numbers separate from estimates, as [CONTRIBUTING.md](CONTRIBUTING.md) requires for benchmarks.

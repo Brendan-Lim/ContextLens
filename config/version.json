@@ -1,0 +1,6 @@
+{
+  "version": "0.3.0",
+  "build": 5,
+  "bundleID": "dev.contextlens.app",
+  "minimumMacOS": "14.0"
+}

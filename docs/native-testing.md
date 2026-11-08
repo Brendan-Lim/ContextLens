@@ -1,12 +1,12 @@
-> Current expanded verification, known failures, coverage and performance evidence: [rigorous testing report](testing-report.md). Historical checks below retain their original scope.
+> Current expanded verification, known failures, coverage and performance evidence: rigorous testing report (local-only evidence `testing-report.md`). Historical checks below retain their original scope.
 
 > Permission recovery and stable local signing were updated in 0.2.1; see [permissions](permissions.md). Earlier ad-hoc build checks below are historical.
 
 # Native integration testing
 
-Verified on the supplied arm64 Mac with Swift 6.3.3 and Xcode's macOS 26.5 SDK. Deployment target is macOS 14; macOS 14 hardware/runtime was not available for execution. `scripts/build-app.sh` produces an ad-hoc signed `.app` with bundle ID `dev.contextlens.app` and a separate CLI.
+Verified on the supplied arm64 Mac with Swift 6.3.3 and Xcode's macOS 26.5 SDK. Deployment target is macOS 14; macOS 14 hardware/runtime was not available for execution. Development builds use an available Apple Development identity, otherwise ad-hoc signing, with bundle ID `dev.contextlens.app`. The CLI is embedded and also copied to `dist/contextlens-cli`. Developer ID distribution is a separate [release workflow](releasing.md).
 
-Automated evidence is in [initial MVP native check](examples/native-capture-verification-v1.json), [native-editor.png](examples/native-editor.png), and the Swift test suites. A real app window was launched and rendered. Where already granted, the self-test uses ScreenCaptureKit's desktop-independent selected-window filter against **only that app's own generated fixture window**; it never takes a display screenshot. The test command does not request permission when unavailable:
+Automated evidence is in initial MVP native check (local-only evidence `examples/native-capture-verification-v1.json`), native-editor.png (local-only evidence `examples/native-editor.png`), and the Swift test suites. A real app window was launched and rendered. Where already granted, the self-test uses ScreenCaptureKit's desktop-independent selected-window filter against **only that app's own generated fixture window**; it never takes a display screenshot. The test command does not request permission when unavailable:
 
 ```sh
 scripts/build-app.sh

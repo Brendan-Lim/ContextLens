@@ -20,7 +20,7 @@ The exporter stages a complete package beside its destination, validates source 
 
 ExportPlan applies the two independent export filters once for the preview and package. It preserves all annotated frames, uses exact decoded-pixel fingerprints to exclude unannotated duplicates, and keeps stored sessions unchanged. New manifests use version 2 with compact annotation summaries; precise geometry stays in session metadata.
 
-The exported context brief is self-contained, with exact user instructions and one full-resolution annotated overview per marked state. A single-mark overview reuses the existing per-issue PNG; multiple marks share one additional render. Full review history lives in an optional timeline. Crops, individual overlays, redacted full frames and machine metadata remain available without mandatory initial reads. See [lean handoff](lean-handoff.md) for preservation checks and pending agent validation.
+The exported context brief is self-contained, with exact user instructions and one full-resolution annotated overview per marked state. A single-mark overview reuses the existing per-issue PNG; multiple marks share one additional render. Full review history lives in an optional timeline. Crops, individual overlays, redacted full frames and machine metadata remain available without mandatory initial reads. See lean handoff (local-only evidence `lean-handoff.md`) for preservation checks and pending agent validation.
 
 `contextlens-cli` validates, replays, demonstrates, profiles and exports sessions using the same production modules. `Integrations/contextlens/SKILL.md` defines portable evidence consumption. The app copies instructions; direct CLI execution/MCP are intentionally deferred.
 

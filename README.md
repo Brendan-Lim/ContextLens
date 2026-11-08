@@ -1,21 +1,26 @@
-# ContextLens
+# ContextLens — Give your AI agent eyes.
 
-**Turn UI feedback into a clear coding-agent handoff.**
+**Stop explaining your UI. Just show it.**
 
-A native, local-first macOS utility for recording one application's UI states, reviewing screenshots, adding editable visual feedback, and exporting focused evidence for Codex or Claude Code.
+Capture one application window, preserve meaningful UI changes, review states, mark frontend problems, and export structured visual context for Codex, Claude Code or another coding agent.
 
-Version 0.3.0 redesigns the app around the ContextLens mascot: capture happens in a floating panel that outlines the chosen window, and the main window has three tabs, **Review**, **Mark Up** and **Hand Off**. Capture still uses [one workflow with **Low/High** sensitivity](docs/capture-controls.md), with advanced settings under **Capture options**. Sessions, import, storage and help live in the mascot menu. Brand assets and the app icon are in [Brand/](Brand/). Earlier changes: [0.2.0 update and verification](docs/update-0.2.0.md).
+Native macOS. Local-first. Open source under the [MIT licence](LICENSE). No required cloud account, production dependencies or automatic agent execution. Screenshots stay local until you choose to share them.
 
-## Run
+## Install from source
 
-Requires macOS 14+, Xcode command-line tools with Swift 5.10 or later (verified with Swift 6.3.3). No production package dependencies or account.
+**Homebrew and direct binary downloads are pending Developer ID signing and Apple notarization. There is no installable cask or trusted public release yet.** [Distribution status](docs/distribution-release-report.md).
+
+Current packaging supports **Apple Silicon (arm64)** and targets **macOS 14+**. Runtime checks have used macOS 26.6.2 locally and macOS 15 in hosted CI; macOS 14 runtime and Intel compatibility remain unverified. A source build requires Xcode with Swift 5.10 or later; release users will not need a compiler.
 
 ```sh
+git clone https://github.com/Brendan-Lim/ContextLens.git
+cd ContextLens
 scripts/build-app.sh
 open dist/ContextLens.app
+dist/contextlens-cli --help
 ```
 
-Local builds use an available Apple Development signing identity for stable permissions; machines without one fall back to ad-hoc signing. Set `CONTEXTLENS_SIGN_IDENTITY` to select an identity explicitly. Grant Screen Recording to ContextLens when requested; relaunch if macOS requires it. If Settings is enabled but access fails after an update, see the [permission repair and signing fix](docs/permissions.md). Accessibility is optional and adds the clicked control's role and visible label (used to name states, for example "Clicked “Save”"). It never reads text-field or password values, typed characters or audio. Visible text can still appear in screenshots.
+See [building](docs/building.md) for verification and development signing. The app has a stable bundle identifier, `dev.contextlens.app`. Grant Screen Recording to the copy you run in System Settings → Privacy & Security → Screen & System Audio Recording (Screen Recording on older macOS); relaunch when requested. Optional Accessibility permission adds clicked-control role/label captions. It never reads typed characters, password values or audio; screenshots can still contain private text. See [permission help](docs/permissions.md) and [troubleshooting](docs/troubleshooting.md).
 
 ## Use
 
@@ -41,28 +46,17 @@ python3 scripts/validate_package.py /tmp/my-lens-export
 dist/contextlens-cli replay EVENTS.json /tmp/replayed-session
 ```
 
-PNG is used throughout for lossless native encoding. Image byte size is not a measure of model tokens. A [generated example package](docs/examples/agent-session/context.md) and real browser fixture exports (local output `Benchmarks/reports/browser-evidence/`) are included.
+PNG is used throughout for lossless native encoding. Image byte size is not a measure of model tokens. A [generated example package](docs/examples/agent-session/context.md) and [owned browser fixture exports](Benchmarks/reports/browser-evidence/) are included.
 
-## Verification and experiments
+## Verify and contribute
 
 ```sh
-scripts/swift.sh test
-python3 -m unittest discover -s Benchmarks/tests -v
-python3 scripts/validate_package.py docs/examples/agent-session
+scripts/build-app.sh
+scripts/verify.sh
+python3 -m unittest discover -s scripts/tests -v
+python3 distribution/homebrew/scripts/validate.py
 ```
 
-The build wrapper places compiler caches in `.build/` for restricted environments. [Native testing](docs/native-testing.md) distinguishes automated verification from remaining interactive checks. [Architecture](docs/architecture.md) explains the independent pipeline modules.
+See [CONTRIBUTING.md](CONTRIBUTING.md), [architecture](docs/architecture.md), [export format](docs/export-format.md), [native testing](docs/native-testing.md), [security/privacy](SECURITY.md), [releasing](docs/releasing.md) and [Homebrew setup](docs/homebrew.md). Branding and the app icon are owned source assets in [Brand/](Brand/).
 
-The lean handoff and measurement update (local output `docs/lean-handoff.md`) explains the single-read brief, preserved full-resolution evidence and remaining validation. [Positioning and study design](docs/product-positioning.md) separates human reporting effort from agent tokens and subscription allowance.
-
-The completed 24-attempt old/lean comparison (local output `docs/handoff-comparison-results.md`) reports observed timing/token differences, uncertainty and broader quality-audit failures in both formats. It does not establish human workflow or subscription-allowance savings.
-
-The testing and performance report (local output `docs/testing-report.md`) records the expanded regression suite, remaining interactive checks and measured screenshot-heavy workloads. [Diagnostics](docs/diagnostics.md) describes local logging and repeatable stress checks.
-
-The [benchmark harness](Benchmarks/README.md) includes ten deliberate frontend defects, isolated agent workspaces, Codex/Claude telemetry parsers, operator timing, acceptance/regression checks, reports and charts. It does not run paid agents by default.
-
-**Measured so far:** native app launch and selected-window ScreenCaptureKit capture; unit/integration tests; browser fixture failures and known-good controls; exported image counts and filesystem payload sizes. **Human preparation savings and general workflow speedup remain unmeasured.** A 27-trial scripted GPT-6.1 Sol/high comparison (local output `docs/testing-report.md`) used existing ChatGPT allowance only: ContextLens packages used more agent tokens/time than plain screenshots on these small fixtures. The study is exploratory and does not measure human preparation or progressive image viewing. Operator-timed comparisons remain pending. Read the benchmark report (local output `Benchmarks/reports/benchmark-report.md`) and [engineering report](docs/engineering-report.md).
-
-## Development
-
-See [CONTRIBUTING.md](CONTRIBUTING.md), [competitor review](docs/competitive-analysis.md), and [dependency/licence audit](docs/dependency-audit.md). ContextLens source is [MIT](LICENSE). Browser DOM mapping, MCP, audio, cloud sync and cross-platform capture are outside this MVP.
+[Research guidance](docs/research.md) and the [benchmark harness](Benchmarks/README.md) describe reproducible fixture tests and optional studies. Historical experiments have not shown a consistent agent token-efficiency advantage. Human preparation savings and general workflow speedups remain unproven. File sizes are not model tokens. Private historical traces/account observations are excluded from the public repository; reusable source and owned deterministic fixtures remain available.

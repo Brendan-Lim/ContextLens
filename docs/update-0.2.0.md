@@ -23,9 +23,9 @@ Implemented the agreed two-tool workflow and export selection controls.
 | Annotated only, keep duplicates | 4 | 7 | 0 | 10 |
 | Annotated only, exclude duplicates | 4 | 7 | 0 | 10 |
 
-The original manifest was 30,021 bytes. The new all-frame manifest measured 7,618 bytes; the focused manifest measured 4,873 bytes. These are filesystem measurements, not provider token savings. Raw drawing detail remains available in the package metadata. [Recorded filter results](examples/export-filter-validation.json).
+The original manifest was 30,021 bytes. The new all-frame manifest measured 7,618 bytes; the focused manifest measured 4,873 bytes. These are filesystem measurements, not provider token savings. Raw drawing detail remains available in the package metadata. Recorded filter results (local-only evidence `examples/export-filter-validation.json`).
 
-A native mouse-event test created a freehand highlighter annotation with six points in a generated demo session. The export view was visually checked with its two enabled switches, optional task, matching report and retained-frame counts. [Native update check](examples/annotation-update-verification.json). Local view-cache snapshots are kept under `.build/`; that rendering method can omit the compositor-backed sidebar.
+A native mouse-event test created a freehand highlighter annotation with six points in a generated demo session. The export view was visually checked with its two enabled switches, optional task, matching report and retained-frame counts. Native update check (local-only evidence `examples/annotation-update-verification.json`). Local view-cache snapshots are kept under `.build/`; that rendering method can omit the compositor-backed sidebar.
 
 Screen Recording was not granted to the rebuilt app during the native recheck, so ScreenCaptureKit verification for this build is **blocked**, not claimed as passed. No permission prompt was requested by testing. The initial 0.1.0 native capture/move/resize/closure check remains archived separately. Re-enable Screen Recording for the rebuilt app before recording if needed.
 

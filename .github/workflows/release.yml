@@ -1,0 +1,66 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version in config/version.json (X.Y.Z, without v)
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: contextlens-release
+  cancel-in-progress: false
+jobs:
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: macos-15
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+      RELEASE_VERSION: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+      - name: Validate source and unused version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/release.py preflight "$RELEASE_VERSION"
+      - run: python3 -m pip install jsonschema==4.23.0
+      - name: Run all deterministic CI checks
+        run: scripts/ci.sh
+      - name: Import isolated Developer ID credentials
+        env:
+          CERTIFICATE_P12_BASE64: ${{ secrets.DEVELOPER_ID_P12_BASE64 }}
+          CERTIFICATE_PASSWORD: ${{ secrets.DEVELOPER_ID_P12_PASSWORD }}
+          ASC_KEY_BASE64: ${{ secrets.ASC_PRIVATE_KEY_BASE64 }}
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          CONTEXTLENS_SIGN_IDENTITY: ${{ secrets.DEVELOPER_ID_IDENTITY }}
+          CONTEXTLENS_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: scripts/import-release-credentials.sh
+      - name: Sign, notarize, staple, assess, and archive
+        env:
+          CONTEXTLENS_SIGN_IDENTITY: ${{ secrets.DEVELOPER_ID_IDENTITY }}
+          CONTEXTLENS_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: |
+          scripts/build-app.sh --distribution --output "$RUNNER_TEMP/distribution"
+          python3 scripts/release.py notarize "$RUNNER_TEMP/distribution/ContextLens.app" "$RUNNER_TEMP/release-assets" --profile ContextLensRelease --keychain "$RUNNER_TEMP/contextlens-signing.keychain-db"
+      - name: Publish verified assets once
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CONTEXTLENS_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        run: scripts/publish-release.sh "$RELEASE_VERSION" "$RUNNER_TEMP/release-assets"
+      - name: Remove signing keychain and credentials
+        if: always()
+        run: scripts/cleanup-release-credentials.sh

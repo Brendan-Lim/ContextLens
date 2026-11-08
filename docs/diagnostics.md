@@ -22,4 +22,4 @@ The fixture contains generated UI bars and per-state marks, not real screenshots
 
 The explicitly invoked `--capture-soak OUTPUT.json --soak-seconds 600 [--low-sensitivity]` test creates and records only a window owned by this process. It skips activation and needs existing Screen Recording approval; it never requests consent automatically. `scripts/measure-capture-soak.py` runs both sensitivities sequentially and records CPU/RSS samples. Its changing bars and scripted hold periods exercise the production screenshot/selector/encoding path, but not physical scroll events, another application's UI, real video or the ordinary capture controller's full lifecycle.
 
-See [coverage](testing-coverage.md) for tested and untested behavior, and [results](testing-report.md) for measurements and remaining failures.
+See [coverage](testing-coverage.md) for tested and untested behavior, and results (local-only evidence `testing-report.md`) for measurements and remaining failures.

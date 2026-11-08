@@ -60,7 +60,7 @@ The initial directory was empty. Git was initialized; no source history was over
 | Handoff/fix demonstration | **CL-001 acceptance passed**, plus **12 regression guards** |
 | Paid isolated agent trials | **Not run**; no spending authorization or operator timing was supplied |
 
-Recorded artifacts: [native verification](examples/native-capture-verification-v1.json), [browser controls](../Benchmarks/reports/fixture-validation.json), [replay validation](../Benchmarks/reports/replay-validation.json), [demo fix checks](examples/demo-fix-validation.json), and [environment](../Benchmarks/reports/capture-environment.json). The final browser checks used Playwright 1.62.1 and Chrome 156.0.8078.81.
+Recorded artifacts: native verification (local-only evidence `examples/native-capture-verification-v1.json`), browser controls (local-only evidence `../Benchmarks/reports/fixture-validation.json`), replay validation (local-only evidence `../Benchmarks/reports/replay-validation.json`), demo fix checks (local-only evidence `examples/demo-fix-validation.json`), and environment (local-only evidence `../Benchmarks/reports/capture-environment.json`). The final browser checks used Playwright 1.62.1 and Chrome 156.0.8078.81.
 
 The native test captures only an app-owned fixture. It does not establish that every real application, permission transition, display/Space move, auxiliary native popup, keyboard interaction or prolonged recording has been exercised. Accessibility role collection and a fresh-user denied/granted flow still need interactive checks. The minimum supported macOS 14 runtime was not available. Broad controller/UI soak testing, peak CPU/RSS profiling, Developer ID signing and notarization remain release work. Initial restricted-environment cache/network/WindowServer failures were resolved using project-local caches and permitted test execution; they are not outstanding build failures. See [native testing](native-testing.md).
 
@@ -72,13 +72,13 @@ The native test captures only an app-owned fixture. It does not establish that e
 4. **Export:** [its actual manifest](../Benchmarks/reports/browser-evidence/01/contextlens/manifest.json) indexes a [focused crop](../Benchmarks/reports/browser-evidence/01/contextlens/crops/CL-001.png) and [annotated frame](../Benchmarks/reports/browser-evidence/01/contextlens/annotated/CL-001.png). [A separate generated session](examples/agent-session/context.md) also demonstrates irreversible export redaction.
 5. **Agent consumption:** in this engineering conversation, Codex read task-01's actual manifest/report, opened its crop, expanded to the annotated screenshot for dialog context, then searched the fixture's source. The crop alone was insufficient to judge alignment; wider context mattered.
 6. **Code modification:** in `docs/examples/fix-demo/styles.css`, `.actions` changed from `justify-content: flex-start` to `flex-end`. The benchmark's original defect source remains unchanged.
-7. **Verification:** independent Playwright acceptance for task 01 and all twelve shared regression checks passed. [After screenshot](examples/fix-after.png), [fixed source](examples/fix-demo/styles.css) and [recorded checks](examples/demo-fix-validation.json) are included. This demonstration is **not** an isolated randomized benchmark and has no attributed token/preparation measurements.
+7. **Verification:** independent Playwright acceptance for task 01 and all twelve shared regression checks passed. After screenshot (local-only evidence `examples/fix-after.png`), [fixed source](examples/fix-demo/styles.css) and recorded checks (local-only evidence `examples/demo-fix-validation.json`) are included. This demonstration is **not** an isolated randomized benchmark and has no attributed token/preparation measurements.
 
 ## F. Token efficiency benchmark
 
 The harness supports Manual, Auto-only and ContextLens, seeded schedules, fresh source copies/commits, exact provider/model/effort capture, complete traces, safe default permissions, process-group timeouts, target acceptance and regression guards. Codex 0.163.0 and Claude Code 2.1.303 were inspected without making paid requests. Parsers are tested against clearly labeled synthetic telemetry and do not double-count cumulative/nested usage.
 
-**Actual isolated live trials: zero.** Actual provider usage, costs and operator preparation timings are unavailable. The [machine-readable results](../Benchmarks/reports/results.json) explicitly contain zero trials and exclude synthetic telemetry. The [generated report](../Benchmarks/reports/benchmark-report.md) contains individual-result and aggregate sections ready for real runs.
+**Actual isolated live trials: zero.** Actual provider usage, costs and operator preparation timings are unavailable. The machine-readable results (local-only evidence `../Benchmarks/reports/results.json`) explicitly contain zero trials and exclude synthetic telemetry. The generated report (local-only evidence `../Benchmarks/reports/benchmark-report.md`) contains individual-result and aggregate sections ready for real runs.
 
 | Metric | Manual | Auto-only | ContextLens | Difference |
 |---|---:|---:|---:|---:|
@@ -100,7 +100,7 @@ Codex cached input is separated from uncached input; Claude cache reads/creation
 
 No human preparation, isolated agent execution, end-to-end-to-success or corrective-iteration measurements exist yet. The interactive timer records observed T0/T1; live trials record T2/T3 and independent acceptance T4, queue delay, failed-attempt elapsed time, versions, patch and trace. Failures retain null time-to-success rather than looking artificially fast. The current harness evaluates first attempts and does not automatically purchase corrective iterations. Further operator corrections require an extended timed dataset, consistently collected across conditions.
 
-The one measured processing microbenchmark ran **1,000 regional comparisons at 240×150**, averaging **0.0715 ms** on this Mac. This measures only the comparison function, excluding capture, enumeration, image decoding/encoding, UI work, human effort and agent latency. It establishes no workflow speedup or whole-app resource bound. [Raw measurement](../Benchmarks/reports/frame-comparison.json).
+The one measured processing microbenchmark ran **1,000 regional comparisons at 240×150**, averaging **0.0715 ms** on this Mac. This measures only the comparison function, excluding capture, enumeration, image decoding/encoding, UI work, human effort and agent latency. It establishes no workflow speedup or whole-app resource bound. Raw measurement (local-only evidence `../Benchmarks/reports/frame-comparison.json`).
 
 ## H. Quality and correctness
 
@@ -129,7 +129,7 @@ Manifest-first initially offers text and opens images later; the table excludes 
 7. **When does it perform worse?** Unmeasured. Plausible failure conditions include very small/low-contrast states, rapidly transient overlays, separate native popup windows, continuously animated UIs and annotation overhead for trivial tasks. These are hypotheses/limitations, not observed comparative outcomes.
 8. **What should improve next?** Run the controlled study, broaden native testing, then tune detection and editing from measured misses and operator feedback.
 
-The token/time/preparation/success charts in `Benchmarks/reports/` explicitly show live results pending; the separate [payload chart](../Benchmarks/reports/strategy-payload.png) uses measured bytes. No scatter plot is emitted without sufficient live samples. The report generator calculates paired differences, medians/IQR, reduction percentages and speedups once real runs exist, and bootstrap intervals only for sufficiently populated pairs.
+The token/time/preparation/success charts in `Benchmarks/reports/` explicitly show live results pending; the separate payload chart (local-only evidence `../Benchmarks/reports/strategy-payload.png`) uses measured bytes. No scatter plot is emitted without sufficient live samples. The report generator calculates paired differences, medians/IQR, reduction percentages and speedups once real runs exist, and bootstrap intervals only for sufficiently populated pairs.
 
 ## J. Next steps
 

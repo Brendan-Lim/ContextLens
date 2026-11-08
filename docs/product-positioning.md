@@ -1,6 +1,6 @@
 # Positioning ContextLens around the work it removes
 
-The subsequent [24-attempt old/lean comparison](handoff-comparison-results.md) observed 11.9% faster mean time to its original acceptance and 5.5% fewer total tokens, alongside 10.1% more uncached input. Uncertainty includes no improvement, and broader email checks found one weak fix per format. Human reporting effort and quota savings remain unmeasured; these results do not support a general speed, quality or allowance claim.
+The subsequent 24-attempt old/lean comparison (local-only evidence `handoff-comparison-results.md`) observed 11.9% faster mean time to its original acceptance and 5.5% fewer total tokens, alongside 10.1% more uncached input. Uncertainty includes no improvement, and broader email checks found one weak fix per format. Human reporting effort and quota savings remain unmeasured; these results do not support a general speed, quality or allowance claim.
 
 ## A claim we can support now
 

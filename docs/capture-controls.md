@@ -13,6 +13,6 @@ Both use the same sampling rate and screenshot quality. A short description bene
 
 **More** in the sidebar groups Open Session, Import Screenshot, Storage & Privacy and How it works. Import remains available through the File menu and Timeline. This removes permanent import/session/help controls from Capture without removing their workflows.
 
-Verification: 29 Swift tests passed, including distinct small-change behavior for Low and High. Ten recorded production replays and thirteen package validations passed. The rendered Capture screen was inspected, and the rebuilt app retained Screen Recording approval and returned actual pixels from its generated test window. [Recorded scope and observations](examples/capture-simplification-verification.json).
+Verification: 29 Swift tests passed, including distinct small-change behavior for Low and High. Ten recorded production replays and thirteen package validations passed. The rendered Capture screen was inspected, and the rebuilt app retained Screen Recording approval and returned actual pixels from its generated test window. Recorded scope and observations (local-only evidence `examples/capture-simplification-verification.json`).
 
 The legacy smoke runner's strict resize-both-dimensions and 200 ms closed-probe heuristics did not pass in this run; display height was constrained and the closed probe remained advertised briefly. These are recorded separately and are not counted as successful UI checks.
