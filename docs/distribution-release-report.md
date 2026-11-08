@@ -46,7 +46,7 @@ Workflows: `.github/workflows/ci.yml` (main pushes, PRs to main, optional manual
 |---|---|
 | Initial hosted source gate | [Run 42459309989](https://github.com/Brendan-Lim/ContextLens/actions/runs/42459309989), **passed** |
 | Tap hosted template gate | [Initial run 42459961923](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42459961923) and [candidate-commit audit workflow run 42460311343](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42460311343), **passed** |
-| New infrastructure CI | [Run 42460312944](https://github.com/Brendan-Lim/ContextLens/actions/runs/42460312944), **passed** on infrastructure commit `46deeaa9a0a7e997877f983a095f486c3d30b7ec` |
+| New infrastructure CI | [Infrastructure run 42460312944](https://github.com/Brendan-Lim/ContextLens/actions/runs/42460312944) and [final code run 42460499697](https://github.com/Brendan-Lim/ContextLens/actions/runs/42460499697), **passed**; final code commit `3d5a33df09086e84e1d05bf236e6335212d4bf57` |
 | Release signing workflow | Not dispatched with unavailable credentials; notarization/publication remain unverified |
 | `scripts/verify.sh` | **80 Swift tests, 49 Python tests, 13 packages including independent JSON Schema validation, 10 deterministic replays — passed** |
 | `python3 -m unittest discover -s scripts/tests -v` | **9 release/archive-safety tests passed** |
@@ -82,7 +82,7 @@ python3 scripts/release.py package dist/ContextLens.app /tmp/new-contextlens-arc
 
 Use a new archive output directory. Public packaging rejects archive replacement, development signatures, altered checksums, invalid receipt trust, archive traversal and symlinks. Tests cover these boundaries. Local detailed logs/snapshots remain OS-temporary evidence and were not published as historical execution dumps.
 
-Source release infrastructure was committed and pushed as [`46deeaa9a0a7e997877f983a095f486c3d30b7ec`](https://github.com/Brendan-Lim/ContextLens/commit/46deeaa9a0a7e997877f983a095f486c3d30b7ec), `build: add macOS release packaging and Homebrew distribution`. The remote main SHA matched after push. The checkout-root portability correction and final verification report follow in subsequent commits; no force push was used.
+Source release infrastructure was committed and pushed as [`46deeaa9a0a7e997877f983a095f486c3d30b7ec`](https://github.com/Brendan-Lim/ContextLens/commit/46deeaa9a0a7e997877f983a095f486c3d30b7ec), `build: add macOS release packaging and Homebrew distribution`. The remote main SHA matched after push. The checkout-root portability correction was pushed as [`3d5a33df09086e84e1d05bf236e6335212d4bf57`](https://github.com/Brendan-Lim/ContextLens/commit/3d5a33df09086e84e1d05bf236e6335212d4bf57), with its hosted CI passing. This report is finalized in a subsequent documentation-only commit; no force push was used. A final GitHub tree/index comparison matched all 482 public files, and rendered README HTML included the pending-installation warning.
 
 ## E. GitHub Releases
 
