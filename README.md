@@ -12,6 +12,14 @@ Native macOS. Local-first. Open source under the [MIT licence](LICENSE). No requ
 - **Unnotarized previews:** a separate, free channel using ad-hoc signing. These prereleases have no Developer ID signature or Apple notarization. Apple has not verified them, and macOS may block launch. See [preview downloads, installation status and first-launch instructions](docs/preview-releases.md).
 - **Future signed/notarized stable releases:** the secure release workflow and official `contextlens` cask template remain pending Apple credentials. A preview is never published as a trusted stable release.
 
+Install the [0.3.0-preview.1 prerelease](https://github.com/Brendan-Lim/ContextLens/releases/tag/v0.3.0-preview.1) on Apple Silicon, macOS 14+:
+
+```sh
+brew install --cask Brendan-Lim/tap/contextlens-preview
+```
+
+[Disposable macOS verification passed](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42471268060): installation, app placement, CLI linking/help, quarantine, existing-app protection and uninstall preservation. Manual first-launch authorization, Screen Recording and interactive capture/Hand Off remain pending. Quit and deliberately back up an existing app before switching channels; the channels share sessions and permissions. Do not force an overwrite.
+
 Only authorize a preview after verifying its origin and release checksum. A checksum confirms the downloaded bytes; it does not establish Apple trust. After a blocked launch, use System Settings → Privacy & Security → **Open Anyway**, then confirm **Open**, if you choose to authorize it. Follow [Apple's instructions](https://support.apple.com/en-us/102445) and keep macOS security enabled. [Distribution verification report](docs/distribution-release-report.md).
 
 ## Install from source
@@ -42,6 +50,8 @@ Sessions save automatically under `~/Library/Application Support/ContextLens/Ses
 ## Command-line companion
 
 The companion is named `contextlens-cli` to avoid colliding with `ContextLens` on case-insensitive filesystems.
+
+Homebrew links `contextlens-cli` into its `bin`; use that command in place of `dist/contextlens-cli` below. Try `contextlens-cli --help` after authorization.
 
 ```sh
 dist/contextlens-cli demo /tmp/my-lens-session

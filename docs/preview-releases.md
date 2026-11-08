@@ -2,7 +2,13 @@
 
 ContextLens 0.3.0 has a separate preview channel for Apple Silicon Macs running macOS 14+. It needs no paid Apple Developer membership or Apple credentials. Builds use optimized arm64 Swift products and ad-hoc signatures for code integrity. They have **no Developer ID signature, Apple notarization or promised Gatekeeper acceptance**. These prereleases are never marked latest/stable. macOS 14 is the deployment target; hosted runtime checks use macOS 15.
 
-Published: [v0.3.0-preview.1 — Unnotarized Preview](https://github.com/Brendan-Lim/ContextLens/releases/tag/v0.3.0-preview.1), after [all preview workflow checks passed](https://github.com/Brendan-Lim/ContextLens/actions/runs/42469995205). The public ZIP was downloaded independently and verified. Homebrew candidate installation/uninstallation passed; final audit and promotion are in progress. The interactive installed-preview workflow remains pending. The stable `contextlens` template and signed `release.yml` remain separate. [Detailed release report](distribution-release-report.md).
+Published: [v0.3.0-preview.1 — Unnotarized Preview](https://github.com/Brendan-Lim/ContextLens/releases/tag/v0.3.0-preview.1), after [all preview workflow checks passed](https://github.com/Brendan-Lim/ContextLens/actions/runs/42469995205). The public ZIP was downloaded independently and verified. The separate cask is published in the [tap](https://github.com/Brendan-Lim/homebrew-tap) after [all candidate checks passed](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42471268060), including online audit, download, installation and uninstallation. The interactive installed-preview workflow remains pending. The stable `contextlens` template and signed `release.yml` remain separate. [Detailed release report](distribution-release-report.md).
+
+```sh
+brew install --cask Brendan-Lim/tap/contextlens-preview
+```
+
+Verified on a disposable arm64 macOS 15.8.2 runner with Homebrew 7.0.12. After installation, follow the first-launch instructions below, then try `contextlens-cli --help`. Do not install over your working copy just to test the preview.
 
 Public archive SHA-256: `1cd84d6b15fc7aed7346ff1fd27382d5d2cd5a51637c7358861ddf55ebe0da45`.
 
@@ -27,9 +33,15 @@ Compare the output with the full checksum above before extracting and authorizin
 6. Open a disposable window containing no private information, choose **New capture**, select only that window, start/stop capture, review a state, add a mark and note, then **Save Hand Off** to a temporary folder. Check `context.md`, `manifest.json` and the images. Nothing uploads or runs an agent automatically.
 7. The CLI is embedded at `/Applications/ContextLens.app/Contents/MacOS/contextlens-cli`. Homebrew links it as `contextlens-cli`; try `contextlens-cli --help` after authorization. macOS may require a separate decision for the CLI; successful app authorization does not prove CLI authorization. If blocked, use the same Apple-supported settings process if available, or use a source build. No security-bypass command is supplied.
 
-Homebrew's intended preview token is **`Brendan-Lim/tap/contextlens-preview`**. Availability and verified commands will be recorded here after publication checks. Homebrew keeps quarantine enabled. Default installation must refuse conflicting apps or CLI links; do not use force/adopt options to replace a working copy inadvertently. Remove a Homebrew-managed old channel deliberately before installing the other one. Never install the stable `contextlens` token expecting a preview.
+The published preview token is **`Brendan-Lim/tap/contextlens-preview`**. Homebrew keeps quarantine enabled. Default installation refuses conflicting apps or CLI links; do not use force/adopt options to replace a working copy inadvertently. Remove a Homebrew-managed old channel deliberately before installing the other one. Never install the stable `contextlens` token expecting a preview.
 
 Uninstalling the preview with Homebrew removes its app and CLI link. It does not delete `~/Library/Application Support/ContextLens/`, session folders selected elsewhere, preferences or exported packages. There is no `zap` or data-deletion hook. Back up valuable sessions before trying preview software; this uninstall policy is not a guarantee against application bugs.
+
+```sh
+brew uninstall --cask Brendan-Lim/tap/contextlens-preview
+```
+
+Uninstallation and preserved synthetic sessions/exports were verified. Upgrades remain untested because there is only one published preview; verify them when a second preview exists.
 
 ## Maintainer workflow
 

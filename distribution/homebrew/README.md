@@ -1,6 +1,28 @@
 # Brendan-Lim Homebrew tap
 
-ContextLens distribution is pending Developer ID signing and Apple notarization. This repository currently contains a cask template and validation tooling. **There is no installable `contextlens` cask yet.**
+## Unnotarized preview channel
+
+The separate `contextlens-preview` channel installs [ContextLens 0.3.0-preview.1](https://github.com/Brendan-Lim/ContextLens/releases/tag/v0.3.0-preview.1). The cask uses the verified published archive and actual SHA-256. [Candidate verification 42471268060](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42471268060) passed on a disposable arm64 macOS 15.8.2 runner with Homebrew 7.0.12: style, online audit, fetch/checksum, installation, app placement, CLI linking/help, quarantine retention, existing-app protection and uninstall preservation of session/export markers.
+
+```sh
+brew install --cask Brendan-Lim/tap/contextlens-preview
+```
+
+Try opening ContextLens from Applications, follow the authorization guidance below, and grant Screen Recording when requested. Then try `contextlens-cli --help`. Manual first-launch authorization, fresh-user permissions and interactive capture/Hand Off remain **pending**; the hosted runner's read-only Gatekeeper assessment correctly rejected the app. No Gatekeeper acceptance is claimed. macOS 14 runtime and upgrades from another preview remain untested.
+
+The public GitHub browser download URL returned HTTP 504 during testing. The cask uses GitHub's official public asset API with `Accept: application/octet-stream`; this requires no GitHub account/token and serves the same verified ZIP. Homebrew's version includes both preview version and immutable asset ID (`0.3.0-preview.1,723563642`).
+
+Previews are optimized arm64 builds for macOS 14+, ad-hoc signed without Developer ID signing or Apple notarization. Apple has not verified them. macOS can block first launch, and an installed CLI can require separate authorization. Only after verifying the official release origin and SHA-256, follow [Apple's Open Anyway instructions](https://support.apple.com/en-us/102445) if you choose to authorize the app. Keep macOS security and quarantine enabled. Managed Mac policies may prevent authorization.
+
+The cask installs `ContextLens.app` and links its embedded `contextlens-cli`. It conflicts with the future stable cask and default Homebrew installation refuses to overwrite an existing app. Quit and deliberately back up an existing copy before switching channels; do not use force/adopt options. Both channels share the bundle ID, sessions and CLI name, so do not treat another app directory as isolation.
+
+Preview uninstall preserves sessions, settings and exported packages: there is no `zap` or deletion hook. Hosted checks use only a disposable GitHub macOS runner; manual Gatekeeper authorization, fresh-user Screen Recording and interactive capture/Hand Off remain pending. [Full preview instructions and report](https://github.com/Brendan-Lim/ContextLens/blob/main/docs/preview-releases.md).
+
+Maintainers: `python3 scripts/validate.py` checks both channel templates and generated casks. Generate a preview cask with the main repository's `python3 scripts/preview-release.py update-tap VERSION /path/to/tap`. Push candidates under `preview/**` to run style, online audit, fetch and disposable install/uninstall checks before promoting to main. `scripts/test-preview-install.py` refuses to run outside a GitHub-hosted runner and does not authorize or launch the GUI app.
+
+## Future signed/notarized stable channel
+
+Stable ContextLens distribution is pending Developer ID signing and Apple notarization. This channel contains a cask template and validation tooling. **There is no installable stable `contextlens` cask yet.**
 
 Source: [Brendan-Lim/ContextLens](https://github.com/Brendan-Lim/ContextLens). The native app captures and annotates a selected macOS window and exports local visual context for coding agents.
 
