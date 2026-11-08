@@ -1,5 +1,7 @@
 # Homebrew distribution
 
+The separate **unnotarized preview** channel uses `contextlens-preview`. See [preview distribution](preview-releases.md) for availability, limitations and verification status. The remainder of this document describes the future signed/notarized **stable** `contextlens` channel; its gates and template are unchanged.
+
 The public [Brendan-Lim/homebrew-tap](https://github.com/Brendan-Lim/homebrew-tap) contains a pending cask template. No installable `Casks/contextlens.rb` is published until a real Developer ID signed, notarized release exists. Syntax validation is not installation verification.
 
 The template uses Homebrew's Cask DSL: macOS Sonoma (14) minimum, arm64 only, the versioned GitHub release ZIP, `app "ContextLens.app"` and a `binary` artifact linking its embedded `Contents/MacOS/contextlens-cli` into Homebrew's `bin`. It has no fake checksum, `:no_check`, Gatekeeper exception, `zap` or private data deletion.

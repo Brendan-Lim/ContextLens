@@ -1,0 +1,49 @@
+name: Unnotarized Preview Release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Current base version plus -preview.N (for example 0.3.0-preview.1)
+        required: true
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: contextlens-preview-release
+  cancel-in-progress: false
+jobs:
+  preview:
+    if: github.ref == 'refs/heads/main'
+    runs-on: macos-15
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+      PREVIEW_VERSION: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+      - name: Require clean current source and unused preview version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/preview-release.py preflight "$PREVIEW_VERSION"
+      - run: python3 -m pip install jsonschema==4.23.0
+      - name: Run all deterministic regression and packaging checks
+        run: scripts/ci.sh
+      - name: Build optimized ad-hoc preview and verify final archive
+        run: |
+          scripts/build-app.sh --preview "$PREVIEW_VERSION" --output "$RUNNER_TEMP/preview-build"
+          python3 scripts/preview-release.py package "$PREVIEW_VERSION" "$RUNNER_TEMP/preview-build/ContextLens.app" "$RUNNER_TEMP/preview-assets"
+      - name: Publish unnotarized prerelease once (never latest)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/preview-release.py publish "$PREVIEW_VERSION" "$RUNNER_TEMP/preview-assets"

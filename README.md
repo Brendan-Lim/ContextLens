@@ -6,9 +6,15 @@ Capture one application window, preserve meaningful UI changes, review states, m
 
 Native macOS. Local-first. Open source under the [MIT licence](LICENSE). No required cloud account, production dependencies or automatic agent execution. Screenshots stay local until you choose to share them.
 
-## Install from source
+## Installation channels
 
-**Homebrew and direct binary downloads are pending Developer ID signing and Apple notarization. There is no installable cask or trusted public release yet.** [Distribution status](docs/distribution-release-report.md).
+- **Verified source builds:** build and automated checks have been exercised. Inspect and compile the source locally using the instructions below.
+- **Unnotarized previews:** a separate, free channel using ad-hoc signing. These prereleases have no Developer ID signature or Apple notarization. Apple has not verified them, and macOS may block launch. See [preview downloads, installation status and first-launch instructions](docs/preview-releases.md).
+- **Future signed/notarized stable releases:** the secure release workflow and official `contextlens` cask template remain pending Apple credentials. A preview is never published as a trusted stable release.
+
+Only authorize a preview after verifying its origin and release checksum. A checksum confirms the downloaded bytes; it does not establish Apple trust. After a blocked launch, use System Settings → Privacy & Security → **Open Anyway**, then confirm **Open**, if you choose to authorize it. Follow [Apple's instructions](https://support.apple.com/en-us/102445) and keep macOS security enabled. [Distribution verification report](docs/distribution-release-report.md).
+
+## Install from source
 
 Current packaging supports **Apple Silicon (arm64)** and targets **macOS 14+**. Runtime checks have used macOS 26.6.2 locally and macOS 15 in hosted CI; macOS 14 runtime and Intel compatibility remain unverified. A source build requires Xcode with Swift 5.10 or later; release users will not need a compiler.
 

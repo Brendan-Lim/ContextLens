@@ -1,5 +1,11 @@
 # Distribution release report — 8 November 2026
 
+## Preview channel follow-up
+
+The free **unnotarized preview** channel is being implemented separately from the stable channel. Current base: `0.3.0`, build `5`. Baseline `scripts/verify.sh` passed (80 Swift tests, 49 Python tests, 13 packages with independent schema checks, 10 deterministic replays). Preview safety tests were introduced red before implementation and now pass. Publication, downloaded-asset verification and disposable Homebrew installation are pending at this point; no installation success is claimed. [Preview procedure and user onboarding](preview-releases.md).
+
+The sections below retain the earlier signed-release infrastructure report as historical evidence; their pending-publication statements describe that earlier stable-channel work.
+
 **State B: release infrastructure prepared; Apple credentials pending.** No public binary release or installable Homebrew cask is claimed. Initial source, release infrastructure and the pending tap are public. Available local checks and hosted CI passed; signing and real installation remain unverified.
 
 ## A. Initial GitHub publication
