@@ -30,7 +30,7 @@ Finder metadata uses **ds-store 1.3.1 / mac-alias 2.2.2**, both MIT, build-only,
 
 The official packager builds **one signed app**, then creates both ZIP and DMG. It validates ZIP paths/CRC, extracts with `ditto`, verifies signatures/provenance, mounts the DMG, and compares every normalized bundle file SHA-256, executable bit and relevant resource/Finder metadata. Timestamps/quarantine are intentionally excluded from bundle identity. Both containers have independent SHA-256 values. `SHA256SUMS` covers ZIP, DMG and `provenance.json`; provenance records source commit/tree, toolchain, OS, version/build, signing mode and bundle inventory hash.
 
-Local development packaging passed actual filesystem/mount/strict-signature/CLI/background/layout checks and a normal `ditto` install-copy round trip into a temporary directory. The source bundle inventory remained unchanged. Clean official-candidate dual-container results and hashes will be recorded below after the implementation commit; local engineering artifacts are never release acceptance.
+Local development packaging passed actual filesystem/mount/strict-signature/CLI/background/layout checks and a normal `ditto` install-copy round trip into a temporary directory. The source bundle inventory remained unchanged. Clean official-candidate dual-container results and hashes are recorded below; local engineering artifacts are never release acceptance.
 
 Architecture is **arm64**, minimum deployment target **macOS 14.0**. Local checks use macOS 26.6.2; macOS 14 runtime remains unverified. App identity stays `dev.contextlens.app`. No quarantine stripping, Gatekeeper change, TCC reset or installed app replacement occurred.
 
@@ -67,6 +67,7 @@ Local host: Apple Silicon, macOS **26.6.2 (25G83)**. No live model calls, person
 | Publication/release/Python regressions | **53 tests passed**, `python3 -m unittest discover -s scripts/tests -v` |
 | Additional experiment Python | **4 + 8 passed**, `python3 -m unittest discover -s Experiments/visual-to-code/tests -v` and equivalent `Experiments/code-aware-efficiency/tests` |
 | Node unit/export/mapper | **16 passed**, `node --test Experiments/visual-to-code/tests/unit.test.mjs Experiments/visual-to-code/tests/export.test.mjs Experiments/code-aware-efficiency/tests/mapper.test.mjs` |
+| Additional experimental browser tests | **3 passed** with Playwright's pinned browser, `node --test Experiments/visual-to-code/tests/browser.test.mjs`; system Chrome initially failed resize calibration (2/3 passed), so Chrome compatibility for this isolated experimental adapter is unproven |
 | Owned browser fixtures | **10 defects reproduced / 10 controls passed**, `CHROMIUM_EXECUTABLE='/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' node Benchmarks/runners/verify-fixtures.mjs` |
 | Optimized native build | Passed, `CONTEXTLENS_SIGN_IDENTITY=- scripts/build-app.sh --output .build/official-preparation` |
 | Portability rejection / CLI aliases | Passed, `python3 scripts/verify-release-build.py --app .build/official-preparation/ContextLens.app` |
@@ -90,7 +91,7 @@ Automated mounting/copying is packaging evidence, not native app acceptance. No 
 
 ## G. GitHub results
 
-Implementation and independent tap-preparation commits, pushed branch SHAs and CI URLs are recorded after verified publication of source. The existing preview is [v0.3.0-preview.1](https://github.com/Brendan-Lim/ContextLens/releases/tag/v0.3.0-preview.1). No new binary release is claimed.
+Implementation and independent tap-preparation commits were pushed separately; verified source and hosted results follow. The existing preview is [v0.3.0-preview.1](https://github.com/Brendan-Lim/ContextLens/releases/tag/v0.3.0-preview.1). No new binary release is claimed.
 
 ### Verified source and local package follow-up
 
@@ -108,4 +109,26 @@ The clean **local engineering candidate** at source `e0bbf4d` passed `scripts/bu
 
 `shasum -a 256 -c SHA256SUMS`, run inside `.build/official-candidate-assets`, passed for ZIP, DMG and provenance. Both package round trips passed with exactly matching bundle files and signatures. An actual stable updater attempt received HTTP 404 for unpublished `v0.3.1`, failed before writing a cask and left the tap clean. Source provenance records Xcode 26.6 / Swift 6.3.3 / macOS 26.6.2 for this local build. Hosted candidates use their own recorded toolchain and hashes.
 
-Staged/current/history publication audits and independent Gitleaks passed for both source repositories. The implementation history audit inspected 604 path/blob versions / 542 blobs with zero findings. The public link audit covers 87 Markdown files / 128 local links with zero findings; the external check initially identified two obsolete dependency repository URLs, which were corrected to the current upstream organizations. GitHub-rendered README HTML was reviewed at 1120 and 390 pixel widths with local media: all five images decoded, and page width matched the viewport in both previews. This is README layout QA using GitHub-rendered markup and representative styling, not a native app or Finder screenshot.
+Staged/current/history publication audits and independent Gitleaks passed for both source repositories. The implementation history audit inspected 604 path/blob versions / 542 blobs with zero findings. The public link audit covers 87 Markdown files / 128 local links with zero findings; the external check initially identified two obsolete dependency repository URLs, which were corrected to the current upstream organizations. The corrected network review returned HTTP 200 for all 71 then-current external URLs. GitHub-rendered README HTML was reviewed at 1120 and 390 pixel widths with local media: all five images decoded, and page width matched the viewport in both previews. This is README layout QA using GitHub-rendered markup and representative styling, not a native app or Finder screenshot.
+
+### Hosted packaging source
+
+Packaging source [`11b099a4742b11cdbf6595ecc52a7eb54c3d58c0`](https://github.com/Brendan-Lim/ContextLens/commit/11b099a4742b11cdbf6595ecc52a7eb54c3d58c0) includes the clean-detach failure regression. [Publication Security](https://github.com/Brendan-Lim/ContextLens/actions/runs/42504575474) passed, and [prepare-only run 42504640955](https://github.com/Brendan-Lim/ContextLens/actions/runs/42504640955) passed full CI and both-container packaging with its promotion job skipped. Its Actions artifact is a 30-day candidate for isolated testing, not a public GitHub Release. An earlier complete [prepare run](https://github.com/Brendan-Lim/ContextLens/actions/runs/42504356626) also passed after the timezone correction.
+
+A separate full CI run at the same packaging source failed once during native `hdiutil create -srcfolder` (exit 1) after its 53 Python regressions, Swift/packages/replays, ZIP and portability checks passed. The captured native stderr was not surfaced by the existing subprocess helper, so the root cause is **unestablished**. The independent prepare run exercised that command successfully; the failed attempt is retained in [run 42504575455](https://github.com/Brendan-Lim/ContextLens/actions/runs/42504575455). It is not represented as a clean first attempt. No fallback skipped mounting or relaxed signature/integrity checks.
+
+### Downloaded hosted candidate verification
+
+The final packaging source's [full macOS CI](https://github.com/Brendan-Lim/ContextLens/actions/runs/42504575455) passed on **attempt 2**. Its [Publication Security](https://github.com/Brendan-Lim/ContextLens/actions/runs/42504575474) passed with 52 tests plus one intentional macOS-only test skip on Linux; the macOS suite passed all **53**. The successful prepare-only artifact was downloaded with `gh run download 42504640955 --repo Brendan-Lim/ContextLens --name official-candidate-0.3.1 --dir .build/official-hosted-assets`, then independently reverified on the local Mac using `.build/dmg-python/bin/python scripts/unnotarized-release.py verify-assets .build/official-hosted-assets`.
+
+This repeated final SHA-256 list validation, ZIP extraction, strict ad-hoc signatures, source tree identity, actual DMG mount/filesystem/background/layout/CLI checks, clean detach, temporary install copy and ZIP/DMG bundle equality. The official workflow identity and source SHA also matched the downloaded provenance. No native GUI was launched. Hosted build: **Xcode 26.3, Swift 6.2.4, arm64 macOS 15.8.2**.
+
+These candidate hashes identify the **unpublished Actions artifact**, not a published release:
+
+| Hosted candidate asset | SHA-256 |
+|---|---|
+| `ContextLens-0.3.1-arm64.zip` | `1744796edda0262a77bc25de1cdfb7864aa8871eb833d4dc1011494ef60e501e` |
+| `ContextLens-0.3.1-arm64.dmg` | `2c0e1adf00ea6b23803122770e6bc45b5e14e83a067f325b442b525abe17bf76` |
+| Shared normalized bundle inventory | `6bb5017a2f76401370a6e7db5b1aa635635ed42cd7765c79997749356a004a37` |
+
+The required `docs/release-acceptance/0.3.1.json` is still absent, and the pending template still fails the acceptance validator. Only the older preview remains listed as a GitHub Release; no stable tag, draft, release asset or installable stable cask was created. The Developer ID workflow, trusted verifier and preview release script have no diff from the baseline. Both repositories retain clean worktrees after the report-only follow-up commit; private experiments and the owner's app/permissions are untouched.
