@@ -1,0 +1,20 @@
+[
+  {
+    "timestampMS": 36,
+    "imagePath": "raw/initial.png",
+    "event": "fixture loaded"
+  },
+  {
+    "timestampMS": 299,
+    "imagePath": "raw/unchanged.png"
+  },
+  {
+    "timestampMS": 383,
+    "imagePath": "raw/interaction.png",
+    "event": "scripted benchmark interaction; typed characters are not event metadata"
+  },
+  {
+    "timestampMS": 900,
+    "imagePath": "raw/settled.png"
+  }
+]

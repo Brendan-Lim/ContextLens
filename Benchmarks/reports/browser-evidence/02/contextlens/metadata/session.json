@@ -1,0 +1,41 @@
+{
+  "annotations" : [
+    {
+      "frameID" : "frame-001",
+      "id" : "CL-001",
+      "instruction" : "Reduce the gaps between dashboard cards to 20 pixels.",
+      "kind" : "rectangle",
+      "points" : [
+
+      ],
+      "region" : {
+        "height" : 0.085,
+        "width" : 0.9309090909090909,
+        "x" : 0.034545454545454546,
+        "y" : 0.1926953125
+      },
+      "severity" : "normal"
+    }
+  ],
+  "createdAt" : "2026-11-06T05:24:15Z",
+  "frames" : [
+    {
+      "applicationName" : "Benchmark browser fixture",
+      "captureReason" : "initial",
+      "changeScore" : 1,
+      "displayScale" : 1,
+      "event" : "fixture loaded",
+      "height" : 800,
+      "id" : "frame-001",
+      "imagePath" : "frames\/frame-001.png",
+      "name" : "State 1",
+      "selected" : true,
+      "timestampMS" : 42,
+      "width" : 1100
+    }
+  ],
+  "id" : "replay-823718f4-40ae-46c5-b864-c416db8c9b2e",
+  "mode" : "visualFeedback",
+  "nextIssueNumber" : 2,
+  "schemaVersion" : 1
+}

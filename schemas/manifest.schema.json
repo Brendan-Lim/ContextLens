@@ -1,0 +1,225 @@
+{
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "const": 2
+    },
+    "sessionID": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+$"
+    },
+    "mode": {
+      "enum": [
+        "visualFeedback",
+        "referenceCapture"
+      ]
+    },
+    "task": {
+      "type": "string"
+    },
+    "frames": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]+$"
+          },
+          "timestampMS": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "name": {
+            "type": "string"
+          },
+          "imagePath": {
+            "type": "string",
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.?(?:/|$))(?!.*[\\\\:])[^/]+(?:/[^/]+)*$"
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 32768
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 32768
+          },
+          "displayScale": {
+            "type": "number",
+            "exclusiveMinimum": 0
+          },
+          "windowTitle": {
+            "type": "string"
+          },
+          "applicationName": {
+            "type": "string"
+          },
+          "captureReason": {
+            "type": "string"
+          },
+          "changeScore": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1
+          },
+          "event": {
+            "type": "string"
+          },
+          "selected": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "timestampMS",
+          "name",
+          "imagePath",
+          "width",
+          "height",
+          "displayScale",
+          "captureReason",
+          "changeScore",
+          "selected"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "annotation": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "frameID": {
+                "type": "string",
+                "pattern": "^[A-Za-z0-9_-]+$"
+              },
+              "kind": {
+                "enum": [
+                  "rectangle",
+                  "arrow",
+                  "highlight",
+                  "text",
+                  "marker",
+                  "redaction"
+                ]
+              },
+              "instruction": {
+                "type": "string"
+              },
+              "severity": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "frameID",
+              "kind",
+              "instruction",
+              "severity"
+            ],
+            "additionalProperties": false
+          },
+          "annotatedPath": {
+            "type": "string",
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.?(?:/|$))(?!.*[\\\\:])[^/]+(?:/[^/]+)*$"
+          },
+          "cropPath": {
+            "type": "string",
+            "pattern": "^(?!/)(?!.*(?:^|/)\\.\\.?(?:/|$))(?!.*[\\\\:])[^/]+(?:/[^/]+)*$"
+          }
+        },
+        "required": [
+          "annotation",
+          "annotatedPath",
+          "cropPath"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "redactionApplied": {
+      "const": true
+    },
+    "exportOptions": {
+      "type": "object",
+      "properties": {
+        "annotatedOnly": {
+          "type": "boolean"
+        },
+        "excludeDuplicates": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "annotatedOnly",
+        "excludeDuplicates"
+      ],
+      "additionalProperties": false
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "selectedFrames": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "includedFrames": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "includedAnnotations": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unlabelledAnnotations": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "excludedUnannotated": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "excludedDuplicates": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "estimatedSourceBytes": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "selectedFrames",
+        "includedFrames",
+        "includedAnnotations",
+        "unlabelledAnnotations",
+        "excludedUnannotated",
+        "excludedDuplicates",
+        "estimatedSourceBytes"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "sessionID",
+    "mode",
+    "frames",
+    "issues",
+    "redactionApplied",
+    "exportOptions",
+    "summary"
+  ],
+  "additionalProperties": false,
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ContextLens manifest v2"
+}

@@ -1,0 +1,2 @@
+import {useState} from 'react';import {Button} from '../../ui/Button';
+export function TeamFilterPopover(){const [show,setShow]=useState(false);return <div className="team-filter"><Button tone="quiet" id="team-filter" onClick={()=>setShow(v=>!v)}>Filter team</Button>{show&&<div className="team-filter-panel"><label>Team role <select aria-label="Team role"><option>All roles</option><option>Engineering</option></select></label></div>}</div>;}

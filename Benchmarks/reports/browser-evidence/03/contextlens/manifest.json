@@ -1,0 +1,44 @@
+{
+  "frames" : [
+    {
+      "applicationName" : "Benchmark browser fixture",
+      "captureReason" : "initial",
+      "changeScore" : 1,
+      "displayScale" : 1,
+      "event" : "fixture loaded",
+      "height" : 800,
+      "id" : "frame-001",
+      "imagePath" : "frames\/frame-001.png",
+      "name" : "State 1",
+      "selected" : true,
+      "timestampMS" : 34,
+      "width" : 1100
+    }
+  ],
+  "issues" : [
+    {
+      "annotatedPath" : "annotated\/CL-001.png",
+      "annotation" : {
+        "frameID" : "frame-001",
+        "id" : "CL-001",
+        "instruction" : "Ensure the main content starts to the right of the fixed sidebar with at least 24 pixels of spacing.",
+        "kind" : "rectangle",
+        "points" : [
+
+        ],
+        "region" : {
+          "height" : 0.212734375,
+          "width" : 0.8036363636363636,
+          "x" : 0.1618181818181818,
+          "y" : 0.1926953125
+        },
+        "severity" : "normal"
+      },
+      "cropPath" : "crops\/CL-001.png"
+    }
+  ],
+  "mode" : "visualFeedback",
+  "redactionApplied" : true,
+  "schemaVersion" : 1,
+  "sessionID" : "replay-f934a657-72c4-41e4-85c0-069ae48fdf19"
+}

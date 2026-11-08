@@ -1,0 +1,44 @@
+{
+  "frames" : [
+    {
+      "applicationName" : "Benchmark browser fixture",
+      "captureReason" : "initial",
+      "changeScore" : 1,
+      "displayScale" : 1,
+      "event" : "fixture loaded",
+      "height" : 800,
+      "id" : "frame-001",
+      "imagePath" : "frames\/frame-001.png",
+      "name" : "State 1",
+      "selected" : true,
+      "timestampMS" : 42,
+      "width" : 1100
+    }
+  ],
+  "issues" : [
+    {
+      "annotatedPath" : "annotated\/CL-001.png",
+      "annotation" : {
+        "frameID" : "frame-001",
+        "id" : "CL-001",
+        "instruction" : "Reduce the gaps between dashboard cards to 20 pixels.",
+        "kind" : "rectangle",
+        "points" : [
+
+        ],
+        "region" : {
+          "height" : 0.085,
+          "width" : 0.9309090909090909,
+          "x" : 0.034545454545454546,
+          "y" : 0.1926953125
+        },
+        "severity" : "normal"
+      },
+      "cropPath" : "crops\/CL-001.png"
+    }
+  ],
+  "mode" : "visualFeedback",
+  "redactionApplied" : true,
+  "schemaVersion" : 1,
+  "sessionID" : "replay-823718f4-40ae-46c5-b864-c416db8c9b2e"
+}

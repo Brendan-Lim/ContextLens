@@ -1,0 +1,26 @@
+:root { font: 16px system-ui; color: #e7e9ef; background: #101318; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+button,input { font: inherit; }
+button { background: #68dfbc; border: 0; border-radius: 7px; padding: 12px 20px; color: #10251e; cursor: pointer; }
+button:focus { outline: none; }
+.shell { padding: 38px; }
+header { display: flex; justify-content: space-between; margin-bottom: 30px; align-items: center; }
+h1 { font-size: 27px; letter-spacing: -1px; } h2 { font-size: 20px; }
+.panel,.dialog { padding: 28px; background: #1b2029; border: 1px solid #313946; border-radius: 14px; }
+.dialog { width: 500px; margin: 50px auto; }
+.actions { display: flex; justify-content: flex-start; margin-top: 30px; }
+.cards { display: grid; grid-template-columns: repeat(3,1fr); gap: 64px; }
+.card { padding: 25px; border-radius: 12px; background: #252d38; }
+.sidebar { position: fixed; top: 0; bottom: 0; width: 240px; padding: 32px; background: #242c37; }
+.content { margin-left: 140px; padding: 40px; }
+.dropdown { width: 260px; padding: 20px; margin-top: 15px; background: #252d38; border-radius: 9px; }
+input { width: 100%; padding: 10px; background: #101318; border: 1px solid #59667b; color: white; border-radius: 5px; }
+nav { display:flex; gap: 20px; } nav a { color: #d7dce6; white-space: nowrap; padding: 15px; }
+.mobile-nav { width: 700px; }
+.tab { background: #29323f; color: white; } .tab.active { background: #29323f; color: white; }
+.focus-target:focus-visible { outline: none; }
+.error { color: #ea9a9a; display: none; margin-top: 15px; }
+.scroll-dialog { max-height: 400px; overflow: hidden; }
+.long-copy { height: 900px; background: linear-gradient(#252d38,#171b22); padding: 20px; }
+.count { font-size: 60px; color: #68dfbc; }

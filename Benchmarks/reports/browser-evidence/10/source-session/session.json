@@ -1,0 +1,39 @@
+{
+  "annotations": [
+    {
+      "id": "CL-001",
+      "frameID": "frame-001",
+      "kind": "rectangle",
+      "region": {
+        "x": 0.034545454545454546,
+        "y": 0.2351953125,
+        "width": 0.9309090909090909,
+        "height": 0.08875
+      },
+      "points": [],
+      "instruction": "Update the visible member count every time Add member is clicked.",
+      "severity": "normal"
+    }
+  ],
+  "createdAt": "2026-11-06T05:24:24Z",
+  "frames": [
+    {
+      "applicationName": "Benchmark browser fixture",
+      "captureReason": "initial",
+      "changeScore": 1,
+      "displayScale": 1,
+      "event": "fixture loaded",
+      "height": 800,
+      "id": "frame-001",
+      "imagePath": "frames/frame-001.png",
+      "name": "State 1",
+      "selected": true,
+      "timestampMS": 34,
+      "width": 1100
+    }
+  ],
+  "id": "replay-f479f458-bd9e-4c2e-9f21-858092fa1acc",
+  "mode": "visualFeedback",
+  "nextIssueNumber": 2,
+  "schemaVersion": 1
+}

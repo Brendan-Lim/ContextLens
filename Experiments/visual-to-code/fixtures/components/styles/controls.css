@@ -1,0 +1,5 @@
+button {font:inherit;padding:10px 18px;color:#10251e;background:#68dfbc;border:0;border-radius:7px;cursor:pointer}
+.save-button {display:inline-flex;gap:8px;align-items:center;white-space:nowrap}
+.button-icon {display:inline-block;width:14px;height:18px}
+label {display:block;width:280px}
+input {display:block;width:100%;padding:8px;margin-top:6px;background:#1b2029;color:white;border:1px solid #59667b}

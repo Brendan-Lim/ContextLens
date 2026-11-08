@@ -1,0 +1,41 @@
+{
+  "annotations" : [
+    {
+      "frameID" : "frame-001",
+      "id" : "CL-001",
+      "instruction" : "Make the active tab visually distinct from inactive tabs, including after switching tabs.",
+      "kind" : "rectangle",
+      "points" : [
+
+      ],
+      "region" : {
+        "height" : 0.0525,
+        "width" : 0.09788352272727273,
+        "x" : 0.034545454545454546,
+        "y" : 0.1926953125
+      },
+      "severity" : "normal"
+    }
+  ],
+  "createdAt" : "2026-11-06T05:24:20Z",
+  "frames" : [
+    {
+      "applicationName" : "Benchmark browser fixture",
+      "captureReason" : "initial",
+      "changeScore" : 1,
+      "displayScale" : 1,
+      "event" : "fixture loaded",
+      "height" : 800,
+      "id" : "frame-001",
+      "imagePath" : "frames\/frame-001.png",
+      "name" : "State 1",
+      "selected" : true,
+      "timestampMS" : 38,
+      "width" : 1100
+    }
+  ],
+  "id" : "replay-ddf4035b-fd08-4855-845a-b892b6d03d06",
+  "mode" : "visualFeedback",
+  "nextIssueNumber" : 2,
+  "schemaVersion" : 1
+}

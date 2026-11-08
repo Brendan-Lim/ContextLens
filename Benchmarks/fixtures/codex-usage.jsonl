@@ -1,0 +1,4 @@
+{"type":"thread.started","thread_id":"synthetic"}
+{"type":"event_msg","payload":{"type":"token_count","info":{"total_token_usage":{"input_tokens":99999}}}}
+{"type":"turn.completed","usage":{"input_tokens":1000,"cached_input_tokens":400,"output_tokens":100}}
+{"type":"turn.completed","usage":{"input_tokens":1500,"cached_input_tokens":900,"output_tokens":150}}

@@ -1,0 +1,41 @@
+{
+  "annotations" : [
+    {
+      "frameID" : "frame-001",
+      "id" : "CL-001",
+      "instruction" : "Show a visible focus indicator when the Create project button is reached with the keyboard.",
+      "kind" : "rectangle",
+      "points" : [
+
+      ],
+      "region" : {
+        "height" : 0.0525,
+        "width" : 0.13029829545454547,
+        "x" : 0.034545454545454546,
+        "y" : 0.1926953125
+      },
+      "severity" : "normal"
+    }
+  ],
+  "createdAt" : "2026-11-06T05:24:21Z",
+  "frames" : [
+    {
+      "applicationName" : "Benchmark browser fixture",
+      "captureReason" : "initial",
+      "changeScore" : 1,
+      "displayScale" : 1,
+      "event" : "fixture loaded",
+      "height" : 800,
+      "id" : "frame-001",
+      "imagePath" : "frames\/frame-001.png",
+      "name" : "State 1",
+      "selected" : true,
+      "timestampMS" : 33,
+      "width" : 1100
+    }
+  ],
+  "id" : "replay-e274d759-4ff8-4cd4-ba91-5dc6fac4c2ab",
+  "mode" : "visualFeedback",
+  "nextIssueNumber" : 2,
+  "schemaVersion" : 1
+}

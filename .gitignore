@@ -1,0 +1,50 @@
+# Local build products and dependency caches
+.build/
+dist/
+DerivedData/
+*.xcuserstate
+.DS_Store
+node_modules/
+__pycache__/
+.pytest_cache/
+.venv/
+*.egg-info/
+
+# Credentials and signing material (never publish)
+.env
+.env.*
+!.env.example
+*.p12
+*.p8
+*.pem
+*.key
+*.mobileprovision
+
+# Private historical studies, account receipts, traces and generated evidence
+Benchmarks/runs/
+Benchmarks/test-results/
+Benchmarks/playwright-report/
+Benchmarks/reports/*
+# Owned, deterministic browser fixtures are reviewed test inputs.
+!Benchmarks/reports/browser-evidence/
+Experiments/*/reports/
+Experiments/*/fixture/dist-plain/
+Experiments/*/fixture/*.tsbuildinfo
+
+# Historical generated reports contain account/allocation observations.
+# Keep the local originals; public research guidance is docs/research.md.
+docs/testing-report.md
+docs/lean-handoff.md
+docs/handoff-comparison-results.md
+docs/manual-vs-contextlens-benchmark.md
+docs/code-aware-agent-efficiency.md
+docs/visual-to-code-experiment.md
+docs/token-exploration-analysis.md
+# Native screenshots/permission receipts are local evidence, not test fixtures.
+docs/examples/*.png
+docs/examples/*.json
+# Historical report writers embed private account/authorization narratives.
+scripts/write-testing-report.py
+scripts/write-manual-study-report.py
+Experiments/code-aware-efficiency/write_live_report.py
+Experiments/visual-to-code/write_report.py

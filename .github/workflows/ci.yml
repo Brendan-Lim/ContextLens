@@ -1,0 +1,24 @@
+name: Verify
+on: [push, pull_request]
+jobs:
+  local-pipeline:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: scripts/swift.sh test
+      - run: python3 scripts/check-coverage-map.py
+      - run: scripts/build-app.sh
+      - run: python3 -m unittest discover -s Benchmarks/tests -v
+      - run: python3 -m pip install -r Benchmarks/requirements.txt
+      - run: python3 scripts/verify-packages.py
+      - run: python3 scripts/verify_replays.py
+      - run: npm --prefix Benchmarks ci --ignore-scripts
+      - run: cd Benchmarks && npx playwright install chromium
+      - run: node Benchmarks/runners/verify-fixtures.mjs
+      - run: python3 Benchmarks/runners/report.py

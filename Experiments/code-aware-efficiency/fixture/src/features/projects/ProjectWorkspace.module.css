@@ -1,0 +1,6 @@
+.root {min-height:570px}
+.toolbar {display:flex;justify-content:space-between;align-items:center;margin:24px 0;position:relative}
+.grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.summary {display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:24px 0}
+.project {min-height:170px}
+.project p {color:#aebbd0}

@@ -1,0 +1,24 @@
+{
+  "version":1,"seed":8301,
+  "tasks":[
+    {"id":"publish-actions","route":"/#/projects","setup":"publish-dialog","target":"#publish-confirm","mechanism":"alignment","instruction":"In the project update review dialog, align Publish update to the right edge of its action row inside the dialog. Keep the button, dialog text, close, cancel and publish actions usable.","responsible":{"file":"src/ui/dialogs/ActionCluster.module.css","symbol":".root","property":"justify-content","contains":"justify-content: flex-start;"}},
+    {"id":"project-filter","route":"/#/projects","setup":"project-filter","target":"#project-search","mechanism":"dismissal","instruction":"Keep the project filter open when clicking or typing inside its search field. Clicking outside must close it. Keep the trigger toggle working and preserve the query across closing and reopening.","responsible":{"file":"src/interaction/useLayerDismissal.ts","symbol":"onPointerDown","contains":"onDismiss();"}},
+    {"id":"seat-allocation","route":"/#/team","setup":"none","target":"#allocate-seats","mechanism":"state-update","instruction":"Add five seats must add exactly five to Allocated seats on every click: the initial 12 should become 17, then 22. Remove one seat must subtract one and stop at zero. Keep the separate draft-invitation reservation control working.","responsible":{"file":"src/state/useSeatAllocation.ts","symbol":"allocate","contains":"setSeats(seats+1)"}},
+    {"id":"contact-validation","route":"/#/settings","setup":"contact-form","target":"#save-contact","mechanism":"validation","instruction":"Owner email must show an error for empty or malformed addresses and clear it after a valid address. Require a nonempty local part, exactly one @, a dotted domain with nonempty labels, and no whitespace. Accept ordinary addresses, plus tags and subdomains. Repeated submissions must update feedback without navigation or clearing the input, and notification preferences must keep working.","responsible":{"file":"src/domain/validation/contactPolicy.ts","symbol":"acceptsContact","contains":"return address.includes('@');"}}
+  ],
+  "mapping_cases":[
+    {"id":"align-button","task":"publish-actions","kind":"positive"},
+    {"id":"filter-input","task":"project-filter","kind":"positive"},
+    {"id":"allocation-button","task":"seat-allocation","kind":"positive"},
+    {"id":"contact-submit","task":"contact-validation","kind":"positive"},
+    {"id":"allocation-off-centre","task":"seat-allocation","kind":"positive","partial":true},
+    {"id":"contact-retina","task":"contact-validation","kind":"positive","dpr":2},
+    {"id":"stale-dom","task":"seat-allocation","kind":"abstain","afterCapture":"resize"},
+    {"id":"stale-source","task":"contact-validation","kind":"abstain","afterCapture":"source-change"},
+    {"id":"unobserved-handler","task":"project-filter","kind":"abstain","noProbe":true},
+    {"id":"missing-runtime","task":"seat-allocation","kind":"abstain","plain":true},
+    {"id":"forged-probe","task":"contact-validation","kind":"abstain","forgedProbe":true},
+    {"id":"wrong-page","task":"seat-allocation","kind":"abstain","wrongSnapshot":true}
+  ],
+  "scope":"Finite authored contract. Responsible file/symbol labels stay outside agent workspaces. No agent receives these acceptance criteria or repair controls."
+}

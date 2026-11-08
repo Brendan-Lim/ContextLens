@@ -1,0 +1,1 @@
+export function ReportFilter({period,onChange}:{period:string;onChange:(v:string)=>void}){return <label>Period <select id="report-period" value={period} onChange={e=>onChange(e.currentTarget.value)}><option>Weekly</option><option>Monthly</option><option>Quarterly</option></select></label>;}

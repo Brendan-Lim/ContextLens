@@ -1,0 +1,69 @@
+{
+  "frames" : [
+    {
+      "applicationName" : "Generated fixture",
+      "captureReason" : "synthetic_fixture",
+      "changeScore" : 0.2,
+      "displayScale" : 1,
+      "height" : 600,
+      "id" : "frame-001",
+      "imagePath" : "frames\/frame-001.png",
+      "name" : "Dashboard",
+      "selected" : true,
+      "timestampMS" : 0,
+      "width" : 960
+    },
+    {
+      "applicationName" : "Generated fixture",
+      "captureReason" : "synthetic_fixture",
+      "changeScore" : 0.2,
+      "displayScale" : 1,
+      "height" : 600,
+      "id" : "frame-002",
+      "imagePath" : "frames\/frame-002.png",
+      "name" : "Settings",
+      "selected" : true,
+      "timestampMS" : 1000,
+      "width" : 960
+    },
+    {
+      "applicationName" : "Generated fixture",
+      "captureReason" : "synthetic_fixture",
+      "changeScore" : 0.2,
+      "displayScale" : 1,
+      "height" : 600,
+      "id" : "frame-003",
+      "imagePath" : "frames\/frame-003.png",
+      "name" : "Confirmation",
+      "selected" : true,
+      "timestampMS" : 2000,
+      "width" : 960
+    }
+  ],
+  "issues" : [
+    {
+      "annotatedPath" : "annotated\/CL-001.png",
+      "annotation" : {
+        "frameID" : "frame-003",
+        "id" : "CL-001",
+        "instruction" : "Align the confirmation button to the right edge of the dialog.",
+        "kind" : "rectangle",
+        "points" : [
+
+        ],
+        "region" : {
+          "height" : 0.1,
+          "width" : 0.18,
+          "x" : 0.31,
+          "y" : 0.65
+        },
+        "severity" : "normal"
+      },
+      "cropPath" : "crops\/CL-001.png"
+    }
+  ],
+  "mode" : "visualFeedback",
+  "redactionApplied" : true,
+  "schemaVersion" : 1,
+  "sessionID" : "demo-session"
+}

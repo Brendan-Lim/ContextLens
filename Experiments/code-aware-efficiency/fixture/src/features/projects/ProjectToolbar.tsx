@@ -1,0 +1,2 @@
+import {Button} from '../../ui/Button';import {copy} from '../../i18n/copy';import {ProjectFilter} from './ProjectFilter';import type {useProjectSearch} from '../../state/useProjectSearch';import styles from './ProjectWorkspace.module.css';
+export function ProjectToolbar({search,onReview}:{search:ReturnType<typeof useProjectSearch>;onReview:()=>void}){return <div className={styles.toolbar}><ProjectFilter query={search.query} onQueryChange={search.setQuery}/><Button id="review-update" onClick={onReview}>{copy.projects.review}</Button></div>;}

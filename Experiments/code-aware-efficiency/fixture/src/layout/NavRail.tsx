@@ -1,0 +1,2 @@
+const links=[['/projects','Projects'],['/team','Team'],['/settings','Settings'],['/reports','Reports']];
+export function NavRail({route}:{route:string}){return <aside className="nav-rail"><div className="brand">LENSBOARD</div><small>ACME WORKSPACE</small><nav>{links.map(([path,label])=><a key={path} className={route===path?'active':''} href={'#'+path}>{label}</a>)}</nav><p>Local development</p></aside>;}

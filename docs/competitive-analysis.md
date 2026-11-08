@@ -1,0 +1,16 @@
+# Public feature and licence review
+
+Reviewed 6 November 2026 from project READMEs and product documentation. This is a documentation review, not a benchmark or a source-code audit. No competitor implementation, assets, fonts, or icons were copied.
+
+| Project | Publicly documented approach | Delivery and privacy | Consequence for ContextLens |
+|---|---|---|---|
+| [Annotake](https://github.com/fayzan123/annotake) | Mac menu-bar capture of interaction steps, changed-state screenshots and clicked-control captions; screenshots convey a sequence instead of video. | Drag a capture card into an AI conversation. GPL-3.0. | Automatic step capture is established functionality. Independently implement selection and put effort into editable intent regions and experimental evaluation. Do not incorporate GPL code into the MIT project. |
+| [MarkuprPlus](https://github.com/hashfunction/MarkuprPlus) | Desktop capture with drawn marks and narration, on-device transcription, structured reports and per-mark screenshots. Electron/TypeScript surfaces include desktop, CLI and MCP. | Local-first with selectable report providers; exports include marked images, metadata, traces and recordings. MIT. | Region-marked reports and integrations are established. ContextLens chooses native SwiftUI, still frames and deterministic reports without audio or inference. |
+| [Shotback](https://github.com/DCCA/shotback) | Chrome extension with full-page/viewport capture, editable boxes/arrows/text/highlights and redaction. Browser metadata maps regions to selectors and React component chains. | Image plus structured sidecar and portable agent skill. Documents no account, server or telemetry; MIT. | Component mapping is valuable future work; native capture cannot claim browser DOM knowledge. Adopt the general sidecar/progressive-inspection pattern independently. |
+| [Mean](https://mean.app/) | macOS freeze/record-and-annotate, gesture-selected tools, numbered comments, timeline review, CLI/skills/MCP and versioned session archive. | Site says captures stay in local History and sync to an account when signed in; image or command handoff. Public site does not establish an open-source licence. | Post-capture visual handoff is established. Do not claim exclusivity. ContextLens emphasizes offline operation, inspectable files, and controlled comparisons. |
+
+The reviewed pages do not establish all projects' exact hash functions, regional thresholds, bounded-queue policies, sampling frequencies, or measured token savings. These remain unknown here rather than inferred. Documentation describing fewer frames is not evidence of lower model token usage or better correctness.
+
+ContextLens uses an independent regional luminance comparator with stability and maximum-wait bounds. It emits explicit user instructions separately from observations, targeted crops, and a compact manifest. Its benchmark separates manual reporting, automatic capture, and annotated progressive delivery. These are engineering priorities, not proven competitive advantages.
+
+Licensing: production source has no third-party package dependencies. Apple SDK frameworks, system typography and SF Symbols supply the native interface; no copied icon or font files ship. See [licence audit](dependency-audit.md). The native app is MIT; development tools keep their own licences.

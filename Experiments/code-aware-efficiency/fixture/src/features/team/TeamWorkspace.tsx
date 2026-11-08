@@ -1,0 +1,2 @@
+import {copy} from '../../i18n/copy';import {SeatCounter} from './SeatCounter';import {TeamRoster} from './TeamRoster';import {InvitePreview} from './InvitePreview';import {TeamFilterPopover} from './TeamFilterPopover';import styles from './TeamWorkspace.module.css';
+export function TeamWorkspace(){return <main className={styles.root}><h1>{copy.team.title}</h1><p className="lede">{copy.team.description}</p><SeatCounter/><TeamFilterPopover/><div className={styles.columns}><TeamRoster/><InvitePreview/></div></main>;}

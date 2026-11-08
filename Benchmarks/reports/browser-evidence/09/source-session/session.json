@@ -1,0 +1,39 @@
+{
+  "annotations": [
+    {
+      "id": "CL-001",
+      "frameID": "frame-001",
+      "kind": "rectangle",
+      "region": {
+        "x": 0.2727272727272727,
+        "y": 0.2176953125,
+        "width": 0.45454545454545453,
+        "height": 0.5
+      },
+      "points": [],
+      "instruction": "Allow scrolling inside the constrained Terms preview dialog to reach and click Accept.",
+      "severity": "normal"
+    }
+  ],
+  "createdAt": "2026-11-06T05:24:23Z",
+  "frames": [
+    {
+      "applicationName": "Benchmark browser fixture",
+      "captureReason": "initial",
+      "changeScore": 1,
+      "displayScale": 1,
+      "event": "fixture loaded",
+      "height": 800,
+      "id": "frame-001",
+      "imagePath": "frames/frame-001.png",
+      "name": "State 1",
+      "selected": true,
+      "timestampMS": 31,
+      "width": 1100
+    }
+  ],
+  "id": "replay-1f38ee4f-2014-4500-a4c6-392ba21f751a",
+  "mode": "visualFeedback",
+  "nextIssueNumber": 2,
+  "schemaVersion": 1
+}

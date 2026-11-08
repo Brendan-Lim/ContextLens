@@ -1,0 +1,2 @@
+import {StatTile} from '../../ui/StatTile';import styles from './ProjectWorkspace.module.css';
+export function ProjectSummary(){return <div className={styles.summary}><StatTile label="ACTIVE PROJECTS" value="4" detail="Across three delivery stages"/><StatTile label="TEAM MEMBERS" value="12" detail="Next onboarding group ready"/><StatTile label="DELIVERY HEALTH" value="Good" detail="One update awaiting review"/></div>;}

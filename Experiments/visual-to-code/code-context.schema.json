@@ -1,0 +1,18 @@
+{
+  "$schema":"https://json-schema.org/draft/2020-12/schema",
+  "$id":"https://contextlens.local/experimental/code-context-v1",
+  "title":"Optional experimental visual-to-code issue sidecar",
+  "type":"object",
+  "additionalProperties":false,
+  "required":["schemaVersion","extension","experimental","issueID","frameID","status","capturedAt","route","category","captureBinding","element","matchedCSS","sourceCandidates","confidenceScope","privacy"],
+  "properties":{
+    "schemaVersion":{"const":1},"extension":{"const":"contextlens.visual-to-code"},"experimental":{"const":true},
+    "issueID":{"type":"string","pattern":"^CL-[0-9]+$"},"frameID":{"type":"string"},"status":{"const":"mapped"},
+    "capturedAt":{"type":"string","format":"date-time"},"route":{"type":"string","pattern":"^/"},"category":{"enum":["spacing","alignment","visibility","interaction","unknown"]},
+    "captureBinding":{"type":"object","required":["method","rawPNGHash","exportFramePNGHash","pixelHash","dimensions","calibratedTransform"],"properties":{"method":{"const":"exact_RGBA_pixel_identity"},"pixelHash":{"type":"string","pattern":"^[a-f0-9]{64}$"}}},
+    "element":{"type":"object","required":["tag","role","selector","boundingBox","styles","parent"]},
+    "matchedCSS":{"type":"array","maxItems":3},
+    "sourceCandidates":{"type":"array","minItems":1,"maxItems":3,"items":{"type":"object","required":["file","confidence","kind","evidence","reason","sourceSHA256"],"properties":{"file":{"type":"string","pattern":"^(?!/)(?!.*\\\\)(?!.*(?:^|/)\\.\\.(?:/|$)).+"},"line":{"type":"integer","minimum":1},"confidence":{"enum":["high","medium","low"]},"evidence":{"type":"array","minItems":1,"items":{"type":"string"}},"sourceSHA256":{"type":"string","pattern":"^[a-f0-9]{64}$"}}}},
+    "confidenceScope":{"type":"string"},"privacy":{"type":"object","required":["formValuesCollected","generalDOMTextCollected","cookiesCollected","requestBodiesCollected"],"properties":{"formValuesCollected":{"const":false},"generalDOMTextCollected":{"const":false},"cookiesCollected":{"const":false},"requestBodiesCollected":{"const":false}}}
+  }
+}

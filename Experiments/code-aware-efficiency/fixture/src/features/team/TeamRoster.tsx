@@ -1,0 +1,2 @@
+import {Card} from '../../ui/Card';import {CardHeader} from '../../ui/CardHeader';import {CardBody} from '../../ui/CardBody';import {Badge} from '../../ui/Badge';
+export function TeamRoster(){return <Card><CardHeader title="Current team"/><CardBody><ul className="roster">{['Jordan / Product','Morgan / Engineering','Casey / Research'].map(name=><li key={name}><span>{name}</span><Badge label="Active"/></li>)}</ul></CardBody></Card>;}

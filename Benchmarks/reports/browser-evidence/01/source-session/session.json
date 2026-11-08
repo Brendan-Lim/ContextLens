@@ -1,0 +1,39 @@
+{
+  "annotations": [
+    {
+      "id": "CL-001",
+      "frameID": "frame-001",
+      "kind": "rectangle",
+      "region": {
+        "x": 0.2990909090909091,
+        "y": 0.3841796875,
+        "width": 0.0890625,
+        "height": 0.0525
+      },
+      "points": [],
+      "instruction": "Align the confirmation button to the right edge inside the dialog.",
+      "severity": "normal"
+    }
+  ],
+  "createdAt": "2026-11-06T05:24:14Z",
+  "frames": [
+    {
+      "applicationName": "Benchmark browser fixture",
+      "captureReason": "initial",
+      "changeScore": 1,
+      "displayScale": 1,
+      "event": "fixture loaded",
+      "height": 800,
+      "id": "frame-001",
+      "imagePath": "frames/frame-001.png",
+      "name": "State 1",
+      "selected": true,
+      "timestampMS": 287,
+      "width": 1100
+    }
+  ],
+  "id": "replay-5d340094-8f99-483c-a6cd-560384dacaf2",
+  "mode": "visualFeedback",
+  "nextIssueNumber": 2,
+  "schemaVersion": 1
+}

@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "seed": 93218,
+  "tasks": [
+    {"id":"01","category":"visual","instruction":"Align the confirmation button to the right edge inside the dialog. Keep the dialog text and button visible and usable.","widths":[900,1100]},
+    {"id":"03","category":"visual","instruction":"Ensure the main content starts to the right of the fixed sidebar with at least 24 pixels of spacing. Keep its text readable and preserve the sidebar.","widths":[900,1100]},
+    {"id":"04","category":"interactive","instruction":"Keep the project filter open when clicking or typing inside its search field. Clicking outside should close it. Preserve the toggle's ability to open and close the filter and keep the typed query while toggling."},
+    {"id":"05","category":"visual","instruction":"Keep all four navigation links visible and usable within a 390 pixel viewport without horizontal page scrolling. Wrap links if needed, and preserve navigation on desktop."},
+    {"id":"08","category":"interactive","instruction":"Display the validation error after submitting an invalid email; hide it after a valid email. Reject empty or malformed addresses: require a nonempty local part, exactly one @, and a dotted domain with nonempty labels; reject whitespace. Accept ordinary addresses including plus tags, dotted local parts and subdomains. Update the feedback correctly on repeated submissions without reloading the page.","invalid":["","invalid","invalid@","@example.test","two@@example.test","bad address@example.test","name@example","name@.test","name@example..test","name@example.test "],"valid":["test@example.test","name+tag@example.test","first.last@sub.example.test"]},
+    {"id":"10","category":"interactive","instruction":"Update the visible member count every time Add member is clicked, including repeated clicks. Start at zero when the page is freshly loaded."}
+  ],
+  "scope":"Frozen finite fixture contract, not production-grade email validation or general visual quality. No implementation details or evaluator are supplied to agents."
+}

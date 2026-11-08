@@ -1,0 +1,7 @@
+.root {
+  display: flex;
+  justify-content: flex-start;
+  gap: 12px;
+  width: 100%;
+}
+.start { justify-content: flex-start; }

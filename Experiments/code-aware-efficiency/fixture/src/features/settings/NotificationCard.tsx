@@ -1,0 +1,2 @@
+import {useState} from 'react';import {Card} from '../../ui/Card';import {CardHeader} from '../../ui/CardHeader';import {CardBody} from '../../ui/CardBody';import {Toggle} from '../../ui/Toggle';
+export function NotificationCard(){const [weekly,setWeekly]=useState(true),[mentions,setMentions]=useState(false);return <Card><CardHeader title="Notifications"/><CardBody><Toggle label="Weekly summary" checked={weekly} onChange={setWeekly}/><Toggle label="Mentions only" checked={mentions} onChange={setMentions}/></CardBody></Card>;}

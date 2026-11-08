@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" width="480" height="360">
+  <defs>
+    <linearGradient id="t2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#D3EBFF"/><stop offset="1" stop-color="#86BFFF"/></linearGradient>
+    <radialGradient id="g2" cx=".36" cy=".3" r=".85"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".7" stop-color="#EAF4FF"/><stop offset="1" stop-color="#BFDDFF"/></radialGradient>
+    <path id="spark" d="M0 -6 Q1 -1 6 0 Q1 1 0 6 Q-1 1 -6 0 Q-1 -1 0 -6 Z"/>
+    <filter id="sh" x="-30%" y="-30%" width="160%" height="170%"><feDropShadow dx="0" dy="16" stdDeviation="14" flood-color="#1E2A5A" flood-opacity=".22"/></filter>
+    <symbol id="i2" viewBox="0 0 100 100">
+      <rect width="100" height="100" rx="22.4" fill="url(#t2)"/>
+      <rect x=".7" y=".7" width="98.6" height="98.6" rx="21.7" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="1.4"/>
+      <use href="#spark" transform="translate(20 22) scale(.7)" fill="#fff"/>
+      <path d="M64 38 L77 25" stroke="#1E2A5A" stroke-width="8" stroke-linecap="round"/>
+      <circle cx="50" cy="52" r="21" fill="url(#g2)" stroke="#1E2A5A" stroke-width="6"/>
+      <path d="M36.6 47 A14 14 0 0 1 43.6 39" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round"/>
+      <ellipse cx="43.5" cy="50" rx="3.1" ry="4.3" fill="#1E2A5A"/><circle cx="44.6" cy="48.3" r="1.15" fill="#fff"/>
+      <ellipse cx="56.5" cy="50" rx="3.1" ry="4.3" fill="#1E2A5A"/><circle cx="57.6" cy="48.3" r="1.15" fill="#fff"/>
+      <ellipse cx="37.6" cy="57" rx="3.6" ry="2.1" fill="#FF8FB1" opacity=".8"/>
+      <ellipse cx="62.4" cy="57" rx="3.6" ry="2.1" fill="#FF8FB1" opacity=".8"/>
+      <rect x="14" y="63.5" width="72" height="30" rx="7" fill="#5E95E0" opacity=".35"/>
+      <rect x="14" y="62" width="72" height="30" rx="7" fill="#fff"/>
+      <circle cx="22" cy="69" r="2.3" fill="#FF6B6B"/><circle cx="28.5" cy="69" r="2.3" fill="#FFC34D"/><circle cx="35" cy="69" r="2.3" fill="#4CD97B"/>
+      <rect x="22" y="76" width="36" height="4" rx="2" fill="#DCEAFF"/>
+      <rect x="22" y="83" width="22" height="4" rx="2" fill="#DCEAFF"/>
+      <ellipse cx="40" cy="62.6" rx="4.4" ry="3.3" fill="#fff" stroke="#1E2A5A" stroke-width="2.4"/>
+      <ellipse cx="60" cy="62.6" rx="4.4" ry="3.3" fill="#fff" stroke="#1E2A5A" stroke-width="2.4"/>
+    </symbol>
+    <symbol id="wmd" viewBox="-7 -8 500 77">
+      <g fill="none" stroke="#1E2A5A" stroke-width="9.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M35.32 27.14 A20 20 0 1 0 35.32 52.86"/>
+        <circle cx="70" cy="40" r="20"/>
+        <path d="M105 20 V60 M105 36 A16 16 0 0 1 137 36 V60"/>
+        <path d="M162 4 V48 A12 12 0 0 0 174 60 M152 20 H176"/>
+        <path d="M191 40 H231 A20 20 0 1 0 226.32 52.86"/>
+        <path d="M246 20 L276 60 M276 20 L246 60"/>
+        <path d="M301 4 V48 A12 12 0 0 0 313 60 M291 20 H315"/>
+        <path d="M330 -2 V48 A12 12 0 0 0 342 60"/>
+        <path d="M357 40 H397 A20 20 0 1 0 392.32 52.86"/>
+        <path d="M412 20 V60 M412 36 A16 16 0 0 1 444 36 V60"/>
+        <path d="M479.53 23.5 A11 11 0 1 0 470 40 A11 11 0 1 1 460.47 56.5"/>
+      </g>
+      <ellipse cx="63.5" cy="39" rx="3.4" ry="5" fill="#1E2A5A"/>
+      <ellipse cx="76.5" cy="39" rx="3.4" ry="5" fill="#1E2A5A"/>
+    </symbol>
+  </defs>
+  <use href="#i2" x="160" y="16" width="160" height="160" filter="url(#sh)"/>
+  <use href="#wmd" x="30" y="200" width="420" height="64.68"/>
+  <text x="240" y="314" text-anchor="middle" font-family="'Schibsted Grotesk', 'Helvetica Neue', Arial, sans-serif" font-weight="500" font-size="28" fill="#1E2A5A" fill-opacity=".72">Give your AI agent eyes.</text>
+</svg>

@@ -1,0 +1,7 @@
+{
+  "name": "contextlens-benchmark",
+  "private": true,
+  "type": "module",
+  "scripts": {"test:fixtures": "node runners/verify-fixtures.mjs"},
+  "devDependencies": {"playwright": "1.62.1"}
+}

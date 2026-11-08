@@ -1,0 +1,41 @@
+{
+  "annotations" : [
+    {
+      "frameID" : "frame-001",
+      "id" : "CL-001",
+      "instruction" : "Display the validation error after submitting an invalid email; hide it after a valid email.",
+      "kind" : "rectangle",
+      "points" : [
+
+      ],
+      "region" : {
+        "height" : 0.125,
+        "width" : 0.9309090909090909,
+        "x" : 0.034545454545454546,
+        "y" : 0.1926953125
+      },
+      "severity" : "normal"
+    }
+  ],
+  "createdAt" : "2026-11-06T05:24:22Z",
+  "frames" : [
+    {
+      "applicationName" : "Benchmark browser fixture",
+      "captureReason" : "initial",
+      "changeScore" : 1,
+      "displayScale" : 1,
+      "event" : "fixture loaded",
+      "height" : 800,
+      "id" : "frame-001",
+      "imagePath" : "frames\/frame-001.png",
+      "name" : "State 1",
+      "selected" : true,
+      "timestampMS" : 36,
+      "width" : 1100
+    }
+  ],
+  "id" : "replay-a574457a-8a9d-4f7e-ae12-fbf4e9c15e77",
+  "mode" : "visualFeedback",
+  "nextIssueNumber" : 2,
+  "schemaVersion" : 1
+}

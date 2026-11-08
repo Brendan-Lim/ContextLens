@@ -1,0 +1,2 @@
+import {ActionCluster} from '../../ui/dialogs/ActionCluster';import {Button} from '../../ui/Button';import {copy} from '../../i18n/copy';
+export function PublishFooter({onClose,onPublish}:{onClose:()=>void;onPublish:()=>void}){return <footer className="modal-footer" id="publish-footer"><ActionCluster><Button id="publish-confirm" onClick={onPublish}>{copy.projects.publish}</Button></ActionCluster><button className="text-button" onClick={onClose}>{copy.projects.cancel}</button></footer>;}

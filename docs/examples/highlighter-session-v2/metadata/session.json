@@ -1,0 +1,109 @@
+{
+  "annotations" : [
+    {
+      "frameID" : "frame-003",
+      "id" : "CL-001",
+      "instruction" : "Align the confirmation button to the right edge of the dialog.",
+      "kind" : "rectangle",
+      "points" : [
+
+      ],
+      "region" : {
+        "height" : 0.1,
+        "width" : 0.18,
+        "x" : 0.31,
+        "y" : 0.65
+      },
+      "severity" : "normal"
+    },
+    {
+      "frameID" : "frame-002",
+      "id" : "CL-002",
+      "instruction" : "",
+      "kind" : "redaction",
+      "points" : [
+
+      ],
+      "region" : {
+        "height" : 0.12,
+        "width" : 0.3,
+        "x" : 0.35,
+        "y" : 0.25
+      },
+      "severity" : "normal"
+    },
+    {
+      "frameID" : "frame-003",
+      "id" : "CL-003",
+      "instruction" : "",
+      "kind" : "highlight",
+      "points" : [
+        {
+          "x" : 0.27934621099554235,
+          "y" : 0.46835066864784547
+        },
+        {
+          "x" : 0.30906389301634474,
+          "y" : 0.46835066864784547
+        },
+        {
+          "x" : 0.3387815750371471,
+          "y" : 0.46835066864784547
+        },
+        {
+          "x" : 0.3387815750371471,
+          "y" : 0.5634472511144131
+        },
+        {
+          "x" : 0.39821693907875183,
+          "y" : 0.5634472511144131
+        },
+        {
+          "x" : 0.4427934621099554,
+          "y" : 0.5634472511144131
+        }
+      ],
+      "region" : {
+        "height" : 0.11795372532371051,
+        "width" : 0.17773296540012729,
+        "x" : 0.27220335385268524,
+        "y" : 0.456922097219274
+      },
+      "severity" : "normal"
+    }
+  ],
+  "createdAt" : "2026-11-06T09:24:10Z",
+  "frames" : [
+    {
+      "applicationName" : "Generated fixture",
+      "captureReason" : "synthetic_fixture",
+      "changeScore" : 0.2,
+      "displayScale" : 1,
+      "height" : 600,
+      "id" : "frame-002",
+      "imagePath" : "frames\/frame-002.png",
+      "name" : "Settings",
+      "selected" : true,
+      "timestampMS" : 1000,
+      "width" : 960
+    },
+    {
+      "applicationName" : "Generated fixture",
+      "captureReason" : "synthetic_fixture",
+      "changeScore" : 0.2,
+      "displayScale" : 1,
+      "height" : 600,
+      "id" : "frame-003",
+      "imagePath" : "frames\/frame-003.png",
+      "name" : "Confirmation",
+      "selected" : true,
+      "timestampMS" : 2000,
+      "width" : 960
+    }
+  ],
+  "id" : "demo-session",
+  "mode" : "visualFeedback",
+  "nextIssueNumber" : 4,
+  "schemaVersion" : 1,
+  "task" : "Refine the generated local demo using the annotations below."
+}

@@ -1,0 +1,12 @@
+[
+ {"id":"01","name":"Modal confirmation alignment","instruction":"Align the confirmation button to the right edge inside the dialog."},
+ {"id":"02","name":"Dashboard card spacing","instruction":"Reduce the gaps between dashboard cards to 20 pixels."},
+ {"id":"03","name":"Sidebar overlap","instruction":"Ensure the main content starts to the right of the fixed sidebar with at least 24 pixels of spacing."},
+ {"id":"04","name":"Dropdown interaction","instruction":"Keep the project filter open when clicking or typing inside its search field. Clicking outside should close it."},
+ {"id":"05","name":"Mobile navigation overflow","instruction":"Keep navigation within a 390 pixel viewport without horizontal page scrolling. Wrap links if needed."},
+ {"id":"06","name":"Active tab appearance","instruction":"Make the active tab visually distinct from inactive tabs, including after switching tabs."},
+ {"id":"07","name":"Keyboard focus","instruction":"Show a visible focus indicator when the Create project button is reached with the keyboard."},
+ {"id":"08","name":"Validation feedback","instruction":"Display the validation error after submitting an invalid email; hide it after a valid email."},
+ {"id":"09","name":"Dialog scrolling","instruction":"Allow scrolling inside the constrained Terms preview dialog to reach and click Accept."},
+ {"id":"10","name":"Counter state update","instruction":"Update the visible member count every time Add member is clicked."}
+]

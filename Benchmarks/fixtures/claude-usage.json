@@ -1,0 +1,1 @@
+{"type":"result","subtype":"success","usage":{"input_tokens":200,"cache_read_input_tokens":600,"cache_creation_input_tokens":100,"output_tokens":120},"total_cost_usd":0.02,"duration_ms":1200,"num_turns":3,"modelUsage":{"synthetic-model":{"inputTokens":900,"outputTokens":120}}}

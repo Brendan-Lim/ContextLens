@@ -1,0 +1,2 @@
+.columns {display:grid;grid-template-columns:1.2fr 1fr;gap:22px;margin-top:26px}
+.actions {display:flex;justify-content:flex-start;margin-top:20px}

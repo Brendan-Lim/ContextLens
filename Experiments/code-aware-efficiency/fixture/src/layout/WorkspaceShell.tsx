@@ -1,0 +1,2 @@
+import type {ReactNode} from 'react';import {NavRail} from './NavRail';import {WorkspaceHeader} from './WorkspaceHeader';import {WorkspaceFooter} from './WorkspaceFooter';import styles from './WorkspaceShell.module.css';
+export function WorkspaceShell({route,children}:{route:string;children:ReactNode}){return <div className={styles.shell}><NavRail route={route}/><div className={styles.main}><WorkspaceHeader/>{children}<WorkspaceFooter/></div></div>;}

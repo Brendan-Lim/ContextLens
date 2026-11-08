@@ -1,0 +1,57 @@
+{
+  "frames" : [
+    {
+      "applicationName" : "Benchmark browser fixture",
+      "captureReason" : "initial",
+      "changeScore" : 1,
+      "displayScale" : 1,
+      "event" : "fixture loaded",
+      "height" : 800,
+      "id" : "frame-001",
+      "imagePath" : "frames\/frame-001.png",
+      "name" : "State 1",
+      "selected" : true,
+      "timestampMS" : 52,
+      "width" : 1100
+    },
+    {
+      "applicationName" : "Benchmark browser fixture",
+      "captureReason" : "visual_change",
+      "changeScore" : 0.66,
+      "displayScale" : 1,
+      "height" : 800,
+      "id" : "frame-002",
+      "imagePath" : "frames\/frame-002.png",
+      "name" : "State 2",
+      "selected" : true,
+      "timestampMS" : 961,
+      "width" : 1100
+    }
+  ],
+  "issues" : [
+    {
+      "annotatedPath" : "annotated\/CL-001.png",
+      "annotation" : {
+        "frameID" : "frame-002",
+        "id" : "CL-001",
+        "instruction" : "Keep the project filter open when clicking or typing inside its search field. Clicking outside should close it.",
+        "kind" : "rectangle",
+        "points" : [
+
+        ],
+        "region" : {
+          "height" : 0.1225,
+          "width" : 0.23636363636363636,
+          "x" : 0.034545454545454546,
+          "y" : 0.2639453125
+        },
+        "severity" : "normal"
+      },
+      "cropPath" : "crops\/CL-001.png"
+    }
+  ],
+  "mode" : "visualFeedback",
+  "redactionApplied" : true,
+  "schemaVersion" : 1,
+  "sessionID" : "replay-110300a0-4cd6-4edb-b0ef-c5fb40268390"
+}

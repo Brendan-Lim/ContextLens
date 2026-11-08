@@ -1,0 +1,39 @@
+{
+  "annotations": [
+    {
+      "id": "CL-001",
+      "frameID": "frame-001",
+      "kind": "rectangle",
+      "region": {
+        "x": 0.09743589743589744,
+        "y": 0.1926953125,
+        "width": 0.9025641025641026,
+        "height": 0.06
+      },
+      "points": [],
+      "instruction": "Keep navigation within a 390 pixel viewport without horizontal page scrolling. Wrap links if needed.",
+      "severity": "normal"
+    }
+  ],
+  "createdAt": "2026-11-06T05:24:19Z",
+  "frames": [
+    {
+      "applicationName": "Benchmark browser fixture",
+      "captureReason": "initial",
+      "changeScore": 1,
+      "displayScale": 1,
+      "event": "fixture loaded",
+      "height": 800,
+      "id": "frame-001",
+      "imagePath": "frames/frame-001.png",
+      "name": "State 1",
+      "selected": true,
+      "timestampMS": 39,
+      "width": 390
+    }
+  ],
+  "id": "replay-f8407142-2939-4041-82c4-1c766714a3b5",
+  "mode": "visualFeedback",
+  "nextIssueNumber": 2,
+  "schemaVersion": 1
+}
