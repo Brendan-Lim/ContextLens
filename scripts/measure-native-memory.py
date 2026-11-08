@@ -12,9 +12,12 @@ import time
 from source_state import ROOT, source_state
 
 p = argparse.ArgumentParser(description=__doc__)
+p.add_argument('--isolated-environment', action='store_true')
 p.add_argument('--baseline-app', type=Path, required=True)
 p.add_argument('--output', type=Path, default=ROOT/'Benchmarks/reports/rigorous-testing/native-memory')
-a = p.parse_args(); a.output.mkdir(parents=True, exist_ok=True)
+a = p.parse_args()
+if not a.isolated_environment: p.error('A disposable interactive macOS environment is required; pass --isolated-environment only there. No app launched.')
+a.output.mkdir(parents=True, exist_ok=True)
 apps = {'before': a.baseline_app.resolve()/'Contents/MacOS/ContextLens', 'after': ROOT/'dist/ContextLens.app/Contents/MacOS/ContextLens'}
 report = dict(kind='native-generated-500-state-startup', source=source_state(), machine=platform.platform(),
               binary_sha256={name: hashlib.sha256(path.read_bytes()).hexdigest() for name, path in apps.items()},
@@ -26,7 +29,7 @@ with tempfile.TemporaryDirectory(prefix='contextlens-native-memory-') as temp:
         for repetition in range(3 if tab == 'mark-up' else 1):
             for name in (['before', 'after'] if repetition % 2 == 0 else ['after', 'before']):
                 output = a.output/f'{name}-{tab}-{repetition+1}.png'
-                command = [str(apps[name]), '--session', str(session), '--tab', tab, '--frame', 'frame-002', '--snapshot-scale', '2', '--smoke-snapshot', str(output)]
+                command = [str(apps[name]), '--isolated-native-test', '--session', str(session), '--tab', tab, '--frame', 'frame-002', '--snapshot-scale', '2', '--smoke-snapshot', str(output)]
                 start = time.perf_counter()
                 try:
                     result = subprocess.run(['/usr/bin/time', '-l', *command], capture_output=True, text=True, timeout=90)

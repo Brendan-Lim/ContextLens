@@ -11,6 +11,9 @@ public struct WindowChoice: Identifiable {
     public init(window: SCWindow) { self.window = window }
     public var title: String { window.title?.isEmpty == false ? window.title! : "Untitled window" }
     public var app: String { window.owningApplication?.applicationName ?? "Unknown application" }
+    public var captureIdentity: WindowIdentity? {
+        window.owningApplication.map { WindowIdentity(windowID: id, processID: $0.processID) }
+    }
 }
 @MainActor public enum Permissions {
     public static var screenRecording: Bool { CGPreflightScreenCaptureAccess() }
@@ -24,10 +27,14 @@ public struct WindowChoice: Identifiable {
 }
 public enum WindowCapture {
     public static func selected(id: CGWindowID, pid: pid_t, in available: [WindowChoice]) throws -> WindowChoice {
-        guard let original = available.first(where: { $0.id == id && $0.window.owningApplication?.processID == pid }) else {
+        guard let original = WindowIdentity(windowID: id, processID: pid).selected(in: available, identity: { $0.captureIdentity }) else {
             throw LensError.invalid("The selected window is no longer available. Capture stopped; no other window was substituted.")
         }
         return original
+    }
+    public static func endReason(for error: Error) -> CaptureEndReason {
+        let value = error as NSError
+        return value.domain == SCStreamErrorDomain && value.code == SCStreamError.Code.userDeclined.rawValue ? .permissionDenied : .captureFailed
     }
     public static func windows() async throws -> [WindowChoice] {
         let content = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: true)

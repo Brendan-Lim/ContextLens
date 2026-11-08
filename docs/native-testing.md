@@ -1,4 +1,4 @@
-> Current preview status: **interactive acceptance remains pending**. Use the [isolated acceptance procedure](beta-acceptance.md) and [public readiness report](public-beta-readiness.md). The historical artifacts below remain local-only; they are not checked-in first-run proof. The retained native self-test reports a closure-check failure, and `--native-capture-test` creates a key probe window, so do not run it on the owner's active desktop.
+> Current 0.3.1 source status: **interactive acceptance remains pending**. See [capture reliability](native-capture-reliability.md) and the [isolated acceptance procedure](beta-acceptance.md). The historical artifacts below remain local-only. All native fixture launches now require an explicit isolation acknowledgment; no new live closure result is claimed. The default probe is non-key, but input/smoke helpers can still make windows key.
 
 > Expanded historical verification, coverage and performance evidence: rigorous testing report (local-only evidence `testing-report.md`). Historical checks below retain their original scope.
 
@@ -12,15 +12,15 @@ Automated evidence is in initial MVP native check (local-only evidence `examples
 
 ```sh
 scripts/build-app.sh
-dist/ContextLens.app/Contents/MacOS/ContextLens \
+dist/ContextLens.app/Contents/MacOS/ContextLens --isolated-native-test \
   --session "$PWD/docs/examples/source-session" \
   --smoke-snapshot "$PWD/docs/examples/native-editor.png" \
   --native-capture-test
 ```
 
-If WindowServer access is blocked by an execution sandbox, run the command from your normal local terminal. The restricted CLI's permission preflight may differ from the launched app's TCC access. Denied access is recorded as blocked rather than reported as capture success. Without SCK permission, the fallback NSView rendering can omit compositor-backed sidebar effects; the checked-in final screenshot uses actual selected-window capture.
+If WindowServer access is blocked by an execution sandbox, use a terminal inside the disposable test environment; do not move the test onto the owner desktop. The restricted CLI's permission preflight may differ from the launched app's TCC access. Denied access is recorded as blocked rather than reported as capture success. Without SCK permission, the fallback NSView rendering can omit compositor-backed sidebar effects; historical screenshots used actual selected-window capture; none is new candidate acceptance evidence.
 
-The native self-test checks identity after movement, dimensions after resizing, and attempted rejection of a closed probe window without fallback. The known retained result is movement/resize passing and `closure_detected_without_fallback: false`; its cause and real capture-loop closure behavior still need the isolated live check. The actor integration tests separately feed real CGImages through sample→settle→commit→resize→stop-flush and validate files and original dimensions. Pure tests exercise bounds, deduplication, paths, stable issue IDs and privacy overlays.
+The retained historical result is movement/resize passing and `closure_detected_without_fallback: false`. The new probe records a positive pre-close identity match, close notification/visibility and timed post-close enumeration. Its first lookup after the original 200 ms wait is preserved separately (query completion may be later) from eventual identity absence or timeout. The source retains the probe under Swift/ARC rather than changing its lifetime to force a pass. Actual root cause and native capture-loop closure behavior remain pending. Deterministic tests now use the production coordinator with real CGImages/processor/session persistence and injected window providers; they do not manufacture ScreenCaptureKit objects or prove WindowServer behavior.
 
 Remaining interactive release checklist:
 

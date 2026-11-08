@@ -2,6 +2,8 @@
 
 **Status: manual checks pending.** Use a disposable interactive macOS VM or separate Apple Silicon test Mac. Do not execute this checklist on the owner's working ContextLens installation. A new user alone does not isolate `/Applications`, Homebrew's Caskroom/CLI links or shared installations; use it only on a dedicated test machine or with a separately verified isolated installation. A custom `--appdir` alone is insufficient.
 
+The published Homebrew `0.3.0-preview.1` and the **0.3.1/build 6 source candidate** are different binaries. Record the version/build, source commit and executable hash for each test. Do not claim the 0.3.1 lifecycle fixes were tested by running the older installed preview. For genuinely fresh consent, restore a clean VM snapshot or use another clean test environment for each binary; carrying consent across an update is an upgrade test. No owner's TCC reset is allowed.
+
 Record the test date, macOS version, architecture, Homebrew version, preview tag and checksum. Record each case as **pass**, **fail** or **pending**, with the exact action and safe evidence location. Keep raw logs, screenshots and session data local, outside tracked documentation. Use synthetic content only; review any proposed public image before adding its approval hash. No model calls are needed.
 
 ## Installation and trust
@@ -31,11 +33,33 @@ Prepare two **TextEdit** windows on the disposable desktop. Window A contains on
 | Repeated/rapid stop | Repeat five sessions and immediate start/stop, including a delayed start; no stale task, extra target or overwritten previous session | pending |
 | Empty/invalid capture | Stop before a state settles, and open an invalid session; clear guidance, no crash or corrupt export presented as success | pending |
 | Revocation/recovery | Revoke Screen Recording **only in this disposable environment**, test capture failure/stoppage, restore through Settings and relaunch; no TCC reset or silent privacy-setting write | pending |
+| Failed save and retry | On a throwaway session/disk only, make its destination unavailable; stop/quit must not claim all data saved or silently exit after pending-save failure. Restore access/space, choose **Save Session**, then validate/reopen the recovered session before quitting | pending |
 | Uninstall/data retention | Leave a synthetic session and export, uninstall the cask; app/link disappear and session/export survive; reinstall/reopen deliberately | pending |
 
 No access to a second display/macOS 14 is a pending result, not a pass. The native closure self-test previously reported `closure_detected_without_fallback: false`; its cause and real capture-loop closure behavior remain unverified. The loop re-enumerates and requires the original window ID **and** process ID, with `SCContentFilter(desktopIndependentWindow:)`; source inspection and absent-target tests are not substitutes for this live test.
 
-The existing `--native-capture-test` helper creates a key probe window as part of its closure check. Run that helper only on this disposable desktop; its ordinary smoke/background flags do not make that probe safe for the owner's active desktop. Do not run a second preview copy with the shared bundle identity merely to simulate a fresh user.
+The 0.3.1 native helper and Python launchers require explicit isolation acknowledgment. Their flag does not create isolation. The closure probe defaults to non-key ordering, while other smoke/input helpers can still make windows key; the old key-probe behavior is an explicit comparison option. Do not run a second preview copy with the shared bundle identity merely to simulate a fresh user.
+
+## Candidate closure diagnostics (isolated environment only)
+
+Build this exact source into a disposable destination, using ad-hoc signing without replacing an installed app:
+
+```sh
+CONTEXTLENS_SIGN_IDENTITY=- scripts/build-app.sh --output /tmp/contextlens-031-candidate
+python3 scripts/verify-native.py --isolated-environment \
+  --app /tmp/contextlens-031-candidate/ContextLens.app --closure-only \
+  --output /tmp/contextlens-031-original-nonkey
+python3 scripts/verify-native.py --isolated-environment \
+  --app /tmp/contextlens-031-candidate/ContextLens.app --closure-only --key-probe \
+  --output /tmp/contextlens-031-original-key
+python3 scripts/verify-native.py --isolated-environment \
+  --app /tmp/contextlens-031-candidate/ContextLens.app --closure-only --probe-style closable \
+  --output /tmp/contextlens-031-closable-nonkey
+```
+
+These are **pending commands**, not successful native results. Preserve each output separately. Read `results.json` and `dark-review/native-capture-verification.json`: confirm pre-close membership, original window ID/PID, visibility and close notification, then compare request/completion times, ID membership, identity matches and eventual outcome. A stale original-window entry is not evidence of another target being captured. The first lookup after the original 200 ms wait remains separate; query completion may be later, so this is not a detection-by-200-ms guarantee. Later absence does not make that first lookup pass. Polling has a 2 s observation budget and 50 ms spacing; a slow in-flight OS query can exceed the budget, and the launcher separately fails the process at 40 s.
+
+Use a new output directory for a full dark/light Review/Mark Up/Hand Off/zoom run by omitting `--closure-only`. The launcher rejects the wrong bundle version/build and preserves existing partial evidence. It cannot certify fresh human consent, actual capture-loop stopping, or session recovery merely because a diagnostic lookup observed absence. Complete the TextEdit workflow and closure/application-exit matrix above for those behaviors.
 
 ## Validate the saved artifacts
 

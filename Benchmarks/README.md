@@ -105,10 +105,10 @@ For local application performance, without an agent or external application capt
 ```sh
 scripts/build-app.sh
 python3 scripts/measure-performance.py
-python3 scripts/verify-native.py
-python3 scripts/measure-capture-soak.py
+python3 scripts/verify-native.py --isolated-environment
+python3 scripts/measure-capture-soak.py --isolated-environment
 # Optional before/after native memory comparison with a preserved baseline bundle:
-python3 scripts/measure-native-memory.py --baseline-app /absolute/path/to/baseline.app
+python3 scripts/measure-native-memory.py --isolated-environment --baseline-app /absolute/path/to/baseline.app
 ```
 
-These generated screenshot/animation workloads report machine/source identity, exact commands, peak RSS, timing distributions and raw outcomes in `reports/rigorous-testing/`. WindowServer and `/usr/bin/time -l` need ordinary macOS process access; a restricted execution sandbox may block them. The soak runs ten minutes at each sensitivity, sequentially, against its own generated window only. Its CPU includes fixture animation and its scroll hold is scripted; it does not substitute for a real application's interactive release test. Actual keystroke-to-display latency and zoom/pan FPS remain separate measurements.
+Native commands require a genuine disposable interactive macOS environment; the flag only acknowledges that setup and never grants permission or creates isolation. Do not run them on the owner's working desktop. These generated screenshot/animation workloads report machine/source identity, exact commands, peak RSS, timing distributions and raw outcomes in `reports/rigorous-testing/`. WindowServer and `/usr/bin/time -l` need ordinary macOS process access; a restricted execution sandbox may block them. The soak runs ten minutes at each sensitivity, sequentially, against its own generated window only. Its CPU includes fixture animation and its scroll hold is scripted; it does not substitute for a real application's interactive release test. Actual keystroke-to-display latency and zoom/pan FPS remain separate measurements.

@@ -5,6 +5,13 @@ Audited 2026-11-07. “Tested” means the listed behaviors have executable chec
 | Public type | Status | Proven behavior and remaining limits |
 |---|---|---|
 | `LensError` | tested | Validation errors propagate; localized descriptions exercised by failed paths. |
+| `WindowIdentity` | tested | Exact immutable window ID/PID selection; missing, other-window, other-process and reordered candidates never substitute. |
+| `CaptureEndReason` | tested | Stop/target loss/application exit/explicit permission denial/capture failure/frame limit are retained independently of persistence failures. |
+| `CaptureCompletion` | tested | Failure-aware status, empty-session guidance, recovery and quit eligibility; no saved-local claim on failed metadata persistence. |
+| `CaptureRun` | tested / needs a person | Injected asynchronous enumeration/capture/processing, cancellation checkpoints, independent finalization, one-shot run/duplicate stop, cleanup callback, flush/save faults, real processor/session integration. Native AppModel view transitions, OS monitors/hotkeys and termination dialogs still require isolated execution. |
+| `WindowClosureSample` | tested | Monotonic request/completion times and separate ID-membership/identity-match fields. |
+| `WindowClosureResult` | tested | First lookup absence, eventual disappearance, first lookup after the original 200 ms wait, timeout/error evidence remain distinct. |
+| `WindowClosureProbe` | tested / needs a person | Injected clock/enumerator bounded polling, stale lists, wrong PID, errors and slow queries; actual WindowServer timing/root cause requires isolated native diagnostics. |
 | `Region` | tested | Finite normalized positive bounds; rejected outside regions; edge crops. |
 | `Point` | tested | Session round trip and invalid stroke point rejection. |
 | `AnnotationKind` | tested | Legacy decoding and creation tools restricted to box/highlight. |
@@ -48,7 +55,7 @@ App controller and view behavior:
 
 | Behavior | Status | Evidence / limit |
 |---|---|---|
-| Capture start, delayed cancellation, stop, quit/in-flight flush | tested / needs a person | Processor flush/retry/cancellation tests cover worker logic. Controller changes check cancellation before processing and surface save failures. Full task lifecycle, delayed UI state and quitting require a desktop workflow; no isolated app target test harness exists. |
+| Capture start, delayed cancellation, stop, quit/in-flight flush | tested / needs a person | Core CaptureRun and real processor/session tests cover delayed/in-flight cancellation, target loss, original-only frames, one cleanup/finalization and fault paths. AppModel uses the coordinator and awaits its completion. Native resources, user-driven recovery, quit refusal and UI still require isolated desktop acceptance. |
 | Scroll-wheel monitor feeding holding | tested / needs a person | Pure ScrollActivity and selector tests; OS pointer/topmost-window query needs desktop verification. |
 | Click-label naming | tested / needs a person | StateNamer pure tests. AX label retrieval, editable/secure descendants and topmost click gating require real accessibility trees. No typed key stream is observed. |
 | Export folder choice and memory | tested / needs a person | PackageName collision behavior/export overwrite tested. NSOpenPanel and UserDefaults last-folder persistence need a person; the dialog is OS UI and cannot be driven in a background launch. |

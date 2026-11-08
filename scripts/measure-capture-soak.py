@@ -14,9 +14,11 @@ import time
 from source_state import ROOT, source_state
 
 p = argparse.ArgumentParser(description=__doc__)
+p.add_argument('--isolated-environment', action='store_true')
 p.add_argument('--seconds', type=int, default=600)
 p.add_argument('--output', type=Path, default=ROOT/'Benchmarks/reports/rigorous-testing/soak')
 a = p.parse_args()
+if not a.isolated_environment: p.error('A disposable interactive macOS environment is required; pass --isolated-environment only there. No app launched.')
 if not 1 <= a.seconds <= 600: p.error('Duration must be 1–600 seconds')
 a.output.mkdir(parents=True, exist_ok=True)
 app = ROOT/'dist/ContextLens.app/Contents/MacOS/ContextLens'
@@ -25,7 +27,7 @@ report = dict(kind='self-hosted-generated-capture-measurements', source=source_s
               measured_at=datetime.datetime.now(datetime.timezone.utc).isoformat(), runs=[])
 for sensitivity in ['low', 'high']:
     output = a.output/f'{sensitivity}.json'
-    command = [str(app), '--capture-soak', str(output), '--soak-seconds', str(a.seconds)]
+    command = [str(app), '--isolated-native-test', '--capture-soak', str(output), '--soak-seconds', str(a.seconds)]
     if sensitivity == 'low': command += ['--low-sensitivity']
     stdout = a.output/f'{sensitivity}.stdout.log'; stderr = a.output/f'{sensitivity}.resources.log'
     samples = []; start = time.monotonic()

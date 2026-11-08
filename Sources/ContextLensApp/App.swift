@@ -17,7 +17,7 @@ import ScreenCaptureKit
                     Button("New Capture…") { CapturePanelController.shared.show() }.keyboardShortcut("n")
                     Divider()
                     Button("Open Session…", action: model.openSession).keyboardShortcut("o").disabled(model.recording || model.busy)
-                    Button("Save Session") { do { try model.save() } catch { model.error = error.localizedDescription } }.keyboardShortcut("s")
+                    Button("Save Session") { Task { await model.saveSession() } }.keyboardShortcut("s").disabled(model.stopping)
                     Button("Import Screenshot…", action: model.importFrame).keyboardShortcut("i").disabled(model.recording || model.busy)
                 }
                 CommandGroup(replacing: .undoRedo) {
@@ -39,17 +39,23 @@ import ScreenCaptureKit
     private var smokeModel: AppModel?
     func applicationShouldTerminate(_ sender: NSApplication) -> NSApplication.TerminateReply {
         guard let model else { return .terminateNow }
-        if model.recording || model.stopping {
-            Task { await model.stop(); sender.reply(toApplicationShouldTerminate: true) }
-            return .terminateLater
+        Task {
+            let saved = model.recording || model.stopping ? await model.stop() : await model.saveSession()
+            guard saved else { sender.reply(toApplicationShouldTerminate: false); return }
+            do { try model.purgeDeletedFrames(); sender.reply(toApplicationShouldTerminate: true) }
+            catch { model.error = error.localizedDescription; sender.reply(toApplicationShouldTerminate: false) }
         }
-        do { try model.save(); try model.purgeDeletedFrames() } catch { model.error = error.localizedDescription; return .terminateCancel }
-        return .terminateNow
+        return .terminateLater
     }
     func applicationDidFinishLaunching(_ notification: Notification) {
         let args = CommandLine.arguments
+        let fixtureFlags = ["--smoke-snapshot", "--exercise-zoom", "--native-capture-test", "--capture-soak"]
+        guard !fixtureFlags.contains(where: { args.contains($0) }) || args.contains("--isolated-native-test") else {
+            fputs("Native fixture tests require --isolated-native-test on a disposable interactive Mac. No test was run.\n", stderr)
+            exit(2)
+        }
         NSApp.setActivationPolicy(.regular)
-        // Test launches stay in the background so they never take keystrokes or clicks meant for other apps.
+        // Test launches skip activation, but fixture/input helpers can still make windows key. Isolation is required above.
         if !args.contains("--smoke-snapshot") && !args.contains("--exercise-zoom") && !args.contains("--capture-soak") { NSApp.activate(ignoringOtherApps: true) }
         if let i = args.firstIndex(of: "--capture-soak"), args.indices.contains(i+1) {
             let output = URL(fileURLWithPath: args[i+1])
@@ -228,21 +234,73 @@ import ScreenCaptureKit
             report["resize_dimensions_updated"] = resizedImage.width < image.width && resizedImage.height < image.height
             report["resized_width"] = resizedImage.width; report["resized_height"] = resizedImage.height
             window.setFrame(originalFrame, display: true)
-            let probe = NSWindow(contentRect: NSRect(x: 100, y: 100, width: 300, height: 200), styleMask: [.titled], backing: .buffered, defer: false)
-            probe.isReleasedWhenClosed = false; probe.title = "ContextLens closure test"; probe.makeKeyAndOrderFront(nil)
-            let probeID = CGWindowID(probe.windowNumber)
+            let args = CommandLine.arguments
+            let styleIndex = args.firstIndex(of: "--native-probe-style")
+            let styleName = styleIndex.flatMap { args.indices.contains($0 + 1) ? args[$0 + 1] : nil } ?? "original"
+            guard ["original", "closable"].contains(styleName) else { throw LensError.invalid("Invalid probe style") }
+            let style: NSWindow.StyleMask = styleName == "original" ? [.titled] : [.titled, .closable]
+            let probe = NSWindow(contentRect: NSRect(x: 100, y: 100, width: 300, height: 200), styleMask: style, backing: .buffered, defer: false)
+            let observer = ClosureProbeObserver()
+            probe.delegate = observer
+            probe.isReleasedWhenClosed = false; probe.title = "ContextLens synthetic closure probe"
+            let keyProbe = args.contains("--native-probe-key-window")
+            if keyProbe { probe.makeKeyAndOrderFront(nil) } else { probe.orderFront(nil) }
+            defer { probe.delegate = nil; probe.orderOut(nil) }
+            let originalNumber = probe.windowNumber
+            guard originalNumber > 0 else { throw LensError.invalid("Probe has no valid WindowServer ID") }
+            let probeIdentity = WindowIdentity(windowID: CGWindowID(originalNumber), processID: ProcessInfo.processInfo.processIdentifier)
             try await Task.sleep(nanoseconds: 200_000_000)
+            let before = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: true)
+            let beforeMatch = before.windows.first { $0.windowID == probeIdentity.windowID && $0.owningApplication?.processID == probeIdentity.processID }
+            report["probe_setup"] = ["window_id": probeIdentity.windowID, "process_id": probeIdentity.processID,
+                "style": styleName, "style_mask": style.rawValue, "is_released_when_closed": probe.isReleasedWhenClosed,
+                "retained_through_poll": true, "ordering": keyProbe ? "makeKeyAndOrderFront" : "orderFront",
+                "visible_before_close": probe.isVisible, "key_before_close": probe.isKeyWindow,
+                "identity_listed_before_close": beforeMatch != nil]
+            guard beforeMatch != nil, probe.isVisible else { throw LensError.invalid("Probe was not visible and identity-matched before close; closure test setup is invalid") }
+            let closeRequested = ProcessInfo.processInfo.systemUptime
             probe.close()
-            try await Task.sleep(nanoseconds: 200_000_000)
-            let closedContent = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: true)
-            do {
-                _ = try WindowCapture.selected(id: probeID, pid: ProcessInfo.processInfo.processIdentifier, in: closedContent.windows.map { WindowChoice(window: $0) })
-                report["closure_detected_without_fallback"] = false
-            } catch { report["closure_detected_without_fallback"] = true }
-            if report["movement_preserved_dimensions"] as? Bool != true || report["resize_dimensions_updated"] as? Bool != true || report["closure_detected_without_fallback"] as? Bool != true { report["status"] = "failed" }
-            print("ScreenCaptureKit selected-window capture passed: \(image.width)×\(image.height); movement, resize and closure checks recorded.")
+            let closeReturned = ProcessInfo.processInfo.systemUptime
+            report["probe_close"] = ["requested": true, "returned_ms": (closeReturned - closeRequested) * 1_000, "poll_time_origin": "close-return",
+                                     "visible_after_close": probe.isVisible, "window_number_after_close": probe.windowNumber]
+            var nativeTrace: [[String: Any]] = []
+            let closure = await WindowClosureProbe.observe(target: probeIdentity, closedAt: closeReturned, enumerate: {
+                let requestStart = ProcessInfo.processInfo.systemUptime
+                let available = try await SCShareableContent.excludingDesktopWindows(true, onScreenWindowsOnly: true)
+                let requestEnd = ProcessInfo.processInfo.systemUptime
+                let byID = available.windows.first { $0.windowID == probeIdentity.windowID }
+                let matched = byID?.owningApplication?.processID == probeIdentity.processID
+                nativeTrace.append(["request_started_ms": (requestStart - closeReturned) * 1_000,
+                    "request_completed_ms": (requestEnd - closeReturned) * 1_000,
+                    "enumeration_duration_ms": (requestEnd - requestStart) * 1_000,
+                    "window_id_listed": byID != nil, "owning_process_available": byID?.owningApplication != nil, "identity_matched": matched,
+                    "sck_on_screen": byID?.isOnScreen ?? false, "appkit_visible": probe.isVisible,
+                    "appkit_key": probe.isKeyWindow, "appkit_window_number": probe.windowNumber,
+                    "close_notification_received": observer.closedAt != nil])
+                return available.windows.map { window in
+                    WindowIdentity(windowID: window.windowID, processID: window.owningApplication?.processID ?? -1)
+                }
+            })
+            report["closure_probe"] = try JSONSerialization.jsonObject(with: JSONEncoder().encode(closure))
+            report["closure_native_trace"] = nativeTrace
+            report["close_notification_received"] = observer.closedAt != nil
+            if let closedAt = observer.closedAt { report["close_notification_ms"] = (closedAt - closeRequested) * 1_000 }
+            // Preserve the first lookup after the original 200 ms wait. Completion latency is recorded; later absence never changes this result.
+            report["closure_detected_without_fallback"] = closure.originalCheckpointAbsent
+            report["closure_first_observation_absent"] = closure.firstObservationAbsent
+            report["closure_immediate_detection_guaranteed"] = false
+            if report["movement_preserved_dimensions"] as? Bool != true || report["resize_dimensions_updated"] as? Bool != true || !closure.originalCheckpointAbsent {
+                report["status"] = "failed"
+                report["reason"] = "Movement, resize or original post-wait closure lookup failed. Eventual disappearance is reported separately; no fallback capture was attempted."
+            }
+            print("Selected-window native check: \(report["status"] as? String ?? "failed"); closure observation: \(closure.outcome).")
         } catch { report["status"] = "failed"; report["reason"] = error.localizedDescription }
         try? JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys]).write(to: reportURL)
     }
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool { true }
+}
+
+@MainActor private final class ClosureProbeObserver: NSObject, NSWindowDelegate {
+    var closedAt: Double?
+    func windowWillClose(_ notification: Notification) { closedAt = ProcessInfo.processInfo.systemUptime }
 }

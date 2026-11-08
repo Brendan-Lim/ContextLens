@@ -24,10 +24,11 @@ When logic in the app target needs a test, move it into Core as a pure type firs
 
 ## Driving the app without a person
 
-Launch the binary directly with these flags. Test launches are **background launches**: `--smoke-snapshot` and `--exercise-zoom` skip app activation, so the person's frontmost app keeps keyboard focus.
+Launch the binary directly with these flags **only in a disposable interactive macOS environment**. Native fixture flags now require `--isolated-native-test`; skipping activation is not isolation, and fixture/input helpers can still make windows key. Never run them against the owner's working installation or TCC identity. The Python launcher requires the corresponding `--isolated-environment` acknowledgment before it launches anything.
 
 | Flag | Effect |
 |---|---|
+| `--isolated-native-test` | Required acknowledgment for smoke/zoom/native/soak fixture launches; use only in a genuine disposable interactive environment |
 | `--session <dir>` | Open a session folder (one containing `session.json`) |
 | `--tab review\|mark-up\|hand-off` | Open on a tab |
 | `--frame <frame-id>` | Select a state, e.g. `frame-002` |
@@ -40,7 +41,7 @@ Launch the binary directly with these flags. Test launches are **background laun
 | `--capture-preview` | Open the capture panel on launch |
 | `-NSRequiresAquaSystemAppearance YES` | Force light mode |
 
-Example: `dist/ContextLens.app/Contents/MacOS/ContextLens --session /tmp/s --tab mark-up --frame frame-002 --snapshot-scale 2 --smoke-snapshot /tmp/markup.png`
+Isolated-environment example: `dist/ContextLens.app/Contents/MacOS/ContextLens --isolated-native-test --session /tmp/s --tab mark-up --frame frame-002 --snapshot-scale 2 --smoke-snapshot /tmp/markup.png`
 
 Sessions to test with: `dist/contextlens-cli demo <dir>` makes a 3-state session (960×600 frames, one mark). For `--exercise-zoom`, overwrite its three frames with a 960×600 PNG whose colour encodes position (red = x, green = y) and set `annotations` to `[]` in `session.json`; then a matching colour before and after zoom means the same image point stayed under the pointer.
 
@@ -50,7 +51,7 @@ Sessions to test with: `dist/contextlens-cli demo <dir>` makes a 3-state session
 - **Signing and permissions.** Screen Recording approval is tied to the code signature. `build-app.sh` signs with the first "Apple Development" identity it finds; an ad-hoc build loses approval on every rebuild. Repair steps: [docs/permissions.md](docs/permissions.md).
 - **Snapshot gaps.** `--smoke-snapshot` uses `cacheDisplay`, which leaves Hand Off's left column blank. Judge Hand Off from `--native-capture-test` output, which uses ScreenCaptureKit and needs Screen Recording.
 - **Known failing check.** `native-capture-verification.json` reports `"status": "failed"` because `closure_detected_without_fallback` is false; movement and resize pass. This predates current work; treat a change in the other fields as the regression signal.
-- **Native probe focus.** `--native-capture-test` currently calls `makeKeyAndOrderFront` for its closure probe. Its smoke/background launch does not prevent that probe from taking focus. Run it only in a disposable interactive macOS environment, following [beta acceptance](docs/beta-acceptance.md); do not use the owner's current app/TCC identity to simulate first run.
+- **Native diagnostics.** The closure probe defaults to `orderFront`, keeps its original retained/titled lifetime, and reports bounded observations separately from the first lookup after the original 200 ms wait. `--native-probe-key-window` explicitly compares the old key ordering; `--native-probe-style closable` compares styles. Other fixture helpers can still make windows key. All need isolation; see [capture reliability](docs/native-capture-reliability.md). No new live closure result exists yet.
 - **Restored window state** can suppress the main window in a test launch; the app then opens a stand-in fixture window whose model is `LensDelegate.model`. `NSApp.delegate` is SwiftUI's wrapper, not `LensDelegate`.
 - **Oversized SwiftUI children** inside a fixed `.frame` are centred, not top-left aligned. Zoomed content therefore lives in an `.overlay(alignment: .topLeading)`; keep it that way or zoom-to-pointer drifts.
 - **Shell.** `rg` and `timeout` are not installed: use `grep`, and `perl -e 'alarm 60; exec @ARGV' <cmd>` for a time limit.

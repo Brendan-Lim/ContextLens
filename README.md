@@ -8,6 +8,8 @@ Native macOS. Local-first. Open source under the [MIT licence](LICENSE). No requ
 
 **Current readiness: controlled testers.** Automated installation and export checks pass; interactive first launch, fresh permissions and native capture reliability still need isolated manual acceptance. See the [public beta-readiness audit](docs/public-beta-readiness.md) and [exact acceptance checklist](docs/beta-acceptance.md).
 
+The **0.3.1/build 6 source candidate** adds tested cancellation, target-loss and save-recovery handling. Its [native capture report](docs/native-capture-reliability.md) separates deterministic results from pending WindowServer/first-run checks. The installation link below identifies the actual published preview; it does not certify the source candidate's interactive behavior.
+
 ## Installation channels
 
 - **Verified source builds:** build and automated checks have been exercised. Inspect and compile the source locally using the instructions below.

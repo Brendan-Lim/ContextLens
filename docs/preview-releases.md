@@ -45,10 +45,10 @@ Uninstallation and preserved synthetic sessions/exports were verified. Upgrades 
 
 ## Maintainer workflow
 
-From clean, current `main` at version 0.3.0, choose an unused numbered preview:
+The published cask above remains 0.3.0-preview.1. Source now targets **0.3.1/build 6**; [capture reliability](native-capture-reliability.md) separates candidate tests from the older binary. From clean, current `main`, choose an unused preview matching `config/version.json`; the next candidate is:
 
 ```sh
-gh workflow run preview-release.yml --repo Brendan-Lim/ContextLens --ref main -f version=0.3.0-preview.1
+gh workflow run preview-release.yml --repo Brendan-Lim/ContextLens --ref main -f version=0.3.1-preview.1
 gh run list --repo Brendan-Lim/ContextLens --workflow preview-release.yml
 ```
 
@@ -62,7 +62,7 @@ Generate the cask only from the actual published prerelease:
 
 ```sh
 gh repo clone Brendan-Lim/homebrew-tap /tmp/contextlens-preview-tap
-python3 scripts/preview-release.py update-tap 0.3.0-preview.1 /tmp/contextlens-preview-tap
+python3 scripts/preview-release.py update-tap 0.3.1-preview.1 /tmp/contextlens-preview-tap
 ```
 
 This checks official browser/API URLs and asset IDs, uploaded assets, downloaded checksum, preview trust label, signatures, portable arm64 bundle, receipt and matching source tag before rendering `Casks/contextlens-preview.rb`. It cannot generate a cask for a draft or stable release or a fabricated checksum. It never changes `Casks/contextlens.rb` or its template. Run tap validation, `brew style`, online audit, download verification and the disposable hosted installation check on a candidate branch before publishing the tap's main branch. Then update the status here with evidence. No cross-repository secret is needed; use existing maintainer authorization.

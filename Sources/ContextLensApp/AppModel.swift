@@ -55,6 +55,9 @@ import ContextLensCapture
     private var editorTask: Task<Void, Never>?
     private var editorRequest: EditorRenderRequest?
     private var captureTask: Task<Void, Never>?
+    private var captureRun: CaptureRun<WindowChoice, (CGImage, Double)>?
+    private var captureCompletion: CaptureCompletion?
+    private var stopWaiters = 0
     private var eventMonitor: Any?
     private var scrollMonitor: Any?
     /// Last scroll over the captured window, in seconds of system uptime; nil when not scrolling yet.
@@ -124,55 +127,99 @@ import ContextLensCapture
         catch { self.error = error.localizedDescription }
     }
     func start() async {
-        guard !recording, !stopping, let chosen = windows.first(where: { $0.id == windowID }), let pid = chosen.window.owningApplication?.processID else { return }
+        guard !recording, !stopping, let chosen = windows.first(where: { $0.id == windowID }), let target = chosen.captureIdentity else { return }
+        if captureCompletion?.needsRecovery == true {
+            guard await saveSession(), !recording, !stopping else { return }
+        }
         do {
-            // Persist the previous session before replacing it.
             if root != nil { try save() }
-            session = Session(); root = storageBase.appendingPathComponent(session.id)
-            try save(); history.reset(); selectedFrameID = nil; editorImage = nil; exportURL = nil
+            // A failed new-folder write must leave the previous session selected.
+            let next = Session()
+            let destination = storageBase.appendingPathComponent(next.id)
+            try SessionStore.save(next, to: destination)
+            session = next; root = destination; history.reset(); selectedFrameID = nil; editorImage = nil; exportURL = nil
             var selector = FrameSelector(); selector.sensitivity = sensitivity; selector.deduplicate = deduplicate; selector.maximumFrames = maximumFrames
-            let worker = CaptureProcessor(root: root!, selector: selector); processor = worker
+            let worker = CaptureProcessor(root: destination, selector: selector); processor = worker; captureCompletion = nil
             recording = true; status = delaySeconds > 0 ? "Capture starts in \(delaySeconds) seconds…" : "Recording selected window"
             captureStartedAt = nil; targetFrame = chosen.window.frame
-            manual = false; pendingEvent = nil; pendingLabel = nil; scrollActivity = ScrollActivity(); pendingScroll = nil; targetBounds = chosen.window.frame; targetProcessID = pid; targetWindowID = chosen.id
-            let targetID = chosen.id, delay = delaySeconds
-            captureTask = Task {
-                if delay > 0 { try? await Task.sleep(nanoseconds: UInt64(delay) * 1_000_000_000) }
-                if recording && !Task.isCancelled { startedAt = Date(); captureStartedAt = startedAt }
-                if recording { installEventMonitors() }
-                while recording {
-                    do {
-                        let available = try await WindowCapture.windows()
-                        let current = try WindowCapture.selected(id: targetID, pid: pid, in: available)
-                        targetBounds = current.window.frame
-                        if targetFrame != current.window.frame { targetFrame = current.window.frame }
-                        let (img, scale) = try await WindowCapture.image(window: current.window)
-                        let now = Int(Date().timeIntervalSince(startedAt) * 1000)
-                        try Task.checkCancellation()
-                        let requestManual = manual; manual = false
-                        // Momentum scrolling sends events too, so 0.5 s of quiet means the scroll has ended.
-                        updateScrollActivity()
-                        let scrolling = scrollActivity.holding(at: ProcessInfo.processInfo.systemUptime)
-                        if let f = try await worker.process(image: img, at: now, scale: scale, title: current.window.title, app: current.app, event: pendingEvent, manual: requestManual, holding: scrolling) {
-                            try append(named(f, clickedLabel: pendingLabel)); pendingEvent = nil; pendingLabel = nil
-                        }
-                        status = "Recording \(current.app) · \(session.frames.count) states · ⌘⇧S snapshot"
-                        if session.frames.count >= maximumFrames { stopping = true; recording = false; status = "Maximum frame count reached." }
-                        try await Task.sleep(nanoseconds: 250_000_000)
-                    } catch { if !(error is CancellationError) { self.error = error.localizedDescription }; recording = false }
+            manual = false; pendingEvent = nil; pendingLabel = nil; scrollActivity = ScrollActivity(); pendingScroll = nil
+            targetBounds = chosen.window.frame; targetProcessID = target.processID; targetWindowID = target.windowID
+            let run = CaptureRun<WindowChoice, (CGImage, Double)>(target: target,
+                delayNanoseconds: UInt64(max(0, delaySeconds)) * 1_000_000_000,
+                enumerate: { try await WindowCapture.windows() }, identity: { $0.captureIdentity },
+                capture: { [self] current in
+                    targetBounds = current.window.frame; targetFrame = current.window.frame
+                    return try await WindowCapture.image(window: current.window)
+                }, consume: { [self] current, sample in
+                    let now = Int(Date().timeIntervalSince(startedAt) * 1000)
+                    let requestManual = manual; manual = false
+                    updateScrollActivity()
+                    if let frame = try await worker.process(image: sample.0, at: now, scale: sample.1,
+                        title: current.window.title, app: current.app, event: pendingEvent, manual: requestManual,
+                        holding: scrollActivity.holding(at: ProcessInfo.processInfo.systemUptime)) {
+                        try append(named(frame, clickedLabel: pendingLabel)); pendingEvent = nil; pendingLabel = nil
+                    }
+                    if recording { status = "Recording \(current.app) · \(session.frames.count) states · ⌘⇧S snapshot" }
+                    return session.frames.count < maximumFrames
+                }, flush: { [self] in
+                    if let frame = try await worker.flush() { try append(named(frame, clickedLabel: nil)) }
+                }, save: { [self] in try save() }, removeResources: { [self] in
+                    recording = false; stopping = true; removeEventMonitors()
+                }, began: { [self] in
+                    startedAt = Date(); captureStartedAt = startedAt; installEventMonitors()
+                }, missingReason: {
+                    NSRunningApplication(processIdentifier: target.processID)?.isTerminated != false ? .applicationExited : .targetUnavailable
+                }, classify: { WindowCapture.endReason(for: $0) })
+            captureRun = run
+            captureTask = Task { [self] in
+                let result = await run.run()
+                captureCompletion = result; captureRun = nil
+                recording = false; stopping = stopWaiters > 0; captureStartedAt = nil
+                targetFrame = nil; targetProcessID = nil; targetWindowID = nil
+                mainTab = .review; status = result.status(frameCount: session.frames.count)
+                if let detail = result.errorDetails { error = detail }
+                if result.reason == .permissionDenied {
+                    screenPermission = false; screenAccessVerified = false; windows = []; windowID = nil; preview = nil
                 }
-                stopping = true
-                removeEventMonitors()
-                do { if let f = try await worker.flush() { try append(named(f, clickedLabel: nil)) }; try save() }
-                catch { self.error = error.localizedDescription }
-                recording = false; stopping = false; captureStartedAt = nil
-                mainTab = .review
-                status = "\(Self.count(session.frames.count, "state")) saved locally. Review and annotate."
                 if selectedFrameID == nil { select(session.frames.first?.id) }
             }
-        } catch { self.error = error.localizedDescription; recording = false }
+        } catch { self.error = error.localizedDescription; recording = false; status = "Could not start a new capture. Your previous session was kept." }
     }
-    func stop() async { guard recording || stopping else { return }; stopping = true; recording = false; captureTask?.cancel(); await captureTask?.value }
+    @discardableResult func stop() async -> Bool {
+        guard let run = captureRun else {
+            if stopping { return stopWaiters > 0 && captureCompletion?.needsRecovery == false }
+            return captureCompletion?.needsRecovery == true ? await saveSession() : true
+        }
+        let finishingTask = captureTask
+        stopWaiters += 1; stopping = true; recording = false
+        defer { stopWaiters -= 1; if stopWaiters == 0 && captureRun == nil { stopping = false } }
+        let result = await run.stop()
+        await finishingTask?.value
+        return !result.needsRecovery
+    }
+    /// Explicit retry preserves the worker and in-memory frames after a flush/metadata write error.
+    @discardableResult func saveSession() async -> Bool {
+        guard !stopping else { return false }
+        guard root != nil else { status = "No session to save. Capture a window or open a saved session first."; return true }
+        if recording { do { try save(); return true } catch { self.error = error.localizedDescription; return false } }
+        let recovering = captureCompletion?.needsRecovery == true
+        stopping = true
+        defer { stopping = false }
+        var flushError: String?, saveError: String?
+        if captureCompletion?.flushError != nil, let processor {
+            do { if let frame = try await processor.flush() { session.frames.append(named(frame, clickedLabel: nil)) } }
+            catch { flushError = error.localizedDescription }
+        }
+        do { try save() } catch { saveError = error.localizedDescription }
+        if var result = captureCompletion, recovering {
+            result.flushError = flushError; result.saveError = saveError; captureCompletion = result
+            status = result.status(frameCount: session.frames.count)
+            error = result.needsRecovery ? result.errorDetails : nil
+            return !result.needsRecovery
+        }
+        if let saveError { error = saveError; status = "Session save failed. Your states are retained; choose Save Session to retry."; return false }
+        status = "Session saved."; return true
+    }
     func snapshot() { if recording { manual = true; status = "Manual snapshot queued" } }
     private func append(_ f: Frame) throws { session.frames.append(f); try save() }
     /// Replaces the processor's counter name with one that says what happened.
@@ -352,8 +399,11 @@ import ContextLensCapture
     func save() throws { if let root { try SessionStore.save(session, to: root) } }
     func openSession() {
         guard !recording, !stopping, !busy else { return }
+        guard captureCompletion?.needsRecovery != true else {
+            error = "Save Session must finish recovering the current capture before opening another session."; return
+        }
         guard let folder = chooseFolder(message: "Choose a local ContextLens session folder") else { return }
-        do { try save(); let loaded = try SessionStore.load(from: folder); session = loaded; root = folder; sourceRevision += 1; history.reset(); exportURL = nil; select(session.frames.first?.id); mainTab = .review; status = "Session opened." }
+        do { try save(); let loaded = try SessionStore.load(from: folder); session = loaded; root = folder; processor = nil; captureCompletion = nil; sourceRevision += 1; history.reset(); exportURL = nil; select(session.frames.first?.id); mainTab = .review; status = "Session opened." }
         catch { self.error = error.localizedDescription }
     }
     func editTask(_ text: String) {
@@ -423,7 +473,7 @@ import ContextLensCapture
     }
     func deleteSession() {
         guard !recording, !stopping, !busy, let root, canDeleteSession else { error = "Only sessions in the configured storage folder can be deleted here. Manage externally opened folders in Finder."; return }
-        do { try FileManager.default.removeItem(at: root); self.root = nil; session = Session(); selectedFrameID = nil; editorImage = nil; history.reset(); status = "Local session deleted. Exported copies are separate." }
+        do { try FileManager.default.removeItem(at: root); self.root = nil; session = Session(); processor = nil; captureCompletion = nil; selectedFrameID = nil; editorImage = nil; history.reset(); status = "Local session deleted. Exported copies are separate." }
         catch { self.error = error.localizedDescription }
     }
     func burnLocalRedactions() {

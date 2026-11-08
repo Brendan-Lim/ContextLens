@@ -1,5 +1,7 @@
 # Public beta readiness — 8 November 2026
 
+> Follow-up: [0.3.1 native capture reliability](native-capture-reliability.md) records subsequent production lifecycle fixes and the revised diagnostic protocol. The sections below retain the earlier public-repository audit and its exact source/test scope. First-run and real WindowServer acceptance remain pending.
+
 **READY FOR CONTROLLED TESTERS.** Automated installation/export checks pass and this audit found no confirmed confidential exposure within the inspected scope. Interactive first launch, fresh Screen Recording consent and native capture reliability remain incomplete. Green CI is not proof of those workflows.
 
 ## A. Public repository audit
