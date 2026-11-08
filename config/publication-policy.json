@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "reviewedOn": "2026-11-08",
+  "reviewedOn": "2026-11-09",
   "approvedFiles": {
     "Benchmarks/fixtures/codex-usage.jsonl": {
       "sha256": "f3baf6c9822451ee775558dd9d03df2cfc95c785bcd3ecf486200a064f1f36bd",
@@ -865,6 +865,30 @@
     "docs/media/synthetic-fixture.gif": {
       "sha256": "f9c3fd9bfa4dee818e2fd681576c6259f67dfd5b2ba55ab6d1f40b483184b91a",
       "purpose": "Three manually inspected frames from owned browser fixture 04; labeled illustration, not a native app execution"
+    },
+    "distribution/dmg/assets/composition-b.png": {
+      "sha256": "8526b080bfb146cd691bbd98ed447fe09d3d40b3ff18d784cfced1161decc626",
+      "purpose": "Owned ContextLens installer/hero geometry and existing brand; pixels reviewed; not a Finder screenshot."
+    },
+    "distribution/dmg/assets/background@1x.png": {
+      "sha256": "9cf73932f6a2cd4c00cf22deebe5c5176dc599d4845efbb9c43aa53288aaab59",
+      "purpose": "Owned ContextLens installer/hero geometry and existing brand; pixels reviewed; not a Finder screenshot."
+    },
+    "distribution/dmg/assets/background.png": {
+      "sha256": "0a02bcbf8a61afa9d0f12f41da3592a88f7fc11eb7f774adc1f8bc35905e9e7a",
+      "purpose": "Owned ContextLens installer/hero geometry and existing brand; pixels reviewed; not a Finder screenshot."
+    },
+    "docs/media/hero.png": {
+      "sha256": "3b2aa71e7957b61a1a96148cf02315adf3db9f4ddff71933b49164e57857b52f",
+      "purpose": "Owned ContextLens installer/hero geometry and existing brand; pixels reviewed; not a Finder screenshot."
+    },
+    "docs/media/installer-preview.png": {
+      "sha256": "6513f9c34a7cd2843164f543f18d176fbaeed7bbeba5f740c0995e7e89d09053",
+      "purpose": "Owned ContextLens installer/hero geometry and existing brand; pixels reviewed; not a Finder screenshot."
+    },
+    "docs/media/native-editor-history.png": {
+      "sha256": "7cf38e55bc12df84d77a2e5b6d0af2517c5b2642731fa15475b472e7474df86e",
+      "purpose": "Reviewed historical native editor screenshot containing only generated geometric fixture UI; explicitly labeled historical, not 0.3.1 acceptance; re-encoded with no source metadata."
     }
   },
   "pathExamples": {

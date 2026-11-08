@@ -1,0 +1,113 @@
+{
+  "schemaVersion": 1,
+  "version": "0.3.1",
+  "build": 6,
+  "sourceCommit": null,
+  "bundleInventorySHA256": null,
+  "assets": {},
+  "isolatedEnvironment": false,
+  "testedBy": null,
+  "testedAt": null,
+  "macOS": null,
+  "architecture": null,
+  "blockers": [
+    "All isolated interactive acceptance remains pending."
+  ],
+  "cases": {
+    "gatekeeper-first-launch": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    },
+    "open-anyway": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    },
+    "screen-recording-denied": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    },
+    "fresh-screen-recording-grant-relaunch": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    },
+    "selected-window-low": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    },
+    "selected-window-high": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    },
+    "review-annotation-undo-redo": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    },
+    "handoff-export": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    },
+    "session-reopen-recovery": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    },
+    "selected-window-closure-no-substitution": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    },
+    "target-application-exit": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    },
+    "contextlens-exit-during-capture": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    },
+    "pending-frame-persistence": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    },
+    "failed-save-retry": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    },
+    "rapid-start-stop": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    },
+    "permission-revocation-recovery": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    },
+    "dmg-finder-light": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    },
+    "dmg-finder-dark": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    },
+    "dmg-drag-install-eject-launch": {
+      "status": "pending",
+      "observation": "",
+      "evidence": ""
+    }
+  }
+}

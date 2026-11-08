@@ -1,0 +1,97 @@
+name: Official Unnotarized Candidate and Promotion
+on:
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Prepare immutable candidate, or promote previously tested bytes
+        required: true
+        type: choice
+        options: [prepare, promote]
+        default: prepare
+      version:
+        description: Exact version in config/version.json
+        required: true
+        type: string
+      candidate_run_id:
+        description: Successful prepare run whose exact assets passed isolated acceptance (promotion only)
+        type: string
+      confirmation:
+        description: 'Promotion only: type PUBLISH UNNOTARIZED followed by a space and the version'
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: contextlens-release
+  cancel-in-progress: false
+jobs:
+  prepare:
+    if: github.ref == 'refs/heads/main' && inputs.operation == 'prepare'
+    runs-on: macos-15
+    timeout-minutes: 60
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+      RELEASE_VERSION: ${{ inputs.version }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+      - run: python3 scripts/unnotarized-release.py preflight "$RELEASE_VERSION"
+      - run: python3 -m pip install jsonschema==4.23.0
+      - run: python3 -m pip install --require-hashes -r distribution/dmg/requirements.txt
+      - run: scripts/ci.sh
+      - name: One ad-hoc app build, both containers, full round trips
+        run: |
+          scripts/build-app.sh --unnotarized-stable --output "$RUNNER_TEMP/official-build"
+          python3 scripts/unnotarized-release.py package "$RUNNER_TEMP/official-build/ContextLens.app" "$RUNNER_TEMP/official-assets"
+      - name: Candidate only; no tag or GitHub Release created
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: official-candidate-${{ inputs.version }}
+          path: ${{ runner.temp }}/official-assets/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
+  promote:
+    if: github.ref == 'refs/heads/main' && inputs.operation == 'promote'
+    runs-on: macos-15
+    timeout-minutes: 45
+    permissions:
+      contents: write
+      actions: read
+    env:
+      RELEASE_VERSION: ${{ inputs.version }}
+      CANDIDATE_RUN_ID: ${{ inputs.candidate_run_id }}
+      CONFIRMATION: ${{ inputs.confirmation }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - name: Require explicit operation and tracked human acceptance
+        run: |
+          test "$CONFIRMATION" = "PUBLISH UNNOTARIZED $RELEASE_VERSION"
+          python3 scripts/release.py metadata --version "$RELEASE_VERSION"
+          test -f "docs/release-acceptance/$RELEASE_VERSION.json"
+          python3 -c 'import os,re; assert re.fullmatch(r"[1-9][0-9]*", os.environ["CANDIDATE_RUN_ID"])'
+      - run: python3 -m pip install --require-hashes -r distribution/dmg/requirements.txt
+      - name: Download existing candidate without rebuilding it
+        run: gh run download "$CANDIDATE_RUN_ID" --repo Brendan-Lim/ContextLens --name "official-candidate-$RELEASE_VERSION" --dir "$RUNNER_TEMP/official-assets"
+      - name: Audit reviewed source and verify acceptance before promotion
+        run: |
+          python3 scripts/audit-public-files.py
+          python3 scripts/audit-public-files.py --history
+          python3 scripts/run-gitleaks.py
+          python3 -m unittest discover -s scripts/tests -v
+          python3 scripts/unnotarized-release.py publish "$RUNNER_TEMP/official-assets" "docs/release-acceptance/$RELEASE_VERSION.json" "$CANDIDATE_RUN_ID"

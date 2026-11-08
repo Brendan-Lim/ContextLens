@@ -1,5 +1,7 @@
 # Releasing ContextLens
 
+For the separately gated **official unnotarized** channel, see [official release preparation](official-release-preparation.md) and [exact-candidate acceptance](release-acceptance/README.md). The Developer ID workflow below keeps all its existing signing/notarization requirements. An ordinary push publishes no binary.
+
 This document describes the future signed/notarized stable channel. The separate [unnotarized preview channel](preview-releases.md) requires no Apple credentials and uses `preview-release.yml`; it does not weaken or replace any gate below.
 
 Public binary distribution is pending Apple credentials. Ordinary pushes run CI and never publish binaries. Only a manual release workflow on current `main` can publish, after tests, Developer ID signing, notarization, stapling, archive verification and Gatekeeper assessment. The app bundle identity remains `dev.contextlens.app`.

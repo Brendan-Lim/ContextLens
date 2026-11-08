@@ -3,9 +3,12 @@
 from pathlib import Path
 import shutil
 import tempfile
+import argparse
 from release import ROOT, require, run, verify
 
-app = ROOT / 'dist/ContextLens.app'
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('--app', type=Path, default=ROOT / 'dist/ContextLens.app')
+app = parser.parse_args().app.resolve()
 verify(app)
 cli = app / 'Contents/MacOS/contextlens-cli'
 require(run(cli, '-h') == run(cli, '--help'), 'CLI help aliases differ')

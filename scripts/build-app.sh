@@ -6,15 +6,22 @@ preview_version=""
 output="$PWD/dist"
 while (( $# )); do
     case "$1" in
-        --distribution) mode=distribution; shift ;;
-        --preview) mode=preview; preview_version="${2:?Missing preview version}"; shift 2 ;;
+        --distribution)
+            [[ "$mode" == development ]] || { print -u2 'Choose exactly one signing channel.'; exit 2; }
+            mode=distribution; shift ;;
+        --preview)
+            [[ "$mode" == development ]] || { print -u2 'Choose exactly one signing channel.'; exit 2; }
+            mode=preview; preview_version="${2:?Missing preview version}"; shift 2 ;;
+        --unnotarized-stable)
+            [[ "$mode" == development ]] || { print -u2 'Choose exactly one signing channel.'; exit 2; }
+            mode=unnotarized-stable; shift ;;
         --output) output="${2:?Missing output directory}"; shift 2 ;;
-        *) print -u2 'Usage: scripts/build-app.sh [--distribution | --preview X.Y.Z-preview.N] [--output DIRECTORY]'; exit 2 ;;
+        *) print -u2 'Usage: scripts/build-app.sh [--distribution | --preview X.Y.Z-preview.N | --unnotarized-stable] [--output DIRECTORY]'; exit 2 ;;
     esac
 done
 python3 scripts/release.py metadata
 sign_identity="${CONTEXTLENS_SIGN_IDENTITY:-}"
-if [[ "$mode" == preview ]]; then
+if [[ "$mode" == preview || "$mode" == unnotarized-stable ]]; then
     [[ "$(uname -m)" == arm64 ]] || { print -u2 'Preview is arm64 only.'; exit 1; }
     # Preview never discovers or uses any Apple identity, including on a developer Mac.
     sign_identity="-"
@@ -42,6 +49,9 @@ python3 scripts/release.py plist "$APP/Contents/Info.plist"
 if [[ "$mode" == preview ]]; then
     python3 scripts/preview-release.py provenance "$preview_version" "$APP"
 fi
+if [[ "$mode" == unnotarized-stable ]]; then
+    python3 scripts/unnotarized-release.py provenance "$APP"
+fi
 strip -S "$APP/Contents/MacOS/ContextLens" "$APP/Contents/MacOS/contextlens-cli"
 if [[ "$mode" == development && -z "$sign_identity" ]]; then
     available_identity=$(/usr/bin/security find-identity -v -p codesigning 2>/dev/null | grep -m 1 '"Apple Development:' || true)
@@ -58,7 +68,7 @@ else
     codesign --force --sign "$sign_identity" --timestamp=none "$APP"
 fi
 verification_mode="$mode"
-if [[ "$mode" == preview ]]; then verification_mode=development; fi
+if [[ "$mode" == preview || "$mode" == unnotarized-stable ]]; then verification_mode=development; fi
 python3 scripts/release.py verify "$APP" --mode "$verification_mode"
 # Never overwrite a running executable in place. Preserve the old bundle.
 app_destination="$output/ContextLens.app"

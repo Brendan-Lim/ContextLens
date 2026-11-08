@@ -1,12 +1,34 @@
 # Homebrew distribution
 
-The separate **unnotarized preview** channel uses `contextlens-preview`. See [preview distribution](preview-releases.md) for availability, limitations and verification status. The remainder of this document describes the future signed/notarized **stable** `contextlens` channel; its gates and template are unchanged.
+The available **unnotarized preview** channel uses `contextlens-preview`. See [preview distribution](preview-releases.md) for availability and limitations. The official stable `contextlens` channel is being prepared with a separate, explicit ad-hoc/unnotarized path. **No installable stable cask exists yet.** Project stability never implies Apple verification.
 
-The public [Brendan-Lim/homebrew-tap](https://github.com/Brendan-Lim/homebrew-tap) contains a pending cask template. No installable `Casks/contextlens.rb` is published until a real Developer ID signed, notarized release exists. Syntax validation is not installation verification.
+The public [Brendan-Lim/homebrew-tap](https://github.com/Brendan-Lim/homebrew-tap) contains pending cask templates. No installable `Casks/contextlens.rb` is published until actual official assets and acceptance have been verified. Syntax validation is not installation verification. The original Developer ID verification path and its template remain available without relaxed security gates.
+
+## Official unnotarized stable preparation
+
+First complete [exact-candidate isolated acceptance](release-acceptance/README.md) and publish the official release through its separate manual workflow. Then, from the clean source checkout matching that version:
+
+```sh
+gh repo clone Brendan-Lim/homebrew-tap /tmp/contextlens-tap-update
+.build/dmg-python/bin/python scripts/update-homebrew.py 0.3.1 /tmp/contextlens-tap-update --unnotarized-official
+python3 /tmp/contextlens-tap-update/scripts/validate.py
+```
+
+This explicit flag selects only the official ad-hoc verifier. It requires a published non-prerelease, exact official asset URLs, downloads both packages/checksums/provenance/acceptance, checks strict ad-hoc signatures, source-tag identity, identical ZIP/DMG bundle inventories and every required human acceptance case. The generated stable cask uses the actual ZIP checksum and GitHub asset ID, retains quarantine, discloses unnotarized signing and conflicts with `contextlens-preview`. It cannot be generated from an unpublished candidate, template or preview receipt. The default updater continues to require Developer ID, notarization and Gatekeeper assessment.
+
+Review and independently commit/push tap changes. Run style, online audit, fetch and a clean install on a disposable Mac before announcing availability. No tap cask is created during preparation and the preview cask remains intact.
+
+## Deliberate preview-to-stable migration
+
+Wait until the official release **and** stable cask are published and verified. Quit ContextLens, save the current session, and back up `~/Library/Application Support/ContextLens/` plus any exported handoffs. Record the installed preview version so it can be reinstalled if necessary.
+
+Uninstall only the preview cask using `brew uninstall --cask contextlens-preview`. This removes the app/CLI link and preserves sessions/settings; do not use `--zap`. Then install the published stable cask with `brew install --cask Brendan-Lim/tap/contextlens`. For a manually installed app, deliberately move the quit app to a safe backup location first. Do not use force/adopt or install two copies sharing the same bundle ID and CLI link.
+
+Reopen the saved session and verify annotations/export before deleting any backup. macOS may require fresh authorization for the new signature; follow the normal user-controlled settings flow. An upgrade preserving prior consent is not a fresh-permission acceptance test.
 
 The template uses Homebrew's Cask DSL: macOS Sonoma (14) minimum, arm64 only, the versioned GitHub release ZIP, `app "ContextLens.app"` and a `binary` artifact linking its embedded `Contents/MacOS/contextlens-cli` into Homebrew's `bin`. It has no fake checksum, `:no_check`, Gatekeeper exception, `zap` or private data deletion.
 
-## Update the tap after a verified release
+## Developer ID path: update after a verified notarized release
 
 From a clean source checkout matching the release metadata, with `gh` authenticated and `CONTEXTLENS_TEAM_ID` set to the expected Apple team:
 

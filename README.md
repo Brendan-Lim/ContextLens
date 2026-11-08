@@ -1,86 +1,143 @@
+<p align="center">
+  <img src="docs/media/hero.png" width="1200" alt="ContextLens — Give your AI agent eyes. Stop explaining your UI. Just show it.">
+</p>
+
+<p align="center">
+  <a href="https://github.com/Brendan-Lim/ContextLens/releases/tag/v0.3.0-preview.1"><strong>Download for macOS · Preview</strong></a>
+  &nbsp; · &nbsp; <a href="#install"><strong>Install with Homebrew</strong></a>
+  &nbsp; · &nbsp; <a href="LICENSE">MIT open source</a>
+</p>
+
 # ContextLens — Give your AI agent eyes.
 
 **Stop explaining your UI. Just show it.**
 
-Capture one application window, preserve meaningful UI changes, review states, mark frontend problems, and export structured visual context for Codex, Claude Code or another coding agent.
+Capture your interface, mark what needs changing, and hand clear visual instructions to your coding agent. ContextLens brings screenshots, issue notes and useful UI states together so you can spend less effort preparing visual feedback for **Codex, Claude Code or another coding agent**.
 
-Native macOS. Local-first. Open source under the [MIT licence](LICENSE). No required cloud account, production dependencies or automatic agent execution. Screenshots stay local until you choose to share them.
+Native macOS · Apple Silicon · macOS 14+ · Local-first · No required cloud account
 
-**Current readiness: controlled testers.** Automated installation and export checks pass; interactive first launch, fresh permissions and native capture reliability still need isolated manual acceptance. See the [public beta-readiness audit](docs/public-beta-readiness.md) and [exact acceptance checklist](docs/beta-acceptance.md).
+> **Available now: unnotarized preview, for controlled testers.** The download above is `v0.3.0-preview.1`. The `0.3.1` source candidate and its new DMG are being prepared; the official release remains blocked on [isolated interactive acceptance](docs/beta-acceptance.md). Ad-hoc signing does not mean Apple has verified the app.
 
-The **0.3.1/build 6 source candidate** adds tested cancellation, target-loss and save-recovery handling. Its [native capture report](docs/native-capture-reliability.md) separates deterministic results from pending WindowServer/first-run checks. The installation link below identifies the actual published preview; it does not certify the source candidate's interactive behavior.
+![Earlier native ContextLens editor displaying a generated geometric demo](docs/media/native-editor-history.png)
 
-## Installation channels
+*Actual earlier native editor with synthetic content; a historical workflow illustration. The current app uses Review, Mark Up and Hand Off tabs. This image is not verification of the 0.3.1 candidate or first-run capture.*
 
-- **Verified source builds:** build and automated checks have been exercised. Inspect and compile the source locally using the instructions below.
-- **Unnotarized previews:** a separate, free channel using ad-hoc signing. These prereleases have no Developer ID signature or Apple notarization. Apple has not verified them, and macOS may block launch. See [preview downloads, installation status and first-launch instructions](docs/preview-releases.md).
-- **Future signed/notarized stable releases:** the secure release workflow and official `contextlens` cask template remain pending Apple credentials. A preview is never published as a trusted stable release.
+## Your UI feedback shouldn't need an essay.
 
-Install the [0.3.0-preview.1 prerelease](https://github.com/Brendan-Lim/ContextLens/releases/tag/v0.3.0-preview.1) on Apple Silicon, macOS 14+:
+You see a button that needs moving. Then comes the explanation: which dialog, which button, where it sits, what “a little to the right” means. Screenshots pile up. The next iteration loses the reference from the last one.
+
+ContextLens keeps the visual reference beside your request. Point to the problem, write the change, and export an organized handoff for the agent working in your project.
+
+## Capture → Review → Mark Up → Hand Off
+
+| Step | What you do | What you keep |
+|---|---|---|
+| **Capture** | Choose one application window and interact with it. | UI states from that selected window. |
+| **Review** | Keep the useful states; rename and reorder them. | A focused visual sequence. |
+| **Mark Up** | Box or highlight the element, then describe the change. | Separate notes with stable issue IDs such as `CL-001`. |
+| **Hand Off** | Save the package and copy its prompt into your coding agent. | Context Markdown, annotated images, crops and metadata. |
+
+![Scripted synthetic browser-fixture illustration: closed menu, open menu, exported annotation](docs/media/synthetic-fixture.gif)
+
+*Short synthetic browser-fixture illustration, not a native app recording. [Storyboard and real-demo status](docs/demo-storyboard.md). A real capture-to-Hand-Off walkthrough is pending isolated acceptance.*
+
+## From “that button” to a clear request
+
+You notice a misaligned confirmation button in a web app. Capture its window, mark the button and write:
+
+> Align this button with the right edge of the dialog.
+
+Your agent receives your words alongside the marked visual reference. This [generated example package](docs/examples/agent-session-v2/context.md) uses the equivalent instruction “Align the confirmation button to the right edge of the dialog.” Its images and files are actual fixture export output:
+
+<p align="center">
+  <img src="docs/examples/agent-session-v2/annotated/CL-001.png" width="720" alt="Actual generated fixture export: CL-001 marks a confirmation button">
+</p>
+
+| File | What the agent gets |
+|---|---|
+| [`context.md`](docs/examples/agent-session-v2/context.md) | User instructions and visual references. |
+| [`annotated/CL-001.png`](docs/examples/agent-session-v2/annotated/CL-001.png) | The marked screenshot. |
+| [`crops/CL-001.png`](docs/examples/agent-session-v2/crops/CL-001.png) | A focused view of the issue. |
+| [`manifest.json`](docs/examples/agent-session-v2/manifest.json) | Stable IDs, image paths and metadata. |
+
+The fixture above preserves an earlier version-2 layout. Current exports start with a self-contained brief and group multiple marks into one overview per state; [format details](docs/export-format.md) explain both.
+
+## Built for visual feedback
+
+| Capability | How it helps |
+|---|---|
+| **Selected-window capture** | Bind capture to the window you choose. There is no display or substitute-window fallback. |
+| **Meaningful UI states** | Settle visual transitions, choose Low or High sensitivity, and take manual snapshots when needed. Tiny or low-contrast changes can still be missed. |
+| **Multiple annotated issues** | Use boxes or freehand highlights, individual instructions, stable issue IDs and undo/redo. |
+| **Local saved sessions** | Reopen your states and marks, with originals kept separately from annotations. |
+| **Portable Hand Off packages** | Share relative image paths, structured context, crops and a manifest with Codex, Claude Code or another agent. |
+| **Native macOS workflow** | SwiftUI, ScreenCaptureKit, a floating recording panel and pointer-centered canvas zoom. Zero production dependencies. |
+
+ContextLens prepares context. You choose what to export and when to give it to your agent; it does not run an AI model or change source code automatically. Automated source mapping is an [isolated experiment](Experiments/visual-to-code/README.md), separate from the app.
+
+## Install
+
+### Download for macOS
+
+**Today:** [download the published preview ZIP](https://github.com/Brendan-Lim/ContextLens/releases/tag/v0.3.0-preview.1), expand it, move `ContextLens.app` into Applications, and open it there. Requires Apple Silicon and macOS 14+.
+
+**Coming with the official release:** open the DMG, drag ContextLens onto Applications, eject the disk, then launch from Applications. There is no public stable DMG yet.
+
+<p align="center">
+  <img src="docs/media/installer-preview.png" width="720" alt="New ContextLens installer design preview with illustrated icon placement; actual Finder appearance pending">
+</p>
+
+*Installer design preview with illustrated icons, not a Finder screenshot. The actual DMG contains a draggable app and a functional `/Applications` shortcut. [Packaging and visual verification status](docs/official-release-preparation.md).*
+
+### Homebrew · Preview
 
 ```sh
 brew install --cask Brendan-Lim/tap/contextlens-preview
 ```
 
-[Disposable macOS verification passed](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42471268060): installation, app placement, CLI linking/help, quarantine, existing-app protection and uninstall preservation. Manual first-launch authorization, Screen Recording and interactive capture/Hand Off remain pending. Quit and deliberately back up an existing app before switching channels; the channels share sessions and permissions. Do not force an overwrite.
+The preview remains available. The official `contextlens` cask will follow a verified, published stable release; it is not installable yet. [Channel status, verification and migration](docs/homebrew.md).
 
-Only authorize a preview after verifying its origin and release checksum. A checksum confirms the downloaded bytes; it does not establish Apple trust. After a blocked launch, use System Settings → Privacy & Security → **Open Anyway**, then confirm **Open**, if you choose to authorize it. Follow [Apple's instructions](https://support.apple.com/en-us/102445) and keep macOS security enabled. [Distribution verification report](docs/distribution-release-report.md).
+### First launch and permissions
 
-## Install from source
+These free builds are **ad-hoc signed and unnotarized**. They have no Developer ID certificate or Apple trust claim. Verify the release origin and SHA-256 before deciding to authorize. If macOS blocks launch, follow [Apple's Open Anyway instructions](https://support.apple.com/en-us/102445): try opening, then use **System Settings → Privacy & Security → Open Anyway** and confirm **Open** if you choose to proceed. Keep macOS security enabled; managed Macs may prohibit authorization.
 
-Current packaging supports **Apple Silicon (arm64)** and targets **macOS 14+**. Runtime checks have used macOS 26.6.2 locally and macOS 15 in hosted CI; macOS 14 runtime and Intel compatibility remain unverified. A source build requires Xcode with Swift 5.10 or later; release users will not need a compiler.
+Grant Screen Recording to the copy you run, then relaunch when requested. Optional Accessibility access adds clicked-control labels; it never reads typed characters or text-field values. [Permissions](docs/permissions.md) · [Troubleshooting](docs/troubleshooting.md).
+
+## Your context stays yours
+
+Capture is local-first, from a window you select. There are no automatic uploads, no required ContextLens cloud account and no automatic AI execution. You control exported context and where it goes.
+
+**Screenshots can contain sensitive visible information.** Review your images and notes before sharing. Local sessions retain originals; exported redactions are burned into derived images. Sessions save under `~/Library/Application Support/ContextLens/Sessions/` by default. The mascot menu provides **Open Session** and **Storage & Privacy**. [Privacy details](docs/privacy.md) · [Security policy](SECURITY.md).
+
+## For the next round of UI polish
+
+Use ContextLens for frontend bug reports, CSS and layout adjustments, responsive interface iteration, feedback on prototypes, or the small visual changes that are cumbersome to describe. It is for engineers, indie developers and students working with AI coding agents who want their feedback organized around what they can see.
+
+Reducing repetitive screenshot and prompt preparation is the product goal. Human effort savings have not been measured, and earlier experiments did not establish consistent token, model runtime or overall task-time improvements. [Research and measurement limits](docs/research.md).
+
+## Build, test and contribute
+
+Source builds require Xcode with Swift 5.10+ on Apple Silicon:
 
 ```sh
 git clone https://github.com/Brendan-Lim/ContextLens.git
 cd ContextLens
 scripts/build-app.sh
-open dist/ContextLens.app
+scripts/verify.sh
 dist/contextlens-cli --help
 ```
 
-See [building](docs/building.md) for verification and development signing. The app has a stable bundle identifier, `dev.contextlens.app`. Grant Screen Recording to the copy you run in System Settings → Privacy & Security → Screen & System Audio Recording (Screen Recording on older macOS); relaunch when requested. Optional Accessibility permission adds clicked-control role/label captions. It never reads typed characters, password values or audio; screenshots can still contain private text. See [permission help](docs/permissions.md) and [troubleshooting](docs/troubleshooting.md).
+Open `dist/ContextLens.app` when ready. macOS 14 deployment metadata is checked; actual macOS 14 runtime remains unverified. Hosted checks use macOS 15, with local engineering checks on macOS 26.6.2.
 
-## Use
-
-1. Press **New capture** (⌘N). A floating panel lists your windows; the one you pick is outlined on your desktop. Select **Low** or **High** sensitivity and press **Start Capture**. Only that window is sampled; closure stops capture without selecting another window.
-2. Interact with your application. The panel shrinks to a recording pill at the top of the screen with a timer, the latest states, **Snapshot** (⌘⇧S) and **Stop** (⌘.). ContextLens settles visual transitions and preserves meaningful states. The panel never takes focus from the app you are capturing.
-3. When you stop, the main window opens on **Review**. There, untick the states you don't need (**Mark Up** only shows ticked states), rename, reorder or delete them (with undo). Click a screenshot to see it full size (Esc closes it; ← → step through states).
-4. In **Mark Up**, use **Box** or **Highlight**, then write what should change. Zoom at the pointer with pinch, ⌘-scroll or ⌘+ / ⌘− (⌘0 fits), and scroll to move around. Marks are numbered; mark 1 is CL-001 in the hand off. Marks stay separate from the original images.
-5. In **Hand Off**, choose whether to keep unmarked or repeated states, add an optional task, choose **Save Hand Off** and pick a folder (ideally in your project), then choose **Copy prompt**. The same prompt works for Claude Code, Codex and other coding agents.
-6. Paste the instruction into your agent in your project. No agent command or upload runs automatically. See [agent integrations](Integrations/claude-code.md).
-
-Sessions save automatically under `~/Library/Application Support/ContextLens/Sessions/` by default. Change the folder or retention period from the mascot menu → **Storage & Privacy**. The mascot menu → **Open Session** reopens a folder containing `session.json`. Retention cleanup is explicit. Deleting local sessions does not delete exported copies. See [privacy](docs/privacy.md).
-
-The [demo storyboard](docs/demo-storyboard.md) includes a clearly labeled synthetic browser-fixture illustration. A real native app walkthrough remains pending; the illustration is not first-run verification.
-
-## Command-line companion
-
-The companion is named `contextlens-cli` to avoid colliding with `ContextLens` on case-insensitive filesystems.
-
-Homebrew links `contextlens-cli` into its `bin`; use that command in place of `dist/contextlens-cli` below. Try `contextlens-cli --help` after authorization.
+The CLI can generate a demo session, validate sessions and export using the same production logic:
 
 ```sh
 dist/contextlens-cli demo /tmp/my-lens-session
 dist/contextlens-cli validate /tmp/my-lens-session
 dist/contextlens-cli export /tmp/my-lens-session /tmp/my-lens-export
-# Optional: --all-frames --keep-duplicates to include every selected frame.
 python3 scripts/validate_package.py /tmp/my-lens-export
-dist/contextlens-cli replay EVENTS.json /tmp/replayed-session
 ```
 
-PNG is used throughout for lossless native encoding. Image byte size is not a measure of model tokens. A [generated example package](docs/examples/agent-session/context.md) and [owned browser fixture exports](Benchmarks/reports/browser-evidence/) are included.
+[Build guide](docs/building.md) · [Architecture](docs/architecture.md) · [Export format](docs/export-format.md) · [Agent integration](Integrations/claude-code.md) · [Native testing](docs/native-testing.md) · [Release preparation](docs/official-release-preparation.md)
 
-## Verify and contribute
-
-```sh
-scripts/build-app.sh
-scripts/verify.sh
-python3 -m unittest discover -s scripts/tests -v
-python3 distribution/homebrew/scripts/validate.py
-```
-
-See [CONTRIBUTING.md](CONTRIBUTING.md), [architecture](docs/architecture.md), [export format](docs/export-format.md), [native testing](docs/native-testing.md), [security/privacy](SECURITY.md), [releasing](docs/releasing.md) and [Homebrew setup](docs/homebrew.md). Branding and the app icon are owned source assets in [Brand/](Brand/).
-
-[Research guidance](docs/research.md) and the [benchmark harness](Benchmarks/README.md) describe reproducible fixture tests and optional studies. Historical experiments have not shown a consistent agent token-efficiency advantage. Human preparation savings and general workflow speedups remain unproven. File sizes are not model tokens. Private historical traces/account observations are excluded from the public repository; reusable source and owned deterministic fixtures remain available.
-
-Source mapping remains an [isolated experimental adapter](Experiments/visual-to-code/README.md), separate from the native production app. Follow [publication security checks](docs/publication-security.md) before committing evidence or sharing a capture.
+ContextLens is **[MIT licensed](LICENSE)**, including its repository-owned branding. [Contributions are welcome](CONTRIBUTING.md); [report a reproducible issue](https://github.com/Brendan-Lim/ContextLens/issues). Review the [publication security checks](docs/publication-security.md) before sharing screenshots or evidence.
