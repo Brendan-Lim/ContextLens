@@ -3,6 +3,8 @@ set -eu
 cd "${0:A:h:h}"
 xcodebuild -version
 swift --version
+python3 scripts/audit-public-files.py
+python3 scripts/check-public-links.py
 [[ "$(uname -m)" == arm64 ]] || { print -u2 'This CI job validates arm64.'; exit 1; }
 CONTEXTLENS_SIGN_IDENTITY=- scripts/build-app.sh
 scripts/verify.sh

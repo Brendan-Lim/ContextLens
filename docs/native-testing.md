@@ -1,4 +1,6 @@
-> Current expanded verification, known failures, coverage and performance evidence: rigorous testing report (local-only evidence `testing-report.md`). Historical checks below retain their original scope.
+> Current preview status: **interactive acceptance remains pending**. Use the [isolated acceptance procedure](beta-acceptance.md) and [public readiness report](public-beta-readiness.md). The historical artifacts below remain local-only; they are not checked-in first-run proof. The retained native self-test reports a closure-check failure, and `--native-capture-test` creates a key probe window, so do not run it on the owner's active desktop.
+
+> Expanded historical verification, coverage and performance evidence: rigorous testing report (local-only evidence `testing-report.md`). Historical checks below retain their original scope.
 
 > Permission recovery and stable local signing were updated in 0.2.1; see [permissions](permissions.md). Earlier ad-hoc build checks below are historical.
 
@@ -18,7 +20,7 @@ dist/ContextLens.app/Contents/MacOS/ContextLens \
 
 If WindowServer access is blocked by an execution sandbox, run the command from your normal local terminal. The restricted CLI's permission preflight may differ from the launched app's TCC access. Denied access is recorded as blocked rather than reported as capture success. Without SCK permission, the fallback NSView rendering can omit compositor-backed sidebar effects; the checked-in final screenshot uses actual selected-window capture.
 
-The native self-test verifies the same window identity after movement, updated screenshot dimensions after resizing, and rejection of an explicitly closed probe window without fallback. The actor integration tests separately feed real CGImages through sample→settle→commit→resize→stop-flush and validate files and original dimensions. Pure tests exercise bounds, deduplication, paths, stable issue IDs and privacy overlays.
+The native self-test checks identity after movement, dimensions after resizing, and attempted rejection of a closed probe window without fallback. The known retained result is movement/resize passing and `closure_detected_without_fallback: false`; its cause and real capture-loop closure behavior still need the isolated live check. The actor integration tests separately feed real CGImages through sample→settle→commit→resize→stop-flush and validate files and original dimensions. Pure tests exercise bounds, deduplication, paths, stable issue IDs and privacy overlays.
 
 Remaining interactive release checklist:
 

@@ -1,6 +1,6 @@
 # Reproducible ContextLens experiments
 
-The subsequent Visual-to-Code experiment (local output `../docs/visual-to-code-experiment.md`) profiles 47 existing traces and evaluates an isolated local browser/source adapter on 32 frozen cases. It includes optional sidecars, measured A/B/C payloads and an authorization-gated pilot. No new live model trials were run for that experiment; mapping/payload results are not token savings. Code and exact commands: [Experiments/visual-to-code](../Experiments/visual-to-code/README.md).
+The Visual-to-Code work is an isolated browser/source-mapping experiment, separate from the native app. The [public research summary](../docs/research.md#visual-to-code-and-historical-evidence) explains its scope and limits; [reusable code and offline tests](../Experiments/visual-to-code/README.md) remain public. The detailed historical report and its trace dataset are local-only and deliberately not linked as public files. Profiling commands require a newly supplied dataset; they are not reproducible historical results from a clean checkout. Mapping/payload checks do not establish token savings or general source-localization benefits.
 
 Historical studies did not establish consistent agent token savings. Human preparation time remains unmeasured. Private execution traces, account observations and historical authorization are not distributed. See [public research guidance](../docs/research.md). Reproduction requires fresh authorization before any model invocation.
 
@@ -98,7 +98,7 @@ For the strategy experiment use `--strategies` for a seeded schedule of `all-fra
 
 The report includes **arithmetic means** as well as medians/IQR. Paired savings use Manual minus ContextLens: positive is a saving, negative is an increase. `all_observed_savings_manual_minus_contextlens` retains failed attempts with available token usage; `successful_pair_savings_manual_minus_contextlens` conditions on both passing. Read those beside failure counts, paired-attempt counts and missing-measurement counts. Missing or malformed usage is never zero. Successful-pair mean bootstrap intervals appear only at ten pairs; repeated task/operator observations are exploratory, not independent population evidence.
 
-Groups also separate CLI version, source digest, timeout, Node version, command and platform. Averages across different settings are not pooled. The current study remains **pending** until real provider traces and operator-timed preparation exist. A concrete 27-run schedule (three tasks × three workflows × three repeats) is in `reports/rigorous-testing/savings-plan.json`; choose an explicit model and spending limit before executing it.
+Groups also separate CLI version, source digest, timeout, Node version, command and platform. Averages across different settings are not pooled. The current study remains **pending** until real provider traces and operator-timed preparation exist. Historical local schedules under `reports/rigorous-testing/` are not distributed; generate a fresh no-cost plan with the harness command above, then obtain explicit authorization before any model invocation.
 
 For local application performance, without an agent or external application capture:
 

@@ -6,6 +6,8 @@ Capture one application window, preserve meaningful UI changes, review states, m
 
 Native macOS. Local-first. Open source under the [MIT licence](LICENSE). No required cloud account, production dependencies or automatic agent execution. Screenshots stay local until you choose to share them.
 
+**Current readiness: controlled testers.** Automated installation and export checks pass; interactive first launch, fresh permissions and native capture reliability still need isolated manual acceptance. See the [public beta-readiness audit](docs/public-beta-readiness.md) and [exact acceptance checklist](docs/beta-acceptance.md).
+
 ## Installation channels
 
 - **Verified source builds:** build and automated checks have been exercised. Inspect and compile the source locally using the instructions below.
@@ -47,6 +49,8 @@ See [building](docs/building.md) for verification and development signing. The a
 
 Sessions save automatically under `~/Library/Application Support/ContextLens/Sessions/` by default. Change the folder or retention period from the mascot menu → **Storage & Privacy**. The mascot menu → **Open Session** reopens a folder containing `session.json`. Retention cleanup is explicit. Deleting local sessions does not delete exported copies. See [privacy](docs/privacy.md).
 
+The [demo storyboard](docs/demo-storyboard.md) includes a clearly labeled synthetic browser-fixture illustration. A real native app walkthrough remains pending; the illustration is not first-run verification.
+
 ## Command-line companion
 
 The companion is named `contextlens-cli` to avoid colliding with `ContextLens` on case-insensitive filesystems.
@@ -76,3 +80,5 @@ python3 distribution/homebrew/scripts/validate.py
 See [CONTRIBUTING.md](CONTRIBUTING.md), [architecture](docs/architecture.md), [export format](docs/export-format.md), [native testing](docs/native-testing.md), [security/privacy](SECURITY.md), [releasing](docs/releasing.md) and [Homebrew setup](docs/homebrew.md). Branding and the app icon are owned source assets in [Brand/](Brand/).
 
 [Research guidance](docs/research.md) and the [benchmark harness](Benchmarks/README.md) describe reproducible fixture tests and optional studies. Historical experiments have not shown a consistent agent token-efficiency advantage. Human preparation savings and general workflow speedups remain unproven. File sizes are not model tokens. Private historical traces/account observations are excluded from the public repository; reusable source and owned deterministic fixtures remain available.
+
+Source mapping remains an [isolated experimental adapter](Experiments/visual-to-code/README.md), separate from the native production app. Follow [publication security checks](docs/publication-security.md) before committing evidence or sharing a capture.

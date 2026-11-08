@@ -1,0 +1,876 @@
+{
+  "schemaVersion": 1,
+  "reviewedOn": "2026-11-08",
+  "approvedFiles": {
+    "Benchmarks/fixtures/codex-usage.jsonl": {
+      "sha256": "f3baf6c9822451ee775558dd9d03df2cfc95c785bcd3ecf486200a064f1f36bd",
+      "purpose": "Synthetic usage-event parser fixture; no real agent conversation"
+    },
+    "Benchmarks/reports/browser-evidence/01/auto-only/frames/frame-001.png": {
+      "sha256": "53f68779b7e0944d31239fa210f195756d026399d35aaf2b47c9f2adda8088da",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/01/auto-only/task.md": {
+      "sha256": "bd53f476daf19751e63b2816c380960326e22ae2596b1d3e5bfd821473ac76a7",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/01/contextlens/README.md": {
+      "sha256": "aea00f5f98810cb73b5c4a375a6f41f516672a1fd54fca33493b74111a07ad31",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/01/contextlens/annotated/CL-001.png": {
+      "sha256": "ad603f5a263de20234d77ca63c16b7d0dac68bd602c7ebc5cd690ec9848c455b",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/01/contextlens/context.md": {
+      "sha256": "2661d17fc2c1854707e0c65a049a9c9f1ca73b32d71de8a1199d9a8bc012f0b4",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/01/contextlens/crops/CL-001.png": {
+      "sha256": "bc8fec4facea7eec6ce7184fcbb5ce22f9f8bce03df35b9bc0cbbf7ea2b19f1c",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/01/contextlens/frames/frame-001.png": {
+      "sha256": "1af06d2ea810d005772e54a65c045031ec86cdae37c25260c155c79ed4f62318",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/01/contextlens/manifest.json": {
+      "sha256": "105f777f73e7647d7919deed2d3d63d156d6b2485470168a7576fdceaf0f2b46",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/01/contextlens/metadata/session.json": {
+      "sha256": "4ef045092f6693fe5efa35244752f7fe3d453b758262a57eefad7335160adc5f",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/01/contextlens/task.md": {
+      "sha256": "0bc5c3f352ca0f7da13c4bda154a31ff4b2f1270035588f95bb6e60f436e9181",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/01/events.json": {
+      "sha256": "132be2601616897a2fe7e81decac8f7d17cce5bd99d71b6769a3b25d4de3ca9b",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/01/raw/initial.png": {
+      "sha256": "9145e1bfa41ba023cf79adc1e4cb22537e6753b696bedd73b6848976a0858c78",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/01/raw/interaction.png": {
+      "sha256": "9145e1bfa41ba023cf79adc1e4cb22537e6753b696bedd73b6848976a0858c78",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/01/raw/settled.png": {
+      "sha256": "9145e1bfa41ba023cf79adc1e4cb22537e6753b696bedd73b6848976a0858c78",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/01/raw/unchanged.png": {
+      "sha256": "9145e1bfa41ba023cf79adc1e4cb22537e6753b696bedd73b6848976a0858c78",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/01/source-session/frames/frame-001.png": {
+      "sha256": "53f68779b7e0944d31239fa210f195756d026399d35aaf2b47c9f2adda8088da",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/01/source-session/session.json": {
+      "sha256": "f112902b33dc3459ec000eced3f3024f8a6c9b3b2f260f824057ad94d8a35057",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/02/auto-only/frames/frame-001.png": {
+      "sha256": "05621f23fc5bfae962c9e156796c52a565fecc5abf04aa82210c254dc17e97b9",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/02/auto-only/task.md": {
+      "sha256": "2e0ec057c2d6ab6ef293b4d272081ebe814da84f63353f1a41113bce2907bf6c",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/02/contextlens/README.md": {
+      "sha256": "aea00f5f98810cb73b5c4a375a6f41f516672a1fd54fca33493b74111a07ad31",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/02/contextlens/annotated/CL-001.png": {
+      "sha256": "bb5a410541ce877fec5f5004b930f4a4e4375254fe0f2e90dfbc60ee73d0b7a7",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/02/contextlens/context.md": {
+      "sha256": "c7c82442f5b98dc9f4c128e62443fe2153c62b633fbb777fc4cf81affaf07838",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/02/contextlens/crops/CL-001.png": {
+      "sha256": "294cc38b1220275d4d2e67540868224edb1400ac955436406d3b82c48eed1261",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/02/contextlens/frames/frame-001.png": {
+      "sha256": "291386e7b05540f479bd4a29216b122979aea1e29c6828aa1ac264e59fc1b047",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/02/contextlens/manifest.json": {
+      "sha256": "faa891d2304f036c29c07f399afbcc9744b78be28689cdfa37ddbb04e93e8667",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/02/contextlens/metadata/session.json": {
+      "sha256": "d3d1a6da6146178076107f5dad175308836cd7dd32465fc9f59fe24746063bb7",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/02/contextlens/task.md": {
+      "sha256": "9e5420e1cf8fa570743d1918c9d3d83895667efd90507b5d14f307b4e5ce9d75",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/02/events.json": {
+      "sha256": "802103e189f907298ae27e550aad5509ce7af927011063a7ad5904c600cb4e66",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/02/raw/initial.png": {
+      "sha256": "8eaeebd9ac37008e1fbc16eba530f16c2d14ae6dea4d782e11121a0d91d19422",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/02/raw/interaction.png": {
+      "sha256": "8eaeebd9ac37008e1fbc16eba530f16c2d14ae6dea4d782e11121a0d91d19422",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/02/raw/settled.png": {
+      "sha256": "8eaeebd9ac37008e1fbc16eba530f16c2d14ae6dea4d782e11121a0d91d19422",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/02/raw/unchanged.png": {
+      "sha256": "8eaeebd9ac37008e1fbc16eba530f16c2d14ae6dea4d782e11121a0d91d19422",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/02/source-session/frames/frame-001.png": {
+      "sha256": "05621f23fc5bfae962c9e156796c52a565fecc5abf04aa82210c254dc17e97b9",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/02/source-session/session.json": {
+      "sha256": "bade59a30f333bea30ab79b4c8482b65119531ecd622325259c464fb638c7053",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/03/auto-only/frames/frame-001.png": {
+      "sha256": "6b062d492a143049aa79a9eda8f1d63ca0508b0bfe857d6c889a601ae09741d3",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/03/auto-only/task.md": {
+      "sha256": "254c72134053085d9eed4c59efb5d9d02ddf4879cb40cf32aaebaa050a425cb7",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/03/contextlens/README.md": {
+      "sha256": "aea00f5f98810cb73b5c4a375a6f41f516672a1fd54fca33493b74111a07ad31",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/03/contextlens/annotated/CL-001.png": {
+      "sha256": "2b0cbd4da022c2a4014835919124944dc1498a382bf1b9ca695578cf1ef31200",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/03/contextlens/context.md": {
+      "sha256": "50c02d663ef4a14d47fc1cf4965741be0f1d0ef5a8f6fc7bf2680903a7a2e853",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/03/contextlens/crops/CL-001.png": {
+      "sha256": "58f46ba6b10236bbb7e3521199538dd77b80f2bf0ede51d2115fe213ffdee649",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/03/contextlens/frames/frame-001.png": {
+      "sha256": "f49002bcb3b7299b4963d3b03a1f29f725b62bf36e963f678be4472aa0de002b",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/03/contextlens/manifest.json": {
+      "sha256": "ab58e699b7dddf0b24382b83a6755a123dca154baa6f1209f4b0ea87f515ea4f",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/03/contextlens/metadata/session.json": {
+      "sha256": "08455cf06cb784c281af09462b842f4aa12fd9cdcf890475bcdd4896f74377cd",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/03/contextlens/task.md": {
+      "sha256": "5d35bf949f4f2053ea56a7ef8563ce412952b85e0597f6735b10680b26f96542",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/03/events.json": {
+      "sha256": "74a4d93854a500f0ee1f687266252641e5f64813af9c4c25f30932b4e6996336",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/03/raw/initial.png": {
+      "sha256": "29883a558b784decb899916d4f04cd51d68eda063c1c884f88ebc5634be088b1",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/03/raw/interaction.png": {
+      "sha256": "29883a558b784decb899916d4f04cd51d68eda063c1c884f88ebc5634be088b1",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/03/raw/settled.png": {
+      "sha256": "29883a558b784decb899916d4f04cd51d68eda063c1c884f88ebc5634be088b1",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/03/raw/unchanged.png": {
+      "sha256": "29883a558b784decb899916d4f04cd51d68eda063c1c884f88ebc5634be088b1",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/03/source-session/frames/frame-001.png": {
+      "sha256": "6b062d492a143049aa79a9eda8f1d63ca0508b0bfe857d6c889a601ae09741d3",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/03/source-session/session.json": {
+      "sha256": "faffe27d75ad3f3dfcf2984e519b2fd512e2af4ee945299c4ae8de6e2a974697",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/auto-only/frames/frame-001.png": {
+      "sha256": "c677ad83c548bea115299eaddf6e4de6711b32daa0e806f707593c23a6dea953",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/auto-only/frames/frame-002.png": {
+      "sha256": "9da6cfb9ed9a700575fdbc04067300cee15c4f2721a6a13a1dc0069721f41ff6",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/auto-only/task.md": {
+      "sha256": "ab401a4c825da86bb38e1ddfcf6b787cb194828613fdea9de535f9d58f766002",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/contextlens/README.md": {
+      "sha256": "aea00f5f98810cb73b5c4a375a6f41f516672a1fd54fca33493b74111a07ad31",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/contextlens/annotated/CL-001.png": {
+      "sha256": "2add7392a36d55fe8e5e93cf7e4b575fe6698af9759fe1902fef440ed0b56d56",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/contextlens/context.md": {
+      "sha256": "e65ea77cfa28720eda79c105e335db0c6cc08cd075686b6f59940445e3af8d67",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/contextlens/crops/CL-001.png": {
+      "sha256": "c8a29178c77dd4b12701ef8a2501b0094f097c552d4b0d671079506733b6a216",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/contextlens/frames/frame-001.png": {
+      "sha256": "1943cc71425516fe9b23028c2c1b40e0a1fa1c7adad89fa24e47a32ff7d08676",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/contextlens/frames/frame-002.png": {
+      "sha256": "0d0afb785437801b97018e14c9d65041f13005511c1330c05d09c60f12a20d12",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/contextlens/manifest.json": {
+      "sha256": "3b3491777c4b8e567076e510fa79dcc6eebe4957afdb1a6f297d12c6d1d7584e",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/contextlens/metadata/session.json": {
+      "sha256": "0310d130156562cc89241b1061dbc1cd1384e8277d593da9b3c0fb96deb85965",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/contextlens/task.md": {
+      "sha256": "4875a58b987aa03f226c4894c97418816969f49064c9c7726c84ae72ac131372",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/events.json": {
+      "sha256": "b8b3de277ac66206d336cd960188d59a58ef0f6c62f3c7219f21c667b1e7fc4e",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/raw/initial.png": {
+      "sha256": "25401d70fd40beeb124cd175e39820ab0159b9a463aa4857ec4c18e1628dfbf7",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/raw/interaction.png": {
+      "sha256": "3059e22f7b32ff18ca1e5c23b2e4bc25aa5d1286b05b64d9ca0525d1404befc2",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/raw/settled.png": {
+      "sha256": "3059e22f7b32ff18ca1e5c23b2e4bc25aa5d1286b05b64d9ca0525d1404befc2",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/raw/unchanged.png": {
+      "sha256": "25401d70fd40beeb124cd175e39820ab0159b9a463aa4857ec4c18e1628dfbf7",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/source-session/frames/frame-001.png": {
+      "sha256": "c677ad83c548bea115299eaddf6e4de6711b32daa0e806f707593c23a6dea953",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/source-session/frames/frame-002.png": {
+      "sha256": "9da6cfb9ed9a700575fdbc04067300cee15c4f2721a6a13a1dc0069721f41ff6",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/04/source-session/session.json": {
+      "sha256": "8d0e70eb73d00d4b4f7075ddce74226a71b38691eedc1eb475ee82c2f332275f",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/05/auto-only/frames/frame-001.png": {
+      "sha256": "59fdbddc974261550069e662028c78f7fbe7b512cf772ddf0c86a084c119ec2c",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/05/auto-only/task.md": {
+      "sha256": "140236c87396337eb4c15fee4913800957cee2bfadfb1ca52279d19a4e6779f9",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/05/contextlens/README.md": {
+      "sha256": "aea00f5f98810cb73b5c4a375a6f41f516672a1fd54fca33493b74111a07ad31",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/05/contextlens/annotated/CL-001.png": {
+      "sha256": "aa27dba6e11e511c7b63b8eb3fa68b6c7db82a22d84ef6d4179a8f2398f4143c",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/05/contextlens/context.md": {
+      "sha256": "ef7028d925560938ed81524bf13042fcbb51315ec2b92a8b15e28bb2abbb11f0",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/05/contextlens/crops/CL-001.png": {
+      "sha256": "215279a3cfdbca2cc472beff018f8aade5e77116262ec31fa652741d347c4313",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/05/contextlens/frames/frame-001.png": {
+      "sha256": "aeba77077482a6b17a511e2ccf8b365d8431f50876f904dfdca2f57d19b6ee98",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/05/contextlens/manifest.json": {
+      "sha256": "fc5024260a8074addf95aae31e96fe81db80f22b08281424bbaf308a5c5cc6a4",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/05/contextlens/metadata/session.json": {
+      "sha256": "5846704d9f3b6c83c8e3cb1bac5c47807ec3695dbac7b6057b8ed16bebb40881",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/05/contextlens/task.md": {
+      "sha256": "02090d582f259c8be48466dbe5b03f4d5a2b4e27254128653a6d1c89ec59705f",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/05/events.json": {
+      "sha256": "c8d952baaa2b108f8a0b6fef57509845e3cbc5a15fe9832bed796c1669b6cf03",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/05/raw/initial.png": {
+      "sha256": "d99129f2ae7250995102d69fd4e9a265fb1cea1ea741580c0f98713f24ba51b2",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/05/raw/interaction.png": {
+      "sha256": "d99129f2ae7250995102d69fd4e9a265fb1cea1ea741580c0f98713f24ba51b2",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/05/raw/settled.png": {
+      "sha256": "d99129f2ae7250995102d69fd4e9a265fb1cea1ea741580c0f98713f24ba51b2",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/05/raw/unchanged.png": {
+      "sha256": "d99129f2ae7250995102d69fd4e9a265fb1cea1ea741580c0f98713f24ba51b2",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/05/source-session/frames/frame-001.png": {
+      "sha256": "59fdbddc974261550069e662028c78f7fbe7b512cf772ddf0c86a084c119ec2c",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/05/source-session/session.json": {
+      "sha256": "35eced4d2c411849f811d1f9e19d3d02846777f4f95ec49ef9b65a24dad67c9c",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/06/auto-only/frames/frame-001.png": {
+      "sha256": "507da2f8227105a0faaae0d272d717b412ace17d5871919ef5fce1c1ae93c98b",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/06/auto-only/task.md": {
+      "sha256": "4f278425c8382977c5e7047a2195bde4f375335e26afdf9d025c46421130e7cd",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/06/contextlens/README.md": {
+      "sha256": "aea00f5f98810cb73b5c4a375a6f41f516672a1fd54fca33493b74111a07ad31",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/06/contextlens/annotated/CL-001.png": {
+      "sha256": "f86d983b810d7100362c4d2cfdb4ae74d5633460e5505fcd4ac69d549ef0219f",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/06/contextlens/context.md": {
+      "sha256": "72b858d33abb1eea7897461943090ee5e75a96309b6cf55e77a02f3070518ad9",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/06/contextlens/crops/CL-001.png": {
+      "sha256": "d8010537eea537d1ede2096cd8dc9664f10d2ef7ddb8c8abb7b6bdc53e242167",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/06/contextlens/frames/frame-001.png": {
+      "sha256": "2fe70c12bfcc7b01e2f6af20ebdf369de0bc918ca5beba8af6137864b7a40c8a",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/06/contextlens/manifest.json": {
+      "sha256": "fbaf70dedbec5aeab35e9aef2211d5d6f0d6640852ab21f8797103688636b2c1",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/06/contextlens/metadata/session.json": {
+      "sha256": "8e09c097cb135e3076aaa009edf2c87b6148b1c5f911e9d08fe2c789d1e73297",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/06/contextlens/task.md": {
+      "sha256": "9c53b4baf0e5868fe631a4e8956890b69f1d607457dd3e693973c235e05f763e",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/06/events.json": {
+      "sha256": "1c22619eba14d70f3ed5ea62dfbad7877a99d35c61434e316823169048edc3be",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/06/raw/initial.png": {
+      "sha256": "932f61d5f5ca6165d60fdeb8ae700b543090d6d5cfe7812566d23dbd73ec0073",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/06/raw/interaction.png": {
+      "sha256": "932f61d5f5ca6165d60fdeb8ae700b543090d6d5cfe7812566d23dbd73ec0073",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/06/raw/settled.png": {
+      "sha256": "932f61d5f5ca6165d60fdeb8ae700b543090d6d5cfe7812566d23dbd73ec0073",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/06/raw/unchanged.png": {
+      "sha256": "932f61d5f5ca6165d60fdeb8ae700b543090d6d5cfe7812566d23dbd73ec0073",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/06/source-session/frames/frame-001.png": {
+      "sha256": "507da2f8227105a0faaae0d272d717b412ace17d5871919ef5fce1c1ae93c98b",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/06/source-session/session.json": {
+      "sha256": "30f3d0a37c22219a8629b44be029f25ac96ba06a0d50dee3af4d6fdaedfec47c",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/07/auto-only/frames/frame-001.png": {
+      "sha256": "36f4ba70225536f2efff3d15968c1cdc5a3b383ee67d963d8995e7001312c9d4",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/07/auto-only/task.md": {
+      "sha256": "ef8448b2566b4e5aa6a1a62e3ac1e05e9d67c8cf13e41b5cf3b3d4353ae2d307",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/07/contextlens/README.md": {
+      "sha256": "aea00f5f98810cb73b5c4a375a6f41f516672a1fd54fca33493b74111a07ad31",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/07/contextlens/annotated/CL-001.png": {
+      "sha256": "d371f811e18ba62347913caa82af3fb9fc6ae41bc47ef202426f4c7bfb3e5dca",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/07/contextlens/context.md": {
+      "sha256": "3ee18f14177f175c5e9d50f514ec640f65750294a183501c9feea6a47f314ffe",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/07/contextlens/crops/CL-001.png": {
+      "sha256": "fbe65b69c4b1161e9e9fd9460668bd61795467e9cc4ecba1f5e917a8102b6458",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/07/contextlens/frames/frame-001.png": {
+      "sha256": "44fdf60c942ea70414ecd08fed25e8322e3aab1192295cfa829ddf8403d4d2a7",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/07/contextlens/manifest.json": {
+      "sha256": "03c99fe82fc84f00c25ac71a52583ccae161a03d56083d4e3d85042aca7ad55f",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/07/contextlens/metadata/session.json": {
+      "sha256": "b612afac1832bc89b082f0e1ec4bc849b82e4b8f8df58caa3fbc13481fb70991",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/07/contextlens/task.md": {
+      "sha256": "67e6fbaf8e5f99cd777be33012b2e6299c02385306a1636e50367ed061c85ad2",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/07/events.json": {
+      "sha256": "9de62667d5bf4bdacf28e1eab83142ff0a7b6020113f8e8765097c3ae1e6717b",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/07/raw/initial.png": {
+      "sha256": "84e43158639df4c5b315af9bd7cf18359b9699cd8b462f4e08ac6a160749224e",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/07/raw/interaction.png": {
+      "sha256": "84e43158639df4c5b315af9bd7cf18359b9699cd8b462f4e08ac6a160749224e",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/07/raw/settled.png": {
+      "sha256": "84e43158639df4c5b315af9bd7cf18359b9699cd8b462f4e08ac6a160749224e",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/07/raw/unchanged.png": {
+      "sha256": "84e43158639df4c5b315af9bd7cf18359b9699cd8b462f4e08ac6a160749224e",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/07/source-session/frames/frame-001.png": {
+      "sha256": "36f4ba70225536f2efff3d15968c1cdc5a3b383ee67d963d8995e7001312c9d4",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/07/source-session/session.json": {
+      "sha256": "5f3713aded77a027b61f9cac5963119d8f78daa450f6989c10dd10cef12c9e9d",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/08/auto-only/frames/frame-001.png": {
+      "sha256": "16ecfab9cfb00d605eea32a60434db82803421418cfb510f8f260178bfdc439b",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/08/auto-only/task.md": {
+      "sha256": "ad6a6e0fc4f9960e461b23fc2852a4ae30db7ca08dac2c5d56aa9529720119c4",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/08/contextlens/README.md": {
+      "sha256": "aea00f5f98810cb73b5c4a375a6f41f516672a1fd54fca33493b74111a07ad31",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/08/contextlens/annotated/CL-001.png": {
+      "sha256": "bec82744c5dd0864642ffdadc7d91174b56533eb09e23ecb35504a50a1af1e8e",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/08/contextlens/context.md": {
+      "sha256": "b10f4120fce62dc652f99b2179aae3f203be9f28ab994db655f0ab8115acedbf",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/08/contextlens/crops/CL-001.png": {
+      "sha256": "34b36d827aa8fa2020e9aa828a57eb9053bbfd85e16f77e952e14a005abc63f9",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/08/contextlens/frames/frame-001.png": {
+      "sha256": "4b631aa39bf97a31898cb7de6b01b24a459b08a38edf1e535ba2746b047ce3b1",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/08/contextlens/manifest.json": {
+      "sha256": "a42c654ef0c3eac33ecfe1594f2a2ba4a505fb31526d686e03324a64752c6101",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/08/contextlens/metadata/session.json": {
+      "sha256": "da4a358088a9700a530e8c78539884ff1145476644b4ef02613d9bede8ab7300",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/08/contextlens/task.md": {
+      "sha256": "bb54d9a68eef340b986920436f6a2574f02cb012da1d09e694c79774aaf7ebf8",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/08/events.json": {
+      "sha256": "0db3ae3760dc02780156301f6d2f8445575a5747b1810d0727d84d8b6d0c4ea3",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/08/raw/initial.png": {
+      "sha256": "9e3ae3d30727b3f4eacc7dec930c15cdd7372d78441940b73e1c3f12676f0b6c",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/08/raw/interaction.png": {
+      "sha256": "f944e94d0fa43678e3c1594940c4dca8787ebe8a1e362fa925508be3df14aa2b",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/08/raw/settled.png": {
+      "sha256": "f944e94d0fa43678e3c1594940c4dca8787ebe8a1e362fa925508be3df14aa2b",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/08/raw/unchanged.png": {
+      "sha256": "9e3ae3d30727b3f4eacc7dec930c15cdd7372d78441940b73e1c3f12676f0b6c",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/08/source-session/frames/frame-001.png": {
+      "sha256": "16ecfab9cfb00d605eea32a60434db82803421418cfb510f8f260178bfdc439b",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/08/source-session/session.json": {
+      "sha256": "09a6e2735bae1379b0daa3aef9c8195ef6e3a457f49afdaab12b72864878b6f2",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/09/auto-only/frames/frame-001.png": {
+      "sha256": "cb3255f4082a33b2fc2933d6d83fbce6d54d38eb018dbea6eae4da314a1108b5",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/09/auto-only/task.md": {
+      "sha256": "e49c26986d9d3c1a0eb1401625936d7c3ee50ed0e7b34af7d6380e513cfafb4a",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/09/contextlens/README.md": {
+      "sha256": "aea00f5f98810cb73b5c4a375a6f41f516672a1fd54fca33493b74111a07ad31",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/09/contextlens/annotated/CL-001.png": {
+      "sha256": "0ebdddf8816215c3f77202386f937e83b92992c7fb3e1ae38d313e47181de2e9",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/09/contextlens/context.md": {
+      "sha256": "a2ac0bba759518f9d734e2bfbd14119f34698422495d9ade8383a5c35710b3e9",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/09/contextlens/crops/CL-001.png": {
+      "sha256": "de7ee154548147319334e36803983bf24bcd7b3038f25ddad08f1ba38fc262c7",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/09/contextlens/frames/frame-001.png": {
+      "sha256": "75fbfb0be0aa177f42cea539518aad535f83900e72c1e647910d2438d5ba19a0",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/09/contextlens/manifest.json": {
+      "sha256": "93f4d77707748c36ffba2b82a020930d2eb42f27eba4cc43593055aa75f63a2b",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/09/contextlens/metadata/session.json": {
+      "sha256": "8f686ecfb39f9f6a5b5d5b40c72f367d04879302578a5150ef46a69fee8fb4a7",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/09/contextlens/task.md": {
+      "sha256": "a77faa821d86f4e2e3b2d49e8abbbda828b89d3749f70438182ef53d8c88cc70",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/09/events.json": {
+      "sha256": "f625beb1c5f6ed8a9216cb4a38172d818a78e6d648601f6dfdae48da2caec3e5",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/09/raw/initial.png": {
+      "sha256": "2c0e2305cbfadf150e2fe0af56b984697290177c18b1052829bbfbeddffe59ed",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/09/raw/interaction.png": {
+      "sha256": "2c0e2305cbfadf150e2fe0af56b984697290177c18b1052829bbfbeddffe59ed",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/09/raw/settled.png": {
+      "sha256": "2c0e2305cbfadf150e2fe0af56b984697290177c18b1052829bbfbeddffe59ed",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/09/raw/unchanged.png": {
+      "sha256": "2c0e2305cbfadf150e2fe0af56b984697290177c18b1052829bbfbeddffe59ed",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/09/source-session/frames/frame-001.png": {
+      "sha256": "cb3255f4082a33b2fc2933d6d83fbce6d54d38eb018dbea6eae4da314a1108b5",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/09/source-session/session.json": {
+      "sha256": "bddd1767271df6df40910749bf0b278a45cb054baaf514615fe8bfab9d0d7c5b",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/10/auto-only/frames/frame-001.png": {
+      "sha256": "ffb7a609c9bbafa1312f2f838ab958b0eab3168eabfdd3fafbd947a88a42653a",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/10/auto-only/task.md": {
+      "sha256": "5f0c4b91ce43109f9fc03ed94ddd79baf4c2305d607fb4cd4816ca8dc509b63e",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/10/contextlens/README.md": {
+      "sha256": "aea00f5f98810cb73b5c4a375a6f41f516672a1fd54fca33493b74111a07ad31",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/10/contextlens/annotated/CL-001.png": {
+      "sha256": "87c20d41c3a88bcbbdef4d2fcb522988c7f452bd727116d406e9b412c54e70b7",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/10/contextlens/context.md": {
+      "sha256": "5a06499703bf69ac6e1935dbefa128fa2b7dc6dc4678f1688f209c07b74f105a",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/10/contextlens/crops/CL-001.png": {
+      "sha256": "fbf46ad5bc58b74d10b2424c919ffe03d9745ab8d91d5cf5ab4ba44b06462de1",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/10/contextlens/frames/frame-001.png": {
+      "sha256": "62ad4850704634fa66da378e04715d94550d138755be5996e2bb5c17b6fa2697",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/10/contextlens/manifest.json": {
+      "sha256": "002e9f572fafacfe7eb5e557f32ab957c2e0d3b7d8817036ebbe4de967e32e92",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/10/contextlens/metadata/session.json": {
+      "sha256": "05e5e0a533cdc3234fa456e29a7a98639efb6249339ed1809fa6dd6367dde517",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/10/contextlens/task.md": {
+      "sha256": "682a67a92f6592896e79c5e3c0359b127939c0763cb9fe25cd5ba4e3d37a9499",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/10/events.json": {
+      "sha256": "7151c7095369024fe5ae42d0eaaad1b48fb847f9598f2686a5f3550eba46d942",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/10/raw/initial.png": {
+      "sha256": "7ab6419ae367f822282d00f3effcf20e1a666909051ca316b4917f773a074081",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/10/raw/interaction.png": {
+      "sha256": "7ab6419ae367f822282d00f3effcf20e1a666909051ca316b4917f773a074081",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/10/raw/settled.png": {
+      "sha256": "7ab6419ae367f822282d00f3effcf20e1a666909051ca316b4917f773a074081",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/10/raw/unchanged.png": {
+      "sha256": "7ab6419ae367f822282d00f3effcf20e1a666909051ca316b4917f773a074081",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/10/source-session/frames/frame-001.png": {
+      "sha256": "ffb7a609c9bbafa1312f2f838ab958b0eab3168eabfdd3fafbd947a88a42653a",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Benchmarks/reports/browser-evidence/10/source-session/session.json": {
+      "sha256": "c88fcfce7478db046de70e70de2db7d62504c0c9b323fed81a754f60e265f303",
+      "purpose": "Owned deterministic browser fixture; source/raw/replay/export comparison evidence"
+    },
+    "Brand/AppIcon.icns": {
+      "sha256": "b7403170cc980f00876c8df461a39bed4bb8abc4853f0c911a58e54f3c883cc6",
+      "purpose": "Owned ContextLens branding"
+    },
+    "Brand/logo-stacked@3x.png": {
+      "sha256": "51e4b54625e184f9218795211ce94dfda1f09ef9ce233c361ef0b1a918a77963",
+      "purpose": "Owned ContextLens branding"
+    },
+    "docs/examples/agent-session-v2/README.md": {
+      "sha256": "67f3c99fa814a805b304d88cb6bf0652bf49ae4368529c7f5f7b2f9beaedd087",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/agent-session-v2/annotated/CL-001.png": {
+      "sha256": "dba843ca9231d5d54f59ef7ae55a54a614674d5e67ccea0c32e15a4e47af4581",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/agent-session-v2/context.md": {
+      "sha256": "fe8524b24c316ae8d6cd13c32017cc6e727bae43f601e84927f78a036471fad5",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/agent-session-v2/crops/CL-001.png": {
+      "sha256": "781c91133c21167fb1dc51a3bfe609e8e5352cb14d01e3a534be953ac6bac355",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/agent-session-v2/frames/frame-002.png": {
+      "sha256": "7837c7a1e3f2343a691fbb38ca8ed88e5b3826f33056dfecad0a647ca2d64752",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/agent-session-v2/frames/frame-003.png": {
+      "sha256": "9a3682064c24311bb378f4dd3ff6260b3df91176b664d7379744f7ad7c223b48",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/agent-session-v2/manifest.json": {
+      "sha256": "acbab9d9adc8e0b28d833a4857f6443d5f8ff59cbb0d5b328ec94336210e5273",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/agent-session-v2/metadata/session.json": {
+      "sha256": "9eea51d22256522bc78e02873d10f285a0e2218ba852eb23a98d12937a9eff4f",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/agent-session/README.md": {
+      "sha256": "aea00f5f98810cb73b5c4a375a6f41f516672a1fd54fca33493b74111a07ad31",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/agent-session/annotated/CL-001.png": {
+      "sha256": "bb0bff442f9efc8c6940577aa0ef6a40f4c9337ba84e621854be1351a9d4f714",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/agent-session/context.md": {
+      "sha256": "5828718d8e452501c51594740651319cb0247696994d20b9386bf2e0677a5294",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/agent-session/crops/CL-001.png": {
+      "sha256": "781c91133c21167fb1dc51a3bfe609e8e5352cb14d01e3a534be953ac6bac355",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/agent-session/frames/frame-001.png": {
+      "sha256": "c4380be462b688ea5674acb207e5fc47f796a1a1f1eadece9f421481b91c6b5a",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/agent-session/frames/frame-002.png": {
+      "sha256": "7837c7a1e3f2343a691fbb38ca8ed88e5b3826f33056dfecad0a647ca2d64752",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/agent-session/frames/frame-003.png": {
+      "sha256": "9a3682064c24311bb378f4dd3ff6260b3df91176b664d7379744f7ad7c223b48",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/agent-session/manifest.json": {
+      "sha256": "2df3b1dbe4509ef365541d11641127c8ac13654dda4b28bca4581004dca53007",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/agent-session/metadata/session.json": {
+      "sha256": "0d13ead93273344a4c4590107667f5bfed010db380e4a42c31c7005f9f189894",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/fix-demo/app.js": {
+      "sha256": "239cd78a79a0dd9d32f71e2933981ac4a40815ff1775c4cf4c745433d9280675",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/fix-demo/index.html": {
+      "sha256": "a0c41a3a4f26d211323a9133b988bb76a70a3611201a02bc5fe1db7dc4c62f90",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/fix-demo/styles.css": {
+      "sha256": "83407e2c0b35c280b16407201fe009bfc8df303f2d8deef818a5ac750a284431",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/highlighter-session-v2/README.md": {
+      "sha256": "67f3c99fa814a805b304d88cb6bf0652bf49ae4368529c7f5f7b2f9beaedd087",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/highlighter-session-v2/annotated/CL-001.png": {
+      "sha256": "dba843ca9231d5d54f59ef7ae55a54a614674d5e67ccea0c32e15a4e47af4581",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/highlighter-session-v2/annotated/CL-003.png": {
+      "sha256": "95096ed7c6a03eab57de99b5948fb77041aa96a860d59fdfbfc633bd1895092b",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/highlighter-session-v2/context.md": {
+      "sha256": "b65639ba04bc6358e989c0e47acdbae3d0faecbfe7c77c0a79a8c4d5fe3ee38e",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/highlighter-session-v2/crops/CL-001.png": {
+      "sha256": "781c91133c21167fb1dc51a3bfe609e8e5352cb14d01e3a534be953ac6bac355",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/highlighter-session-v2/crops/CL-003.png": {
+      "sha256": "c565010716541867f4433452bfcd7f7fe365648af9d2f0bba63329f1ec0f810a",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/highlighter-session-v2/frames/frame-002.png": {
+      "sha256": "7837c7a1e3f2343a691fbb38ca8ed88e5b3826f33056dfecad0a647ca2d64752",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/highlighter-session-v2/frames/frame-003.png": {
+      "sha256": "9a3682064c24311bb378f4dd3ff6260b3df91176b664d7379744f7ad7c223b48",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/highlighter-session-v2/manifest.json": {
+      "sha256": "e43e6cdb61ea3938fd8573d0c3e34871fb588b6ff8b2f9fd24a2ffe70f858112",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/highlighter-session-v2/metadata/session.json": {
+      "sha256": "0a5ee34ffbc092dd538f7a7a14896954520745bb903ba41f28a31d2fce0a62ae",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/source-session/frames/frame-001.png": {
+      "sha256": "c4380be462b688ea5674acb207e5fc47f796a1a1f1eadece9f421481b91c6b5a",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/source-session/frames/frame-002.png": {
+      "sha256": "c3ef54a1d76516c985e464ec2a675476ffbf039496923a0c55772ec91f53bed1",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/source-session/frames/frame-003.png": {
+      "sha256": "9a3682064c24311bb378f4dd3ff6260b3df91176b664d7379744f7ad7c223b48",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "docs/examples/source-session/session.json": {
+      "sha256": "0d13ead93273344a4c4590107667f5bfed010db380e4a42c31c7005f9f189894",
+      "purpose": "Generated geometric demo, legacy-schema/export fixture, or owned documentation fixture source"
+    },
+    "Brand/logo-stacked.svg": {
+      "sha256": "be08e0b57651fb58fd09a1e442be44d7f263d117700cc1eb44dc44d07c0ef4a3",
+      "purpose": "Owned vector branding or illustration source; inspected as source text"
+    },
+    "Brand/mascot-icon.svg": {
+      "sha256": "afd9a3e0ee05ed167817b7ee9c482a8bbfe50f9711158372f51a942949ac4994",
+      "purpose": "Owned vector branding or illustration source; inspected as source text"
+    },
+    "Brand/mascot-peek.svg": {
+      "sha256": "7893dcb14b5c86a6048236378a3eebc558eab0f016a59bd5ff76dc36f519ecba",
+      "purpose": "Owned vector branding or illustration source; inspected as source text"
+    },
+    "Brand/wordmark-white.svg": {
+      "sha256": "8d67d29f7b1032efb304372fbe846560d159654fa74d62122fb063cb7baf1de5",
+      "purpose": "Owned vector branding or illustration source; inspected as source text"
+    },
+    "Brand/wordmark.svg": {
+      "sha256": "4275772ccbfe0a87b3ee9c70f1e1f60d6eedafd9061e7e34ed518a6b71e3fe1f",
+      "purpose": "Owned vector branding or illustration source; inspected as source text"
+    },
+    "docs/media/synthetic-fixture.gif": {
+      "sha256": "f9c3fd9bfa4dee818e2fd681576c6259f67dfd5b2ba55ab6d1f40b483184b91a",
+      "purpose": "Three manually inspected frames from owned browser fixture 04; labeled illustration, not a native app execution"
+    }
+  },
+  "pathExamples": {
+    "Tests/ContextLensCoreTests/NamingTests.swift": {
+      "sha256": "c2a4d2714e1f21e8d7164229ca99eb160ec1892373a9134c6ab6950a31c8fdb4",
+      "reason": "Reviewed synthetic path-quoting test cases; no credential exception"
+    }
+  }
+}
