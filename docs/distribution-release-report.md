@@ -2,7 +2,48 @@
 
 ## Preview channel follow-up
 
-The free **unnotarized preview** channel is being implemented separately from the stable channel. Current base: `0.3.0`, build `5`. Baseline `scripts/verify.sh` passed (80 Swift tests, 49 Python tests, 13 packages with independent schema checks, 10 deterministic replays). Preview safety tests were introduced red before implementation and now pass. Publication, downloaded-asset verification and disposable Homebrew installation are pending at this point; no installation success is claimed. [Preview procedure and user onboarding](preview-releases.md).
+The free **unnotarized preview** channel is published separately from the stable channel. Base: `0.3.0`, build `5`, bundle ID `dev.contextlens.app`. No paid Apple membership or Apple credentials were used. The optimized app and embedded CLI are ad-hoc signed; there is no Developer ID signature, notarization or claimed Apple trust. The signed `release.yml` and stable `contextlens` cask template are unchanged.
+
+- Source implementation: [`4b463d3`](https://github.com/Brendan-Lim/ContextLens/commit/4b463d3e6dfc3ec4035f89d0e9f8787dee08ff4c).
+- Published prerelease: [`v0.3.0-preview.1`](https://github.com/Brendan-Lim/ContextLens/releases/tag/v0.3.0-preview.1). It is public, not a draft, explicitly a prerelease and never promoted to latest/stable.
+- Successful [preview workflow 42469995205](https://github.com/Brendan-Lim/ContextLens/actions/runs/42469995205) and [ordinary CI 42469994983](https://github.com/Brendan-Lim/ContextLens/actions/runs/42469994983).
+- Actual public archive: `ContextLens-0.3.0-preview.1-arm64.zip`, 1,447,424 bytes. SHA-256: `1cd84d6b15fc7aed7346ff1fd27382d5d2cd5a51637c7358861ddf55ebe0da45`.
+- The independently downloaded archive, checksum and receipt passed `python3 scripts/preview-release.py verify-archive 0.3.0-preview.1 /tmp/contextlens-preview-public-assets/ContextLens-0.3.0-preview.1-arm64.zip`. GitHub's asset digest agrees. Receipt and signed embedded provenance both identify source commit `4b463d3e6dfc3ec4035f89d0e9f8787dee08ff4c`, tree `ef12a53fd58568db84655d5ea8f0fa8dd1fdf8aa` and clean source.
+- Hosted build: macOS 15.8.2, arm64, Xcode 26.3 (17C529), Swift 6.2.4. Local isolated verification: arm64 macOS 26.6.2, Xcode 26.6, Swift 6.3.3. No local app was launched or replaced for preview testing.
+
+| Automated preview check | Result |
+|---|---|
+| Baseline `scripts/verify.sh` | Passed: 80 Swift tests, 49 Python tests, 13 package/schema validations, 10 deterministic replays |
+| Full `scripts/ci.sh` in `/tmp/contextlens-preview-source` | Passed, including real-bundle portability rejection, CLI help aliases, development archive round-trip and browser fixtures (10 defects reproduced, 10 known-good controls passed) |
+| Full hosted prerelease gate | Same checks passed before publication; 17 release-safety tests passed |
+| Preview safety boundaries | Tests introduced red before implementation; invalid/foreign preview versions, Apple identity/team signatures, dirty source, existing tags/drafts, archive sidecar overwrite, changed checksums, stable-trust receipts and missing/foreign assets rejected |
+| Real optimized preview build/archive | Passed using `scripts/build-app.sh --preview 0.3.0-preview.1 --output /tmp/contextlens-preview-local-build`; a deliberately supplied Developer ID environment value was ignored and signatures remained ad-hoc |
+| Actual overwrite refusal | Repeating local packaging rejected the existing archive/sidecars; its hash stayed unchanged. Repeating source preflight after publication rejected the existing tag |
+| Stable channel isolation | Stable archive verification rejected the preview filename. No changes to `.github/workflows/release.yml` or either repository's stable cask template |
+| Source publication checks | Ruby/template syntax, Python tests, workflow YAML parsing, Zsh syntax and diff whitespace checks passed; targeted indexed-file scan performed before push |
+
+Homebrew candidate status: the actual cask is generated from the downloaded release and verified SHA-256 on `preview/0.3.0-preview.1`, before promotion to the tap's main branch. The candidate workflow tests on a fresh GitHub macOS runner, without touching this machine's Homebrew app, CLI links or permissions. Candidate installation/uninstallation passed; final audit and promotion are in progress.
+
+Two candidate checks found Homebrew integration defects before installation: [42470179665](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42470179665) rejected `brew style --cask Casks/contextlens-preview.rb` outside Homebrew's tap directory; the corrected command uses the fully qualified token after tapping the exact candidate checkout. [42470264257](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42470264257) then required the current `depends_on macos: :sonoma` spelling. Preview template/cask/validator were corrected together; the stable template was preserved. These failures are retained as evidence, rather than described as successful installs.
+
+[42470363208](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42470363208) passed style and exposed Homebrew's item-trust prerequisite for online audit. The job now exercises the fully qualified install before audit: [Homebrew documents](https://docs.brew.sh/Tap-Trust) that this explicitly selects/trusts only that cask. No whole-tap trust or trust-disabling setting is used. This affects Homebrew's permission to load a selected package definition, not macOS Gatekeeper authorization; quarantine remains enabled.
+
+[42470518372, attempt 1](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42470518372/attempts/1) selected the cask normally but GitHub's browser download URL returned HTTP 504 on every retry, before app-conflict or installation assertions could run. A separate unauthenticated `curl` request reproduced that failure. GitHub's [documented public release asset endpoint](https://docs.github.com/en/rest/releases/assets#get-a-release-asset), `https://api.github.com/repos/Brendan-Lim/ContextLens/releases/assets/723563642` with `Accept: application/octet-stream`, downloaded 1,447,424 bytes without any token and matched the exact published SHA-256. The unpublished candidate was regenerated to use that immutable API asset ID, with explicit ZIP container handling. The source updater validates both browser/API URLs and positive integer IDs. Expanded safety tests failed before this implementation and now pass. The release assets and tag were not changed.
+
+[42470888863](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42470888863) passed real installation/uninstallation on arm64 macOS 15.8.2 with Homebrew 7.0.12: existing-app refusal, default `/Applications/ContextLens.app` placement, `/opt/homebrew/bin/contextlens-cli` symlink, strict signature integrity, retained quarantine, installed CLI `--help`, and preserved synthetic session/export markers after uninstall. Read-only `spctl --assess --type execute -vv /Applications/ContextLens.app` returned **3, rejected**, as expected for an unnotarized preview. No GUI launch or authorization was automated. Online audit then treated the literal numeric API URL as unversioned. The cask now models preview version plus immutable asset ID using Homebrew's standard comma-separated version (`0.3.0-preview.1,723563642`) and `version.csv.second` in the URL. The exact SHA-256 remains required; no `:no_check` was introduced. Tests were red before this correction and green afterward. Final combined verification is pending below.
+
+| Interactive check | Status / limitation |
+|---|---|
+| First launch and actual Gatekeeper dialog | Pending: no disposable interactive macOS environment available |
+| User-controlled Open Anyway | Pending: requires a person after verifying origin; no authorization or exception was automated |
+| Fresh-user Screen Recording | Pending; existing permissions were not changed or reset |
+| Disposable-window capture, Review/Mark Up, Hand Off | Pending as an installed-preview interactive workflow; existing deterministic export/replay checks passed |
+| CLI after manual authorization | Pending independently of app authorization; CLI help during bundle verification passed |
+| macOS 14 runtime and Intel | Unverified; Apple Silicon only, macOS 14 deployment metadata verified |
+
+No quarantine removal, global Gatekeeper disabling, force/adopt installation, TCC reset or existing-user capture was used. Only temporary builds/fixtures and a disposable hosted runner are used. Sessions and exported packages remain outside uninstall hooks. The practical free route is the published preview ZIP and, after candidate checks pass, its separate Homebrew cask. [First-time-user instructions](preview-releases.md) explain verification, Apple's Open Anyway process, permissions, channel conflicts and preserved user data.
+
+## Historical signed-release infrastructure report
 
 The sections below retain the earlier signed-release infrastructure report as historical evidence; their pending-publication statements describe that earlier stable-channel work.
 

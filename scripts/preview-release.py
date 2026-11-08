@@ -170,13 +170,17 @@ def published_assets(info, version):
         require(len(matches) == 1 and matches[0]['state'] == 'uploaded', 'Missing or ambiguous preview asset')
         require(matches[0]['browser_download_url'] == f'https://github.com/{REPO}/releases/download/v{version}/{name}{suffix}',
                 'Unexpected preview asset URL')
+        asset_id = matches[0].get('id')
+        require(type(asset_id) is int and asset_id > 0 and matches[0].get('url') ==
+                f'https://api.github.com/repos/{REPO}/releases/assets/{asset_id}', 'Unexpected preview API asset URL')
 
 
-def render_cask(version, checksum):
+def render_cask(version, checksum, asset_id):
     preview_version(version)
     require(re.fullmatch(r'[0-9a-f]{64}', checksum), 'Actual SHA-256 required')
+    require(type(asset_id) is int and asset_id > 0, 'Actual positive GitHub asset ID required')
     return (ROOT / 'distribution/homebrew/Casks/contextlens-preview.rb.in').read_text().replace(
-        '__VERSION__', version).replace('__SHA256__', checksum)
+        '__VERSION__', version).replace('__SHA256__', checksum).replace('__ASSET_ID__', str(asset_id))
 
 
 def update_tap(tap, version):
@@ -195,14 +199,16 @@ def update_tap(tap, version):
         receipt = verify_archive(Path(temporary) / name, version)
         commit = json.loads(run('gh', 'api', f'repos/{REPO}/commits/v{version}'))
         require(receipt['sourceCommit'] == commit['sha'], 'Preview tag differs from archive source')
-        contents = render_cask(version, receipt['sha256'])
+        asset = next(a for a in info['assets'] if a['name'] == name)
+        contents = render_cask(version, receipt['sha256'], asset['id'])
     target = tap / 'Casks/contextlens-preview.rb'
     if target.exists():
         old = re.search(r'^  version "(.+)"$', target.read_text(), re.M)
-        require(old and old[1] != version, 'Never replace a published cask version')
+        old_version = old[1].split(',')[0] if old else None
+        require(old_version and old_version != version, 'Never replace a published cask version')
         def ordering(value):
             return tuple(map(int, re.fullmatch(r'(\d+)\.(\d+)\.(\d+)-preview\.(\d+)', value).groups()))
-        require(ordering(version) > ordering(old[1]), 'Only forward preview updates are allowed')
+        require(ordering(version) > ordering(old_version), 'Only forward preview updates are allowed')
     with tempfile.TemporaryDirectory(prefix='.preview-cask-', dir=tap) as temporary:
         staged = Path(temporary) / target.name
         staged.write_text(contents)

@@ -2,7 +2,20 @@
 
 ContextLens 0.3.0 has a separate preview channel for Apple Silicon Macs running macOS 14+. It needs no paid Apple Developer membership or Apple credentials. Builds use optimized arm64 Swift products and ad-hoc signatures for code integrity. They have **no Developer ID signature, Apple notarization or promised Gatekeeper acceptance**. These prereleases are never marked latest/stable. macOS 14 is the deployment target; hosted runtime checks use macOS 15.
 
-Publication status: implementation and verification are in progress. No installation command is claimed verified until the [release report](distribution-release-report.md) records actual results. The stable `contextlens` template and signed `release.yml` workflow remain separate.
+Published: [v0.3.0-preview.1 — Unnotarized Preview](https://github.com/Brendan-Lim/ContextLens/releases/tag/v0.3.0-preview.1), after [all preview workflow checks passed](https://github.com/Brendan-Lim/ContextLens/actions/runs/42469995205). The public ZIP was downloaded independently and verified. Homebrew candidate installation/uninstallation passed; final audit and promotion are in progress. The interactive installed-preview workflow remains pending. The stable `contextlens` template and signed `release.yml` remain separate. [Detailed release report](distribution-release-report.md).
+
+Public archive SHA-256: `1cd84d6b15fc7aed7346ff1fd27382d5d2cd5a51637c7358861ddf55ebe0da45`.
+
+During verification GitHub's browser asset URL returned HTTP 504, while the official public asset API served the identical ZIP without credentials. The preview cask uses that immutable asset ID with `Accept: application/octet-stream` and the same SHA-256. Its Homebrew version combines preview version and asset ID as `0.3.0-preview.1,723563642`. No account, token or compiler is required. If the release page download fails, this credential-free download was tested:
+
+```sh
+curl --fail --location --header 'Accept: application/octet-stream' \
+  --output ContextLens-0.3.0-preview.1-arm64.zip \
+  https://api.github.com/repos/Brendan-Lim/ContextLens/releases/assets/723563642
+shasum -a 256 ContextLens-0.3.0-preview.1-arm64.zip
+```
+
+Compare the output with the full checksum above before extracting and authorizing the app. This downloads files only; it does not alter macOS security.
 
 ## For a first-time user
 
@@ -40,7 +53,7 @@ gh repo clone Brendan-Lim/homebrew-tap /tmp/contextlens-preview-tap
 python3 scripts/preview-release.py update-tap 0.3.0-preview.1 /tmp/contextlens-preview-tap
 ```
 
-This checks official URLs, uploaded assets, downloaded checksum, preview trust label, signatures, portable arm64 bundle, receipt and matching source tag before rendering `Casks/contextlens-preview.rb`. It cannot generate a cask for a draft or stable release or a fabricated checksum. It never changes `Casks/contextlens.rb` or its template. Run tap validation, `brew style`, online audit, download verification and the disposable hosted installation check on a candidate branch before publishing the tap's main branch. Then update the status here with evidence. No cross-repository secret is needed; use existing maintainer authorization.
+This checks official browser/API URLs and asset IDs, uploaded assets, downloaded checksum, preview trust label, signatures, portable arm64 bundle, receipt and matching source tag before rendering `Casks/contextlens-preview.rb`. It cannot generate a cask for a draft or stable release or a fabricated checksum. It never changes `Casks/contextlens.rb` or its template. Run tap validation, `brew style`, online audit, download verification and the disposable hosted installation check on a candidate branch before publishing the tap's main branch. Then update the status here with evidence. No cross-repository secret is needed; use existing maintainer authorization.
 
 ## Installation verification
 
@@ -48,4 +61,4 @@ A fresh GitHub macOS runner can check the real cask download/checksum, default a
 
 In a disposable **interactive macOS environment**, record pass/fail for first launch and actual Gatekeeper warning, manual Open Anyway, app/CLI execution after authorization, Screen Recording, disposable-window capture/Mark Up/Hand Off, preserved sessions after uninstall and macOS 14 runtime. Until observed, these are **pending**. A custom `--appdir` on the current machine is insufficient isolation: Homebrew links/Caskroom, bundle identity and TCC consent are shared. No clean local macOS VM is currently available.
 
-References: [Homebrew Cask Cookbook](https://docs.brew.sh/Cask-Cookbook), [Apple: safely open apps on your Mac](https://support.apple.com/en-us/102445). See [signed release instructions](releasing.md) and [stable Homebrew process](homebrew.md) for the future trusted channel.
+References: [Homebrew Cask Cookbook](https://docs.brew.sh/Cask-Cookbook), [Homebrew Tap Trust](https://docs.brew.sh/Tap-Trust) (fully qualified installation selects only that cask), [GitHub public release asset API](https://docs.github.com/en/rest/releases/assets#get-a-release-asset), [Apple: safely open apps on your Mac](https://support.apple.com/en-us/102445). See [signed release instructions](releasing.md) and [stable Homebrew process](homebrew.md) for the future trusted channel.

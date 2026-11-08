@@ -1,5 +1,7 @@
 # Build from source
 
+For free binary downloads without Apple credentials, see the separate [unnotarized preview channel](preview-releases.md). The source-build instructions below remain available for local compilation and verification.
+
 Use an Apple Silicon Mac running macOS 14 or newer and Xcode with Swift 5.10 or newer. There are no production dependencies. Local verification used macOS 26.6.2, Xcode 26.6 and Swift 6.3.3. Hosted CI selects Xcode 26.3 on `macos-15` and records the actual versions. macOS 14 is the deployment target; execution on macOS 14 has not been verified.
 
 ```sh
