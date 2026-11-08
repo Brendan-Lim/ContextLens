@@ -34,7 +34,7 @@ The current layout is appropriate for a beta: source, CLI, tests, schemas, workf
 
 GitHub's authorized repository API reported, for **both** repositories: secret scanning **enabled**, push protection **enabled**, zero returned alerts. Non-provider patterns and validity checks are disabled. These are point-in-time settings/results, not a complete generic-secret or absence guarantee. No provider credential validation, paid scanning service or automatic remote security-setting change was performed.
 
-Publication safeguards now inspect full index blobs, sensitive/generated filenames, common credentials/headers/URLs, personal filesystem paths, unsafe links, disguised build/archive files, public example metadata and every historical path. Approved fixture/media hashes and narrowly scoped synthetic path examples are explicit in `config/publication-policy.json`; they never exempt credential checks. Independent Gitleaks runs with pinned official download checksums, stock rules and forced redaction. Reports expose only safe locations/rules. A read-only **Publication Security** workflow checks current/history content and links without uploading source or raw scanner reports; normal CI also runs the current-tree guard. An optional local hook checks staged content.
+Publication safeguards now inspect full index blobs, sensitive/generated filenames, common credentials/headers/URLs, personal filesystem paths, unsafe links, disguised build/archive files, public example metadata and every historical path. Approved fixture/media hashes and narrowly scoped synthetic path examples are explicit in `config/publication-policy.json`; they never exempt credential checks. Independent Gitleaks runs with pinned official download checksums, stock rules and forced redaction. Reports expose only safe locations/rules. A read-only **Publication Security** workflow checks current/history content and links without uploading source or raw scanner reports; normal CI also runs the current-tree guard. The included staged-file hook was enabled in the working ContextLens repository only after confirming there was no existing hook/configuration to replace; no global Git setting changed. Other clones can opt into it.
 
 The first regression run failed before implementing the index/history guard. Coverage now includes staged content hidden by a different/deleted worktree, secrets removed from HEAD but retained by a tag, the same blob under risky historical filenames, metadata, symlinks, exact fixture approvals, compiled artifacts and safe reporting. Gitleaks download tampering and missing reports fail closed. [Commands, approval maintenance and incident handling](publication-security.md).
 
@@ -44,7 +44,7 @@ No confirmed credential exposure was found, so no revocation or history-remediat
 
 | Check | Result and scope |
 |---|---|
-| Existing Homebrew preview | [Published cask](https://github.com/Brendan-Lim/homebrew-tap/blob/main/Casks/contextlens-preview.rb); [previous final install/audit run](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42471545204) passed on disposable arm64 macOS 15.8.2 / Homebrew 7.0.12 |
+| Existing Homebrew preview | [Published cask](https://github.com/Brendan-Lim/homebrew-tap/blob/main/Casks/contextlens-preview.rb); [fresh install/audit run 42480574763](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42480574763) passed on disposable arm64 macOS 15.8.2 / Homebrew 7.0.12 after these changes |
 | App placement, CLI link/help, quarantine, existing-app refusal, uninstall/session retention | Passed in that hosted environment; no local installation or permission reset repeated for this audit |
 | Gatekeeper | Hosted read-only assessment returned 3, rejected; no Developer ID, notarization or acceptance claim |
 | Actual Open Anyway | **Pending** — no disposable interactive macOS environment/person available |
@@ -73,7 +73,14 @@ No confirmed credential exposure was found, so no revocation or history-remediat
 | Public guard outputs and media | Zero findings; 216 explicit reviewed fixture/branding/telemetry/media approvals; all three new GIF frames inspected, metadata limited to GIF/file-size properties |
 | npm development dependency audit | Zero reported vulnerabilities during isolated CI; production dependencies remain zero |
 
-Hosted verification is checked after push and linked in the closing delivery. No paid model trial, new native capture or personal-window capture ran. The working app, CLI installation, TCC settings and private experiments were not replaced/reset.
+Hosted verification of implementation [`f9c6b06`](https://github.com/Brendan-Lim/ContextLens/commit/f9c6b068634246507094032d9c163aca15ecde38) and tap [`195acc4`](https://github.com/Brendan-Lim/homebrew-tap/commit/195acc4686aefbf959af6bc37d06447080d584ad) passed:
+
+- [Main full macOS CI 42480571742](https://github.com/Brendan-Lim/ContextLens/actions/runs/42480571742), including independent schema validation.
+- [Main Publication Security 42480571658](https://github.com/Brendan-Lim/ContextLens/actions/runs/42480571658): full reachable history, current index, links, regression tests and independent Linux Gitleaks.
+- [Tap validation/install/audit 42480574763](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42480574763): actual install/link/help/quarantine, expected Gatekeeper rejection and uninstall preservation passed again. Its expected foreign-app refusal appears as an error annotation inside a passing protection test.
+- [Tap Publication Security 42480574761](https://github.com/Brendan-Lim/homebrew-tap/actions/runs/42480574761): full history, current index, links, tests and Linux Gitleaks.
+
+The implementation commit's post-change historical audit inspected 549 main path/blob versions / 487 unique file blobs with zero findings. This report-only follow-up preserves those application, fixture and guard implementations. No paid model trial, new native capture or personal-window capture ran. The working app, CLI installation, TCC settings and private experiments were not replaced/reset.
 
 ## E. Release status
 
