@@ -67,6 +67,9 @@ def check_repository(root):
             if key in refs:candidates.append((match.start(),refs[key]))
             else: findings.append({'path':name,'line':text[:match.start()].count('\n')+1,'reason':'undefined reference link'})
         candidates += [(m.start(),m.group(1)) for m in re.finditer(r'<(?:img|a)\s+[^>]*(?:src|href)=[\x22\x27]([^\x22\x27]+)',text,re.I)]
+        # <picture><source srcset="a.png 2x, b.png 1x">: every candidate URL must resolve.
+        for m in re.finditer(r'<source\s+[^>]*srcset=[\x22\x27]([^\x22\x27]+)',text,re.I):
+            candidates += [(m.start(),item.split()[0]) for item in m.group(1).split(',') if item.strip()]
         for offset,target in candidates:
             line=text[:offset].count('\n')+1;parsed=urllib.parse.urlsplit(target)
             if parsed.scheme or parsed.netloc:

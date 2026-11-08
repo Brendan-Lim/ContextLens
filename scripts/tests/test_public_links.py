@@ -39,3 +39,17 @@ class PublicLinkTests(unittest.TestCase):
             (root/'docs/README.md').write_text('[a](../A%20B.md#a)\n[root](/A%20B.md)\n[dir](../docs/)\n')
             subprocess.run(['git','-C',tmp,'add','.'],check=True)
             self.assertEqual(links.check_repository(root)['findings'],[])
+
+    def test_picture_source_srcset_candidates_must_be_tracked(self):
+        # A dark-mode <source> with a broken path silently shows nothing on GitHub.
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);subprocess.run(['git','init','-q',tmp],check=True)
+            (root/'light.png').write_bytes(b'png');(root/'dark.png').write_bytes(b'png')
+            (root/'README.md').write_text('<picture>\n'
+                '  <source media="(prefers-color-scheme: dark)" srcset="dark.png 2x, missing.png 1x">\n'
+                '  <source srcset="gone.png">\n'
+                '  <img src="light.png" alt="">\n</picture>\n')
+            subprocess.run(['git','-C',tmp,'add','.'],check=True)
+            findings=links.check_repository(root)['findings']
+            self.assertEqual([f['line'] for f in findings],[2,3])
+            self.assertTrue(all(f['reason']=='local destination is not tracked/public' for f in findings))

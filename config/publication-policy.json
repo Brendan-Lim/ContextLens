@@ -889,6 +889,22 @@
     "docs/media/native-editor-history.png": {
       "sha256": "7cf38e55bc12df84d77a2e5b6d0af2517c5b2642731fa15475b472e7474df86e",
       "purpose": "Reviewed historical native editor screenshot containing only generated geometric fixture UI; explicitly labeled historical, not 0.3.1 acceptance; re-encoded with no source metadata."
+    },
+    "docs/media/readme/hero-light.png": {
+      "sha256": "eaa1491079898cf58d9ef4d2b45cefad4008bfe20d302fbf941d5e089bf67027",
+      "purpose": "Owned decorative README brand artwork rendered by Brand/readme/render.swift from repository branding and system fonts; pixels reviewed; depicts no application UI and is not a screenshot."
+    },
+    "docs/media/readme/hero-dark.png": {
+      "sha256": "102f89f99f8ed189f87a5b3b34cf68bc4047d4ca957b0782fb772735699bf38a",
+      "purpose": "Owned decorative README brand artwork rendered by Brand/readme/render.swift from repository branding and system fonts; pixels reviewed; depicts no application UI and is not a screenshot."
+    },
+    "docs/media/readme/workflow-light.png": {
+      "sha256": "1e7111ca813c825bee351d34fe92f9bd5dee30ff3834006aff5b29545bdf6249",
+      "purpose": "Owned decorative README brand artwork rendered by Brand/readme/render.swift from repository branding and system fonts; pixels reviewed; depicts no application UI and is not a screenshot."
+    },
+    "docs/media/readme/workflow-dark.png": {
+      "sha256": "42c5219a35608a40739f96bf0e3ab6820de4d32f9a20f8f35e23d9e3aa1ef86f",
+      "purpose": "Owned decorative README brand artwork rendered by Brand/readme/render.swift from repository branding and system fonts; pixels reviewed; depicts no application UI and is not a screenshot."
     }
   },
   "pathExamples": {

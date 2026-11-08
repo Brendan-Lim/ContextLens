@@ -36,6 +36,8 @@ Architecture is **arm64**, minimum deployment target **macOS 14.0**. Local check
 
 ## C. README
 
+> **Superseded on 9 November 2026.** The README is now a user-facing landing page with decorative brand artwork only. The historical, synthetic and design-proof images listed below no longer appear in it, and the status caveats it used to carry are kept here, in [troubleshooting](troubleshooting.md) and in the [product launch readiness report](product-launch-readiness.md). The text below records the earlier state.
+
 The root README now follows hero → problem → four-step workflow → real fixture output → capabilities → installation → privacy → audience → development/open source. Benefits concern organized visual feedback and less repetitive screenshot/prompt preparation as product goals; no measured effort, token or time saving is claimed. Source mapping remains an isolated experiment, and no autonomous source edits/model execution are promised.
 
 Media is repository-owned and deliberately labeled: branded hero, historical actual native editor with synthetic content, existing synthetic fixture GIF, real generated annotation/package links and installer design proof. The main download links to the actual published `v0.3.0-preview.1`; Homebrew uses the working preview command. DMG instructions are explicitly future availability until the official assets exist.
