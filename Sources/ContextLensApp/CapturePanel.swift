@@ -261,7 +261,7 @@ private struct PickWindowCard: View {
                         HStack(spacing: 8) { Circle().fill(Color(hex: 0xFF8A8E)).frame(width: 9, height: 9); Text("Start Capture") }
                     }
                     .buttonStyle(.lens(.primary, height: 42, fullWidth: true))
-                    .disabled(model.windowID == nil || !model.screenPermission)
+                    .disabled(model.windowID == nil || !model.screenPermission || model.checkingScreenAccess)
                     .keyboardShortcut(.defaultAction)
                     Button("Open ContextLens", action: openMain).buttonStyle(.plain).font(Lens.font(12, .bold)).foregroundStyle(Lens.accent)
                         .frame(maxWidth: .infinity)
@@ -383,29 +383,19 @@ private struct AppIcon: View {
 
 private struct PermissionBlock: View {
     @EnvironmentObject var model: AppModel
-    @State private var showHelp = false
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            Label("Screen Recording is needed", systemImage: "macwindow").font(Lens.font(13.5, .heavy)).foregroundStyle(Lens.ink)
-            Text("If it's already on in System Settings, check again. A rebuilt copy of the app may need a fresh approval.")
+            Label(model.screenAccess.title, systemImage: "macwindow").font(Lens.font(13.5, .heavy)).foregroundStyle(Lens.ink)
+            Text(model.screenAccess.message)
                 .font(Lens.font(12)).foregroundStyle(Lens.muted).fixedSize(horizontal: false, vertical: true)
             VStack(spacing: 8) {
-                Button("Check Access") { Task { await model.refresh(userInitiated: true) } }
+                Button(model.checkingScreenAccess ? "Checking…" : "Check Access") { Task { await model.refresh(userInitiated: true) } }
                     .buttonStyle(.lens(.primary, height: 34, fullWidth: true)).disabled(model.checkingScreenAccess)
                 Button("Open System Settings", action: Permissions.openScreenSettings)
                     .buttonStyle(.lens(.ghost, height: 34, fullWidth: true))
             }
-            if let message = model.screenAccessError {
-                Text(message).font(Lens.font(11.5)).foregroundStyle(Lens.muted).textSelection(.enabled)
-            }
-            DisclosureGroup("Already on in Settings?", isExpanded: $showHelp) {
-                VStack(alignment: .leading, spacing: 6) {
-                    Text("Quit ContextLens fully and reopen it. If access still fails, remove only the ContextLens entry with − in Screen & System Audio Recording, add this copy with +, turn it on and reopen.")
-                    Text(Bundle.main.bundleURL.path).font(Lens.mono(10.5)).textSelection(.enabled)
-                }
-                .font(Lens.font(11.5)).foregroundStyle(Lens.muted).padding(.top, 4)
-            }
-            .font(Lens.font(12, .bold))
+            ScrollView { ScreenAccessDetails() }
+                .frame(maxHeight: 220)
         }
         .padding(12)
         .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Lens.warningFill))

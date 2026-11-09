@@ -49,6 +49,7 @@ Audited 2026-11-07. “Tested” means the listed behaviors have executable chec
 | `WindowCapture` | tested / needs a person | Empty identity lookup never substitutes; native own-window movement/resize and closure probe recorded. External windows/displays/Spaces and minimized/reopened targets need a person. |
 | `CaptureProcessor` | tested | Real CGImages through sample/settle/resize/stop; original scale/dimensions; stale samples cannot replace pending flush; failed disk writes retry without consuming state/sequence. |
 | `ScreenAccessProbe` | tested | Passive first launch does not prompt; explicit/stale/preflight paths attempt API and propagate actual failures. |
+| `ScreenAccessState` | tested / needs a person | Distinct unverified/denied/enumeration-failed/verified presentation; explicit denial classification; real NSError domain/code/reason/recovery and bounded underlying-error details. OS consent, relaunch and ad-hoc upgrade/reconnect still require a person. |
 | `SnapshotHotKey` | needs a person | Carbon registration, conflict and real hotkey delivery require a desktop. No general keyboard monitor exists. Registration failure reporting is untested. |
 
 App controller and view behavior:
