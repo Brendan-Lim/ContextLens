@@ -1,0 +1,51 @@
+name: Disposable Screen Recording observations
+on:
+  push:
+    branches: [qa/screen-access-native]
+permissions:
+  contents: read
+jobs:
+  observe:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15, macos-26]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Build two development identities without changing signing policy
+        env:
+          CONTEXTLENS_SIGN_IDENTITY: '-'
+        run: |
+          sw_vers
+          xcodebuild -version
+          git worktree add --detach "$RUNNER_TEMP/control-source" 5b31ae55c676974fa2db8e9396643473dde266ee
+          "$RUNNER_TEMP/control-source/scripts/build-app.sh" --output "$RUNNER_TEMP/control-unpacked"
+          scripts/build-app.sh --output "$RUNNER_TEMP/unpacked"
+      - name: Real own-window API observations at the same install path
+        run: python3 qa/observe.py native
+      - name: Build clearly labeled synthetic UI failure fixtures
+        env:
+          CONTEXTLENS_SIGN_IDENTITY: '-'
+        run: |
+          python3 qa/observe.py inject-ui
+          scripts/build-app.sh --output "$RUNNER_TEMP/ui-unpacked"
+      - name: Inspect failure-state UI without approving or denying prompts
+        run: python3 qa/observe.py ui
+      - name: Encrypt all private evidence before upload
+        if: always()
+        run: |
+          mkdir -p "$RUNNER_TEMP/native-evidence"
+          tar -C "$RUNNER_TEMP" -cf "$RUNNER_TEMP/evidence.tar" native-evidence
+          openssl cms -encrypt -binary -aes256 -in "$RUNNER_TEMP/evidence.tar" -out "$RUNNER_TEMP/evidence.cms" -outform DER qa/evidence-public.crt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: encrypted-permission-evidence-${{ matrix.os }}
+          path: ${{ runner.temp }}/evidence.cms
+          if-no-files-found: error
+          retention-days: 3
