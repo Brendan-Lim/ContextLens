@@ -17,10 +17,14 @@ const fs=require('fs'),path=require('path'),crypto=require('crypto'),cp=require(
   const pending=page.waitForEvent('download',{timeout:30000});
   await page.goto(location).catch(()=>{});
   const download=await pending;const original=await download.path();
-  const saved=downloads+'/official-candidate-browser.zip';await download.saveAs(saved);
+  const saved=downloads+'/official-candidate-browser.zip';
+  const originalStat=fs.statSync(original);
+  // Preserve the actual browser-created inode and its genuine quarantine; do not copy bytes or write xattrs.
+  fs.renameSync(original,saved);
+  const savedStat=fs.statSync(saved);
   const attr=file=>{const r=cp.spawnSync('xattr',['-p','com.apple.quarantine',file],{encoding:'utf8'});return{present:r.status===0,value:r.status===0?r.stdout.trim():null}};
   const digest=crypto.createHash('sha256').update(fs.readFileSync(saved)).digest('hex');
-  const report={artifactID:artifact.id,realHeadfulBrowser:true,browserVersion:context.browser().version(),downloadSource:'GitHub Actions authenticated API redirect followed by actual HTTPS browser download; no quarantine writes',originalQuarantine:attr(original),savedQuarantine:attr(saved),downloadedSHA256:digest,apiArtifactDigest:artifact.digest||null,localFile:saved,completedAt:new Date().toISOString()};
+  const report={artifactID:artifact.id,realHeadfulBrowser:true,browserVersion:context.browser().version(),downloadSource:'GitHub Actions authenticated API redirect followed by actual HTTPS browser download; original inode renamed, no copying or quarantine writes',originalInode:originalStat.ino,retainedInode:savedStat.ino,sameBrowserCreatedInode:originalStat.ino===savedStat.ino&&originalStat.dev===savedStat.dev,savedQuarantine:attr(saved),downloadedSHA256:digest,apiArtifactDigest:artifact.digest||null,localFile:saved,completedAt:new Date().toISOString()};
   if(artifact.digest)report.apiDigestMatched=artifact.digest==='sha256:'+digest;
   await context.close();
   if(!report.savedQuarantine.present){
