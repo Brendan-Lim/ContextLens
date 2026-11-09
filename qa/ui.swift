@@ -49,7 +49,7 @@ for window in windows{walk(window,0,-1)}
 if command=="tree"{finish(["pid":running.processIdentifier,"nodes":rows])}
 func area(_ window:AXUIElement)->Double {guard let raw=get(window,kAXSizeAttribute),CFGetTypeID(raw)==AXValueGetTypeID() else{return 0};var size=CGSize.zero;AXValueGetValue(raw as! AXValue,.cgSize,&size);return size.width*size.height}
 let mainWindow=windows.max(by:{area($0)<area($1)})
-func activate(){running.activate(options:[]);if let window=mainWindow{AXUIElementPerformAction(window,kAXRaiseAction as CFString)};drain(0.3)}
+func activate(_ window:AXUIElement?=nil){running.activate(options:[]);if let window{AXUIElementPerformAction(window,kAXRaiseAction as CFString)};drain(0.3)}
 func chosen()->Int? {
     if let i=options["index"] as? Int, nodes.indices.contains(i){return i}
     let text=options["text"] as? String ?? ""
@@ -84,13 +84,20 @@ if command=="press" {
 }
 if command=="type" {
     guard let i=chosen(),let text=options["value"] as? String else{finish(["error":"Text control unavailable"],9)}
-    activate();AXUIElementSetAttributeValue(nodes[i],kAXFocusedAttribute as CFString,kCFBooleanTrue);drain()
+    var root=i
+    while let parent=rows[root]["parent"] as? Int,parent>=0{root=parent}
+    activate(nodes[root]);AXUIElementSetAttributeValue(nodes[i],kAXFocusedAttribute as CFString,kCFBooleanTrue);drain()
+    if let x=rows[i]["x"] as? Double,let y=rows[i]["y"] as? Double,let width=rows[i]["width"] as? Double,let height=rows[i]["height"] as? Double {
+        let point=CGPoint(x:x+min(width/2,30),y:y+height/2)
+        for type:CGEventType in [.leftMouseDown,.leftMouseUp]{CGEvent(mouseEventSource:nil,mouseType:type,mouseCursorPosition:point,mouseButton:.left)?.post(tap:.cghidEventTap)};drain()
+    }
+    NSPasteboard.general.clearContents();NSPasteboard.general.setString(text,forType:.string)
     key(0,.maskCommand)
-    let chars=Array(text.utf16)
-    let event=CGEvent(keyboardEventSource:nil,virtualKey:0,keyDown:true)!
-    chars.withUnsafeBufferPointer{event.keyboardSetUnicodeString(stringLength:chars.count,unicodeString:$0.baseAddress!)}
-    event.post(tap:.cghidEventTap);CGEvent(keyboardEventSource:nil,virtualKey:0,keyDown:false)?.post(tap:.cghidEventTap);key(48);drain(0.5)
-    finish(["typed":text,"index":i])
+    key(9,.maskCommand);drain(0.3)
+    var actual=get(nodes[i],kAXValueAttribute) as? String ?? ""
+    if actual != text {AXUIElementSetAttributeValue(nodes[i],kAXValueAttribute as CFString,text as CFString);AXUIElementPerformAction(nodes[i],kAXConfirmAction as CFString);drain();actual=get(nodes[i],kAXValueAttribute) as? String ?? ""}
+    key(48);drain(0.5)
+    finish(["requested":text,"actualValue":actual,"index":i],actual==text ? 0:15)
 }
 if command=="keys" {
     activate();let code=options["code"] as? Int ?? 53
@@ -108,14 +115,14 @@ if command=="snapshot" {
     finish(["file":file,"id":id,"bounds":target[kCGWindowBounds as String] ?? [:],"exitCode":task.terminationStatus],task.terminationStatus)
 }
 if command=="drag" {
-    activate();guard let a=options["from"] as? [Double],let b=options["to"] as? [Double],a.count==2,b.count==2 else{finish(["error":"Invalid geometry"],10)}
+    activate(mainWindow);guard let a=options["from"] as? [Double],let b=options["to"] as? [Double],a.count==2,b.count==2 else{finish(["error":"Invalid geometry"],10)}
     let start=CGPoint(x:a[0],y:a[1]),end=CGPoint(x:b[0],y:b[1])
     CGEvent(mouseEventSource:nil,mouseType:.leftMouseDown,mouseCursorPosition:start,mouseButton:.left)?.post(tap:.cghidEventTap);drain(0.08)
     for i in 1...14{let f=Double(i)/14;let point=CGPoint(x:start.x+(end.x-start.x)*f,y:start.y+(end.y-start.y)*f);CGEvent(mouseEventSource:nil,mouseType:.leftMouseDragged,mouseCursorPosition:point,mouseButton:.left)?.post(tap:.cghidEventTap);drain(0.025)}
     CGEvent(mouseEventSource:nil,mouseType:.leftMouseUp,mouseCursorPosition:end,mouseButton:.left)?.post(tap:.cghidEventTap);drain(0.5);finish(["posted":true])
 }
 if command=="click" {
-    activate();guard let point=options["point"] as? [Double],point.count==2 else{finish(["error":"Invalid point"],14)}
+    activate(mainWindow);guard let point=options["point"] as? [Double],point.count==2 else{finish(["error":"Invalid point"],14)}
     for type:CGEventType in [.leftMouseDown,.leftMouseUp]{CGEvent(mouseEventSource:nil,mouseType:type,mouseCursorPosition:CGPoint(x:point[0],y:point[1]),mouseButton:.left)?.post(tap:.cghidEventTap)};drain();finish(["posted":true])
 }
 finish(["error":"Unknown command"],11)

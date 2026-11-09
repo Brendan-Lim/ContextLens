@@ -29,7 +29,7 @@ let context,page,other;
   });
   await new Promise(r=>server.listen(0,'127.0.0.1',r));
   const origin='http://127.0.0.1:'+server.address().port;
-  context=await chromium.launchPersistentContext(process.env.RUNNER_TEMP+'/tidewater-profile',{headless:false,viewport:{width:1100,height:650},args:['--no-first-run','--no-default-browser-check','--disable-background-networking','--disable-sync','--window-position=30,70']});
+  context=await chromium.launchPersistentContext(process.env.RUNNER_TEMP+'/tidewater-profile',{headless:false,viewport:null,args:['--no-first-run','--no-default-browser-check','--disable-background-networking','--disable-sync','--window-position=30,70','--window-size=1102,776']});
   await context.route('**/*',r=>r.request().url().startsWith(origin+'/')?r.continue():r.abort());
   page=context.pages()[0];await page.goto(origin+'/');
   fs.writeFileSync(out+'/browser-ready.json',JSON.stringify({origin,browserVersion:context.browser().version(),temporaryProfile:true,realHeadfulBrowser:true}));

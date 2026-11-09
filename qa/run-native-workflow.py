@@ -75,7 +75,7 @@ def note(text):
 def choose_folder(path):
     keys(5,True,True);time.sleep(.6)
     nodes=tree('folder-go')
-    fields=[n for n in nodes if n.get('AXRole') in ('AXTextField','AXComboBox') and n.get('AXEnabled',True)]
+    fields=[n for n in nodes if n.get('AXRole') in ('AXTextField','AXComboBox') and n.get('AXEnabled',True) and n.get('AXIdentifier')!='Search' and (n.get('AXFocused') or n.get('AXRole')=='AXComboBox')]
     assert fields,'No native Go To Folder field'
     ui('type',index=fields[-1]['index'],value=str(path));keys(36);time.sleep(.7)
     press('Save Hand Off',required=False);time.sleep(1)
@@ -128,6 +128,7 @@ try:
     avatar=geometry['avatar'];press('Highlight');ui('drag',**{'from':canvas(avatar['x']+avatar['width']/2,avatar['y']+3),'to':canvas(avatar['x']+avatar['width']/2,avatar['y']+avatar['height']-3)})
     note('Center this avatar vertically in its row, like the one above.')
     state=json.loads((high/'session.json').read_text());assert len(state['annotations'])==2
+    assert [a['instruction'] for a in state['annotations']]==['Align the action buttons with the right edge of the email field.','Center this avatar vertically in its row, like the one above.'],'Native notes did not match requested instructions'
     expected_marks=state['annotations'];ui('click',point=[image['x']+image['width']-8,image['y']+image['height']-8])
     keys(6,True);time.sleep(.4);undone=json.loads((high/'session.json').read_text())['annotations']
     keys(6,True,True);time.sleep(.4);redone=json.loads((high/'session.json').read_text())['annotations']
@@ -137,6 +138,7 @@ try:
     nodes=tree('handoff-before')
     task=next(n for n in nodes if n.get('AXPlaceholderValue')=='What should the agent do?' or n.get('AXDescription')=='What should the agent do?')
     ui('type',index=task['index'],value='Polish the Share workspace dialog.');time.sleep(1)
+    assert json.loads((high/'session.json').read_text()).get('task')=='Polish the Share workspace dialog.'
     press('Save Hand Off');time.sleep(.7);choose_folder(parent)
     exported=wait_for(lambda:next(parent.glob('*/manifest.json'),None),15)
     assert exported,'Native export did not complete'
