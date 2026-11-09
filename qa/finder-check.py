@@ -32,6 +32,10 @@ command(['sw_vers'], 'macos')
 command(['sysctl', 'hw.model', 'hw.memsize'], 'machine')
 command(['swift', 'qa/capabilities.swift'], 'capabilities')
 source = subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+production = '28b836e'
+differences = subprocess.check_output(['git', 'diff', '--name-only', production, 'HEAD', '--', 'Sources', 'Package.swift', 'Brand', 'distribution/dmg', 'scripts', 'config'], text=True).splitlines()
+assert not differences, 'Production inputs differ from reviewed fix source'
+(out / 'production-input-comparison.json').write_text(json.dumps(dict(productionSource=subprocess.check_output(['git','rev-parse',production],text=True).strip(), diagnosticSource=source, matchingProductionPaths=True), indent=2))
 (out / 'development-source.json').write_text(json.dumps(dict(source=source, officialCandidate=False,
     maintainerAcceptance=False, noSecurityOrPrivacyApprovalsAutomated=True), indent=2))
 # Build the control using the exact pre-fix builder; the bundle and image assets are shared.
@@ -55,5 +59,9 @@ for label, image in [('alias-only-control', control), ('patched', patched)]:
             time.sleep(4)
             folder = out / ('finder-' + label + '-' + appearance.lower())
             folder.mkdir()
-            command(['swift', 'qa/finder-snapshot.swift', mount, folder], label + '-' + appearance + '-snapshot')
+            shot = command(['swift', 'qa/finder-snapshot.swift', mount, folder], label + '-' + appearance + '-snapshot')
+            if shot.get('exitCode') == 0:
+                command(['swift', 'distribution/dmg/verify-finder-background.swift', folder/'Finder.png', 'distribution/dmg/assets/background@1x.png'], label + '-' + appearance + '-rendered-pixels')
         time.sleep(1)
+
+command(['osascript', '-e', 'tell application "System Events" to tell appearance preferences to set dark mode to false'], 'restore-light-for-product-media', 15)

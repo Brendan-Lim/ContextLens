@@ -65,19 +65,17 @@ def mounted(image, readonly=True):
 
 def configure(mount):
     from ds_store import DSStore
-    from mac_alias import Alias, Bookmark
-    background = str((mount / '.background/background.tiff').resolve())
-    alias = Alias.for_file(background).to_bytes()
-    bookmark = Bookmark.for_file(background)
+    from mac_alias import Alias
+    alias = Alias.for_file(str((mount / '.background/background.tiff').resolve())).to_bytes()
     with DSStore.open(str(mount / '.DS_Store'), 'w+') as store:
-        # Modern Finder consumes a separate background bookmark, in addition to the legacy alias.
-        store['.']['pBBk'] = bookmark
         store['.']['vSrn'] = ('long', 1)
         store['.']['icvl'] = ('type', b'icnv')
         store['.']['bwsp'] = dict(ShowToolbar=False, ShowStatusBar=False, ShowSidebar=False,
                                  ShowPathbar=False, ShowTabView=False, WindowBounds=BOUNDS,
                                  ContainerShowSidebar=False, PreviewPaneVisibility=False)
+        # Finder requires the fallback RGB fields even when backgroundType selects a picture.
         store['.']['icvp'] = dict(viewOptionsVersion=1, backgroundType=2, backgroundImageAlias=alias,
+                                 backgroundColorRed=1.0, backgroundColorGreen=1.0, backgroundColorBlue=1.0,
                                  iconSize=104.0, textSize=13.0, labelOnBottom=True,
                                  showItemInfo=False, showIconPreview=False, gridSpacing=100.0,
                                  gridOffsetX=0.0, gridOffsetY=0.0, scrollPositionX=0.0,
@@ -88,9 +86,7 @@ def configure(mount):
 
 def verify_layout(mount):
     from ds_store import DSStore
-    from mac_alias import Alias, Bookmark
-    from mac_alias.bookmark import (kBookmarkPath, kBookmarkVolumeName,
-                                    kBookmarkCNIDPath, kBookmarkVolumeUUID)
+    from mac_alias import Alias
     with DSStore.open(str(mount / '.DS_Store'), 'r') as store:
         require(store['.']['icvl'] == (b'type', b'icnv'), 'Finder must use icon view')
         window = store['.']['bwsp']
@@ -99,17 +95,12 @@ def verify_layout(mount):
         options = store['.']['icvp']
         require(options['iconSize'] == 104 and options['backgroundType'] == 2
                 and options['labelOnBottom'] and options['arrangeBy'] == 'none', 'Finder icon layout differs')
+        require(all(type(options.get(channel)) is float and options[channel] == 1.0 for channel in
+                    ['backgroundColorRed', 'backgroundColorGreen', 'backgroundColorBlue']),
+                'Finder picture settings require fallback RGB color components')
         alias = Alias.from_bytes(options['backgroundImageAlias'])
         require(alias.target.posix_path == '/.background/background.tiff'
                 and alias.volume.name == 'ContextLens', 'Background alias points outside this volume')
-        try:
-            bookmark = store['.']['pBBk']
-        except KeyError:
-            raise ValueError('Missing Finder background bookmark') from None
-        expected = Bookmark.for_file(str((mount / '.background/background.tiff').resolve()))
-        require(all(bookmark[key] == expected[key] for key in
-                    [kBookmarkPath, kBookmarkVolumeName, kBookmarkCNIDPath, kBookmarkVolumeUUID]),
-                'Finder background bookmark does not identify this volume artwork')
         for name, position in POSITIONS.items():
             require(tuple(store[name]['Iloc']) == position, 'Finder icon position differs')
 

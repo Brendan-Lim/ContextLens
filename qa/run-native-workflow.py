@@ -114,7 +114,7 @@ try:
     ui('type',index=rename['index'],value='Share workspace')
     state=json.loads((high/'session.json').read_text())
     assert next(f for f in state['frames'] if f['id']==preferred)['name']=='Share workspace'
-    ui('click',point=[800,700]); snapshot('B-review.png')
+    keys(53); snapshot('B-review.png')
     press('Mark Up',False);time.sleep(.8)
     preferred_frame=next(f for f in state['frames'] if f['id']==preferred)
     press(preferred_frame['name'],False);time.sleep(.8)
@@ -156,8 +156,8 @@ try:
     low_state=json.loads((low/'session.json').read_text());shutil.copytree(low,out/'low-session')
     cases['selected-window-low']=dict(status='pass' if len(low_state['frames'])>=3 else 'fail',frames=len(low_state['frames']))
     # Repeat the real recording pill at the smaller available hosted display mode.
-    ui('display',width=1440);time.sleep(1)
-    browser('reset');layout=capture('High');snapshot('A2-recording-1440.png',True);stop()
+    ui('display',width=1600);time.sleep(1)
+    browser('reset');layout=capture('High');snapshot('A2-recording-1600.png',True);stop()
     ui('display');time.sleep(1)
     # A pending sampled change is stopped before normal settle when timing permits.
     browser('reset');pending=capture('High');browser('share');time.sleep(.3);stop()
@@ -238,7 +238,7 @@ finally:
         assert drag.get('exitCode')==0 and detached.get('exitCode')==0
         verification=command(['python3','-c',"import sys; sys.path[:0]=['scripts','distribution/dmg']; from release import verify; from dmg import inventory; from pathlib import Path; import os; a='/Applications/ContextLens.app'; verify(a,'development'); assert inventory(a)==inventory(Path(os.environ['RUNNER_TEMP'])/'unpacked/ContextLens.app'); print('Installed development bundle exactly matches source')"],'installed-bundle-verification')
         assert verification.get('exitCode')==0
-        command(['open','-n','/Applications/ContextLens.app','--args','--isolated-native-test','-onboardingComplete','YES'],'installed-launch');time.sleep(3)
+        command(['open','-n','/Applications/ContextLens.app'],'installed-launch');time.sleep(3)
         inspection=command(['swift','qa/inspect-installed.swift'],'installed-running-observation')
         observed=json.loads(inspection.get('stdout','{}'))
         cases['dmg-drag-install-eject-launch']=dict(status='pass' if observed.get('runningInstalledCopy') and observed.get('version')=='0.3.1' and observed.get('build')=='6' and observed.get('windowCount',0)>0 else 'pending',drag=drag,eject=detached,installedObservation=observed)
@@ -247,6 +247,7 @@ finally:
         # Compare LaunchServices with a direct launch of the identical installed bytes.
         # Never count this diagnostic fallback as a successful normal Finder installation launch.
         if observed.get('windowCount',0)==0:
+            if observed.get('pid'): command(['sample', observed['pid'], '3', '-file', out/'installed-launchservices.sample.txt'], 'installed-launchservices-sample', 15)
             command(['swift','qa/inspect-installed.swift','--terminate'],'installed-ls-termination')
             time.sleep(3)
             direct_log=(out/'installed-direct-process.log').open('w')
