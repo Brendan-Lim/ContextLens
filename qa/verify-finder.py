@@ -57,10 +57,13 @@ try:
                     installed = Path('/Applications/ContextLens.app')
                     assert dmg.inventory(installed) == dmg.inventory(app)
                     command(['codesign', '--verify', '--deep', '--strict', installed], 'installed-signature')
-                    command(['open', installed], 'installed-launch'); time.sleep(5)
-                    state = json.loads(command(['swift', 'qa/inspect-installed.swift'], 'installed-state').stdout)
-                    assert state.get('runningInstalledCopy') and state.get('finishedLaunching') and state.get('version') == '0.3.1' and state.get('build') == '6'
-                    command(['swift', 'qa/inspect-installed.swift', '--terminate'], 'terminate-installed')
+    # Launch only after the last mount context has completed a clean detach.
+    command(['hdiutil', 'info', '-plist'], 'images-after-eject')
+    assert str(image) not in (out / 'images-after-eject.json').read_text()
+    command(['open', '/Applications/ContextLens.app'], 'installed-launch-after-eject'); time.sleep(5)
+    state = json.loads(command(['swift', 'qa/inspect-installed.swift'], 'installed-state-after-eject').stdout)
+    assert state.get('runningInstalledCopy') and state.get('finishedLaunching') and state.get('version') == '0.3.1' and state.get('build') == '6'
+    command(['swift', 'qa/inspect-installed.swift', '--terminate'], 'terminate-installed')
     (out / 'matrix-results.json').write_text(json.dumps(results, indent=2))
 finally:
     command(['osascript', '-e', 'tell application "System Events" to tell appearance preferences to set dark mode to ' + old_dark], 'restore-appearance', check=False)
