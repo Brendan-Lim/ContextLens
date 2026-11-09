@@ -13,7 +13,7 @@ The selected **Twin Glass** design is a 720 × 440 point icy-blue surface with t
 | App icon center | (214, 254) |
 | Applications center | (506, 254) |
 | Real icon size | 104; labels below, 13 point |
-| Background | 720 × 440 at 72 DPI + 1440 × 880 at 144 DPI, combined TIFF |
+| Background | 720 × 440 and 1440 × 880 representations, combined TIFF |
 
 `assets/background.png` is the chosen 2× artwork; `background@1x.png` is 1×; `composition-b.png` is the alternative. The background has **no app or Applications icons**. The genuine Finder screenshots above show the installed layout. The renderer can also produce an optional labeled design proof in a new output directory; no diagrammatic folder is included in the disk background. Only the real app and `/Applications` symlink supply Finder icons.
 
@@ -50,6 +50,8 @@ python3 distribution/dmg/generate-background.py /tmp/contextlens-new-designs
 `render.swift` draws repository-owned geometry and branding using AppKit and rasterized system typography. Xcode's `pngcrush` optimizes losslessly. No font files or third-party artwork are redistributed. Review both compositions, hero and labeled icon proof before copying them into the repository and adding their reviewed hashes to the publication policy.
 
 ## Real Finder checks
+
+See the [hidden-file verification report](../../docs/dmg-hidden-files-verification.md) for the disposable Finder matrix and the separate installed-app discovery investigation.
 
 Metadata verification does **not** verify Finder rendering. On a disposable GUI Mac, open the actual DMG in light and dark appearances, with Show Hidden Files both disabled and enabled, at 1× and Retina where available. Inspect text, precise icons/labels, arrow clearance, window bounds and background sharpness. Drag onto the actual Applications shortcut, eject and launch the installed copy. Restore the disposable environment's original Finder and appearance settings afterward. Record results against the exact candidate hashes using [isolated acceptance](../../docs/beta-acceptance.md). Do not change the owner's settings, overwrite their installation or capture private desktop content.
 
