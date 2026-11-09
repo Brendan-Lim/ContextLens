@@ -907,32 +907,53 @@
       "purpose": "Owned decorative README brand artwork rendered by Brand/readme/render.swift from repository branding and system fonts; pixels reviewed; depicts no application UI and is not a screenshot."
     },
     "docs/media/screens/A-capture.png": {
-      "sha256": "12795b4eb224d741d9f9b0c767c3e26ae308177080a6a699cb6d99bb37cc4ec6",
-      "purpose": "Owner-approved genuine ContextLens 0.3.1 screenshot: choose the fictional Tidewater window. Only fictional Tidewater content; metadata removed without changing pixels."
+      "sha256": "096669e4c3e0bf8d670b0f3cda1db5653613cdf88e34d4c25d14e0c1c2d8144c",
+      "purpose": "Owner-approved genuine native Retina 2× ContextLens 0.3.1 screenshot: choose the fictional Tidewater window. Only fictional Tidewater content; metadata removed without changing pixels. Native 2× capture from hosted run 42588372941; owner explicitly approved this exact reviewed file for integration on 9 November 2026.",
+      "historicalSHA256": [
+        "12795b4eb224d741d9f9b0c767c3e26ae308177080a6a699cb6d99bb37cc4ec6"
+      ]
     },
     "docs/media/screens/A2-recording.png": {
-      "sha256": "67432f8266459d63b75e476c0ab6764983bd964ac37173f41516be48645dfefd",
-      "purpose": "Owner-approved genuine ContextLens 0.3.1 screenshot: genuine recording pill with full Stop label. Only fictional Tidewater content; metadata removed without changing pixels."
+      "sha256": "82869e7403f81601eea443555bfa4b1a0f2292149e83bf2959aa94e412658618",
+      "purpose": "Owner-approved genuine native Retina 2× ContextLens 0.3.1 screenshot: genuine recording pill with full Stop label. Only fictional Tidewater content; metadata removed without changing pixels. Native 2× capture from hosted run 42588372941; owner explicitly approved this exact reviewed file for integration on 9 November 2026.",
+      "historicalSHA256": [
+        "67432f8266459d63b75e476c0ab6764983bd964ac37173f41516be48645dfefd"
+      ]
     },
     "docs/media/screens/B-review.png": {
-      "sha256": "7d17d48ca6b444d18e8e9fe8f8fa1abcca0069bc0321819d9a9916ccdbf18ad1",
-      "purpose": "Owner-approved genuine ContextLens 0.3.1 screenshot: review five genuine captured Tidewater states. Only fictional Tidewater content; metadata removed without changing pixels."
+      "sha256": "bd2caea307af1f513148929fe2b2550387d1a7ee704fcb95dd992502c9814a42",
+      "purpose": "Owner-approved genuine native Retina 2× ContextLens 0.3.1 screenshot: review five genuine captured Tidewater states. Only fictional Tidewater content; metadata removed without changing pixels. Native 2× capture from hosted run 42588372941; owner explicitly approved this exact reviewed file for integration on 9 November 2026.",
+      "historicalSHA256": [
+        "7d17d48ca6b444d18e8e9fe8f8fa1abcca0069bc0321819d9a9916ccdbf18ad1"
+      ]
     },
     "docs/media/screens/C-markup.png": {
-      "sha256": "98791ae2e39ab2cdc90e55ac19342eb646a560eff89f1abec5621a0f308a3bc5",
-      "purpose": "Owner-approved genuine ContextLens 0.3.1 screenshot: two native marks with the requested instructions. Only fictional Tidewater content; metadata removed without changing pixels."
+      "sha256": "f6e7634afb2ee863cb76c5b28e4340977ab6eb4e8d21f426e52e4506019398bb",
+      "purpose": "Owner-approved genuine native Retina 2× ContextLens 0.3.1 screenshot: two native marks with the requested instructions. Only fictional Tidewater content; metadata removed without changing pixels. Native 2× capture from hosted run 42588372941; owner explicitly approved this exact reviewed file for integration on 9 November 2026.",
+      "historicalSHA256": [
+        "98791ae2e39ab2cdc90e55ac19342eb646a560eff89f1abec5621a0f308a3bc5"
+      ]
     },
     "docs/media/screens/D-handoff.png": {
-      "sha256": "7565ba3c4621207fd9f4cd02fc15f0c4f1bef7300d998841dadeb9a8c9592014",
-      "purpose": "Owner-approved genuine ContextLens 0.3.1 screenshot: actual saved Hand Off and context preview. Only fictional Tidewater content; metadata removed without changing pixels."
+      "sha256": "923857f4678d73acf7423ca9999ac84a69d936897e95ecaa50989de5077bfe80",
+      "purpose": "Owner-approved genuine native Retina 2× ContextLens 0.3.1 screenshot: actual saved Hand Off and context preview. Only fictional Tidewater content; metadata removed without changing pixels. Native 2× capture from hosted run 42588372941; owner explicitly approved this exact reviewed file for integration on 9 November 2026.",
+      "historicalSHA256": [
+        "7565ba3c4621207fd9f4cd02fc15f0c4f1bef7300d998841dadeb9a8c9592014"
+      ]
     },
     "docs/media/screens/E-dmg-dark.png": {
-      "sha256": "155ecf9dc6f8d8dd0f9db0f9b866f920df69864ac82ae8a0ab962d602a398835",
-      "purpose": "Owner-approved genuine ContextLens 0.3.1 screenshot: genuine Dark Finder installer with Twin Glass and real draggable icons. Owned installer artwork and system icons only; metadata removed without changing pixels."
+      "sha256": "db0bdcb648e9465a9edfab6aa393ed9c8f2e871b808aef0badcf503fad3d6855",
+      "purpose": "Owner-approved genuine native Retina 2× ContextLens 0.3.1 screenshot: genuine Dark Finder installer with Twin Glass and real draggable icons. Owned installer artwork and system icons only; metadata removed without changing pixels. Native 2× capture from hosted run 42588372941; owner explicitly approved this exact reviewed file for integration on 9 November 2026.",
+      "historicalSHA256": [
+        "155ecf9dc6f8d8dd0f9db0f9b866f920df69864ac82ae8a0ab962d602a398835"
+      ]
     },
     "docs/media/screens/E-dmg-light.png": {
-      "sha256": "b5f8219a3c8cf9fbc569ad4801636ba35b347b359f849fbab9d66c669cb364d9",
-      "purpose": "Owner-approved genuine ContextLens 0.3.1 screenshot: genuine Light Finder installer with Twin Glass and real draggable icons. Owned installer artwork and system icons only; metadata removed without changing pixels."
+      "sha256": "9f1d6a1045e17741d5cd09d5ea688295a8ac5bfb1f775a67287d04d9831ccd54",
+      "purpose": "Owner-approved genuine native Retina 2× ContextLens 0.3.1 screenshot: genuine Light Finder installer with Twin Glass and real draggable icons. Owned installer artwork and system icons only; metadata removed without changing pixels. Native 2× capture from hosted run 42588372941; owner explicitly approved this exact reviewed file for integration on 9 November 2026.",
+      "historicalSHA256": [
+        "b5f8219a3c8cf9fbc569ad4801636ba35b347b359f849fbab9d66c669cb364d9"
+      ]
     }
   },
   "pathExamples": {
