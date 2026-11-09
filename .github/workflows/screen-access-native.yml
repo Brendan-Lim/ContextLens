@@ -1,4 +1,4 @@
-name: Disposable Screen Recording observations
+name: Disposable macOS 26 permission UI follow-up
 on:
   push:
     branches: [qa/screen-access-native]
@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [macos-15, macos-26]
+        os: [macos-latest]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 25
     steps:
@@ -17,17 +17,11 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Build two development identities without changing signing policy
-        env:
-          CONTEXTLENS_SIGN_IDENTITY: '-'
+      - name: Confirm disposable macOS 26 and unchanged product inputs
         run: |
           sw_vers
-          xcodebuild -version
-          git worktree add --detach "$RUNNER_TEMP/control-source" 5b31ae55c676974fa2db8e9396643473dde266ee
-          "$RUNNER_TEMP/control-source/scripts/build-app.sh" --output "$RUNNER_TEMP/control-unpacked"
-          scripts/build-app.sh --output "$RUNNER_TEMP/unpacked"
-      - name: Real own-window API observations at the same install path
-        run: python3 qa/observe.py native
+          [[ "$(sw_vers -productVersion)" == 26.* ]]
+          git diff --exit-code 65d2c4f2756db06f33034667a4a7c0eb10fda40d -- Sources scripts distribution config
       - name: Build clearly labeled synthetic UI failure fixtures
         env:
           CONTEXTLENS_SIGN_IDENTITY: '-'
