@@ -4,6 +4,7 @@ import ScreenCaptureKit
 import ApplicationServices
 import ContextLensCore
 import ContextLensImaging
+import Security
 
 public struct WindowChoice: Identifiable {
     public var id: CGWindowID { window.windowID }
@@ -24,6 +25,31 @@ public struct WindowChoice: Identifiable {
         _ = AXIsProcessTrustedWithOptions(options)
     }
     public static func openScreenSettings() { NSWorkspace.shared.open(URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_ScreenCapture")!) }
+    /// Read the identity of this process, never a different copy registered for the bundle ID.
+    public static var runningCopyDescription: String {
+        let bundle = Bundle.main
+        let version = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "unknown"
+        let build = bundle.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "unknown"
+        var lines = [bundle.bundleURL.path, "\(bundle.bundleIdentifier ?? "unknown identifier") · \(version) (\(build))",
+                     "Executable: \(bundle.executableURL?.path ?? "unknown")", "Process: \(ProcessInfo.processInfo.processIdentifier)"]
+        var code: SecCode?, staticCode: SecStaticCode?, info: CFDictionary?
+        if SecCodeCopySelf([], &code) == errSecSuccess, let code,
+           SecCodeCopyStaticCode(code, [], &staticCode) == errSecSuccess, let staticCode,
+           SecCodeCopySigningInformation(staticCode, SecCSFlags(rawValue: kSecCSSigningInformation), &info) == errSecSuccess,
+           let values = info as? [String: Any], let flags = values[kSecCodeInfoFlags as String] as? NSNumber {
+            if flags.uint32Value & SecCodeSignatureFlags.adhoc.rawValue != 0 {
+                lines.append("Ad-hoc signature: updates can require a new Screen Recording approval.")
+            } else {
+                lines.append("Certificate signature. Team: \(values[kSecCodeInfoTeamIdentifier as String] as? String ?? "unavailable")")
+            }
+            if let hash = values[kSecCodeInfoUnique as String] as? Data {
+                lines.append("Code hash: " + hash.map { String(format: "%02x", $0) }.joined())
+            }
+        } else {
+            lines.append("Signing identity could not be read. Screen Recording access must be checked separately.")
+        }
+        return lines.joined(separator: "\n")
+    }
 }
 public enum WindowCapture {
     public static func selected(id: CGWindowID, pid: pid_t, in available: [WindowChoice]) throws -> WindowChoice {

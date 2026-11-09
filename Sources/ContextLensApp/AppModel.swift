@@ -41,10 +41,9 @@ import ContextLensCapture
     @Published var exportPreviewError: String?
     @Published var preview: NSImage?
     @Published var editorImage: NSImage?
-    @Published var screenPermission = false
+    @Published private(set) var screenAccess: ScreenAccessState = .unverified
+    var screenPermission: Bool { screenAccess.isVerified }
     @Published var checkingScreenAccess = false
-    @Published var screenAccessError: String?
-    private var screenAccessVerified = false
     @Published var axPermission = Permissions.accessibility
     @Published var storageBase = UserDefaults.standard.string(forKey: "storagePath").map { URL(fileURLWithPath: $0) } ?? FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("ContextLens/Sessions") {
         didSet { UserDefaults.standard.set(storageBase.path, forKey: "storagePath") }
@@ -105,29 +104,38 @@ import ContextLensCapture
         axPermission = Permissions.accessibility
         do {
             guard let available = try await ScreenAccessProbe.windows(preflightGranted: Permissions.screenRecording,
-                                                                      userInitiated: userInitiated, previouslyVerified: screenAccessVerified) else {
-                screenPermission = false; windows = []; windowID = nil; preview = nil
-                status = "Screen capture access has not been verified. Choose Check Access."
+                                                                      userInitiated: userInitiated, previouslyVerified: screenPermission) else {
+                windows = []; windowID = nil; preview = nil
+                // A skipped passive check has no new evidence. Preserve an earlier
+                // denial/error instead of relabeling it as an unverified first launch.
+                status = screenAccess.message
                 return
             }
-            screenAccessVerified = true; screenPermission = true; screenAccessError = nil; windows = available
+            screenAccess = .verified; windows = available
             if !available.contains(where: { $0.id == windowID }) { windowID = nil; preview = nil }
             if available.isEmpty { status = "Access verified. Open an application window, then refresh." }
             else if !userInitiated { if session.frames.isEmpty { status = "Choose a window to begin." } }
             else { status = "Screen capture access verified. Select a window to capture." }
         } catch {
-            screenAccessVerified = false; screenPermission = false; windows = []; windowID = nil; preview = nil
-            screenAccessError = error.localizedDescription
-            status = "macOS could not verify screen capture access. If Settings is enabled, reopen this build and check again."
+            screenAccess = ScreenAccessState(error: error, permissionDenied: WindowCapture.endReason(for: error) == .permissionDenied)
+            windows = []; windowID = nil; preview = nil
+            status = screenAccess.message
         }
     }
     func showPreview() async {
         guard !recording, let w = windows.first(where: { $0.id == windowID }) else { return }
         do { let (img, _) = try await WindowCapture.image(window: w.window); preview = NSImage(cgImage: img, size: .zero) }
-        catch { self.error = error.localizedDescription }
+        catch {
+            if WindowCapture.endReason(for: error) == .permissionDenied {
+                screenAccess = ScreenAccessState(error: error, permissionDenied: true)
+                windows = []; windowID = nil; preview = nil
+            }
+            self.error = ScreenAccessState(error: error, permissionDenied: false).errorDetails
+        }
     }
     func start() async {
-        guard !recording, !stopping, let chosen = windows.first(where: { $0.id == windowID }), let target = chosen.captureIdentity else { return }
+        guard !recording, !stopping, !checkingScreenAccess, screenPermission,
+              let chosen = windows.first(where: { $0.id == windowID }), let target = chosen.captureIdentity else { return }
         if captureCompletion?.needsRecovery == true {
             guard await saveSession(), !recording, !stopping else { return }
         }
@@ -169,7 +177,11 @@ import ContextLensCapture
                     startedAt = Date(); captureStartedAt = startedAt; installEventMonitors()
                 }, missingReason: {
                     NSRunningApplication(processIdentifier: target.processID)?.isTerminated != false ? .applicationExited : .targetUnavailable
-                }, classify: { WindowCapture.endReason(for: $0) })
+                }, classify: { [self] failure in
+                    let reason = WindowCapture.endReason(for: failure)
+                    if reason == .permissionDenied { screenAccess = ScreenAccessState(error: failure, permissionDenied: true) }
+                    return reason
+                })
             captureRun = run
             captureTask = Task { [self] in
                 let result = await run.run()
@@ -179,7 +191,7 @@ import ContextLensCapture
                 mainTab = .review; status = result.status(frameCount: session.frames.count)
                 if let detail = result.errorDetails { error = detail }
                 if result.reason == .permissionDenied {
-                    screenPermission = false; screenAccessVerified = false; windows = []; windowID = nil; preview = nil
+                    windows = []; windowID = nil; preview = nil
                 }
                 if selectedFrameID == nil { select(session.frames.first?.id) }
             }

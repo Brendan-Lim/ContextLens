@@ -9,6 +9,7 @@ struct OnboardingView: View {
     @EnvironmentObject var model: AppModel
     var done: () -> Void
     @State private var mascotUp = false
+    @State private var showScreenAccessDetails = false
     @Environment(\.accessibilityReduceMotion) private var reduce
 
     var body: some View {
@@ -28,15 +29,19 @@ struct OnboardingView: View {
             .staggerIn(0)
             VStack(spacing: 10) {
                 StepRow(icon: "display", title: "Screen Recording", tag: "Required",
-                        detail: "Lets ContextLens capture the one window you pick. macOS asks once.", granted: model.screenPermission) {
+                        detail: "\(model.screenAccess.title). \(model.screenAccess.message)", granted: model.screenPermission) {
                     Button("Open Settings", action: Permissions.openScreenSettings).buttonStyle(.lens(.quiet, height: 32))
-                    Button("Allow") {
-                        Permissions.requestScreen()
-                        Task { await model.refresh(userInitiated: true) }
-                    }
+                    Button(model.checkingScreenAccess ? "Checking…" : "Check Access") { Task { await model.refresh(userInitiated: true) } }
                     .buttonStyle(.lens(.primary, height: 32))
+                    .disabled(model.checkingScreenAccess)
+                    Button("Details…") { showScreenAccessDetails = true }
+                        .buttonStyle(.lens(.quiet, height: 32))
                 }
                 .staggerIn(1)
+                .popover(isPresented: $showScreenAccessDetails) {
+                    ScrollView { ScreenAccessDetails().padding(20) }
+                        .frame(width: 420, height: 360)
+                }
                 StepRow(icon: "cursorarrow.rays", title: "Accessibility", tag: "Optional",
                         detail: "Notes which kind of control you clicked, like “button”. Never reads text, values or passwords.", granted: model.axPermission) {
                     Button("Allow", action: Permissions.requestAccessibility).buttonStyle(.lens(.ghost, height: 32))
