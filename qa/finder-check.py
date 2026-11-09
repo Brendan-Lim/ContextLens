@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import sys
 import time
+import tempfile
 
 assert os.environ.get('GITHUB_ACTIONS') == 'true', 'Disposable hosted runner required'
 root = Path.cwd()
@@ -46,7 +47,11 @@ control = candidate / 'ContextLens-alias-only-control.dmg'
 (out / 'control-structural-verification.json').write_text(json.dumps(scope['build'](app, control), indent=2))
 patched = candidate / 'ContextLens-development.dmg'
 (out / 'patched-structural-verification.json').write_text(json.dumps(dmg.build(app, patched), indent=2))
-(out / 'development-zip-verification.json').write_text(json.dumps(package(app, candidate, development=True), indent=2, default=str))
+archive = package(app, candidate, development=True)
+with tempfile.TemporaryDirectory(prefix='zip-equality-', dir=temp) as destination:
+    subprocess.run(['ditto', '-x', '-k', str(archive), destination], check=True, capture_output=True)
+    assert dmg.inventory(Path(destination)/'ContextLens.app') == dmg.inventory(app), 'ZIP bundle differs from DMG source'
+(out / 'development-zip-verification.json').write_text(json.dumps(dict(archive=archive.name, zipAndDMGBundlesEqual=True, strictSignaturesVerified=True), indent=2))
 # Keep only public-source provenance and final-byte hashes here; all evidence is encrypted.
 (out / 'development-hashes.json').write_text(json.dumps({p.name: dmg.sha256(p) for p in candidate.iterdir() if p.is_file()}, indent=2))
 for label, image in [('alias-only-control', control), ('patched', patched)]:
@@ -61,7 +66,10 @@ for label, image in [('alias-only-control', control), ('patched', patched)]:
             folder.mkdir()
             shot = command(['swift', 'qa/finder-snapshot.swift', mount, folder], label + '-' + appearance + '-snapshot')
             if shot.get('exitCode') == 0:
-                command(['swift', 'distribution/dmg/verify-finder-background.swift', folder/'Finder.png', 'distribution/dmg/assets/background@1x.png'], label + '-' + appearance + '-rendered-pixels')
+                pixels = command(['swift', 'distribution/dmg/verify-finder-background.swift', folder/'Finder.png', 'distribution/dmg/assets/background@1x.png'], label + '-' + appearance + '-rendered-pixels')
+                assert pixels.get('exitCode') == (0 if label == 'patched' else 1), 'Rendered artwork differs from expected control/fix'
+            else:
+                raise RuntimeError('Genuine Finder capture unavailable')
         time.sleep(1)
 
 command(['osascript', '-e', 'tell application "System Events" to tell appearance preferences to set dark mode to false'], 'restore-light-for-product-media', 15)
