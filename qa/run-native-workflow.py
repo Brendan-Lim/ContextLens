@@ -179,7 +179,7 @@ try:
     cases['rapid-start-stop']=dict(status='pass' if len(set(cycles))==5 and all(b-a<1 for a,b in zip(starts,stops)) else 'pending',sessions=cycles,startToStopSeconds=[b-a for a,b in zip(starts,stops)],note='Five immediate UI start/stop cycles. Delayed-start cancellation still pending.')
     # Reopen the original real session through NSOpenPanel, preserving its actual marks.
     keys(31,True);time.sleep(.7);choose_folder(high,'Open');time.sleep(.7)
-    reopened_text=status_text();press('Mark Up',False);time.sleep(.6);press('Share workspace');time.sleep(.4)
+    reopened_text=status_text();press('Mark Up',False);time.sleep(.6);press('Share workspace',False);time.sleep(.4)
     reopened_nodes=tree('reopened')
     notes=[n.get('AXValue') for n in reopened_nodes if n.get('AXPlaceholderValue')=='What should change?']
     cases['session-reopen-recovery']=dict(status='pass' if all(a['instruction'] in notes for a in expected_marks) and json.loads((high/'session.json').read_text())['annotations']==expected_marks else 'fail',notes=notes,observedStatus=reopened_text)
@@ -235,7 +235,7 @@ finally:
         drag=command(['swift','qa/finder-install.swift'],'installer-real-drag')
         detached=command(['hdiutil','detach',mount],'installer-eject')
         assert drag.get('exitCode')==0 and detached.get('exitCode')==0
-        verification=command(['python3','-c',"import importlib.util; s=importlib.util.spec_from_file_location('official','scripts/unnotarized-release.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); a='/Applications/ContextLens.app'; m.verify_bundle(a); print(m.bundle_hash(a))"],'installed-bundle-verification')
+        verification=command(['python3','-c',"import importlib.util,sys; sys.path.insert(0,'scripts'); s=importlib.util.spec_from_file_location('official','scripts/unnotarized-release.py'); m=importlib.util.module_from_spec(s); s.loader.exec_module(m); a='/Applications/ContextLens.app'; m.verify_bundle(a); print(m.bundle_hash(a))"],'installed-bundle-verification')
         assert verification.get('exitCode')==0 and '9e689eba51491066164b315dd2ac94d525154d4d7c8dadd1ea5124ed5775e1db' in verification.get('stdout','')
         command(['open','-n','/Applications/ContextLens.app','--args','--isolated-native-test','-onboardingComplete','YES'],'installed-launch');time.sleep(3)
         inspection=command(['swift','qa/inspect-installed.swift'],'installed-running-observation')
@@ -243,7 +243,7 @@ finally:
         cases['dmg-drag-install-eject-launch']=dict(status='pass' if observed.get('runningInstalledCopy') and observed.get('version')=='0.3.1' and observed.get('build')=='6' and observed.get('windowCount',0)>0 else 'pending',drag=drag,eject=detached,installedObservation=observed)
         installed_images=out/'installed-launch';installed_images.mkdir()
         command(['swift','qa/capture-windows.swift',installed_images,'dev.contextlens.app'],'installed-launch-images')
-    except Exception as error:cases['dmg-drag-install-eject-launch']=dict(status='pending',observation=str(error))
+    except Exception as error:cases['dmg-drag-install-eject-launch']=dict(status='pending',observation=repr(error))
     (out/'native-case-results.json').write_text(json.dumps(dict(cases=cases,maintainerApproval=False,noTCCChanges=True,exactCandidate=True,realNativeRecording=bool(cases.get('selected-window-high',{}).get('status')=='pass')),indent=2))
     if browser_process:
         browser_process.terminate()
