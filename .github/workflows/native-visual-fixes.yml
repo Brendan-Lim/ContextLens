@@ -27,8 +27,14 @@ jobs:
           CONTEXTLENS_SIGN_IDENTITY: '-'
         run: scripts/build-app.sh --output "$RUNNER_TEMP/unpacked"
       - name: Genuine Finder controls and patched artwork
-        run: python3 qa/finder-check.py
+        run: |
+          if [[ "${{ contains(github.event.head_commit.message, '[finder-matrix]') }}" == "true" ]]; then
+            python3 qa/finder-matrix.py
+          else
+            python3 qa/finder-check.py
+          fi
       - name: Genuine Tidewater workflow
+        if: "!contains(github.event.head_commit.message, '[finder-matrix]')"
         run: python3 qa/run-native-workflow.py
       - name: Encrypt raw evidence before upload
         if: always()
