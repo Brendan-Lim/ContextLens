@@ -8,7 +8,7 @@ permissions:
 jobs:
   observe:
     runs-on: macos-15
-    timeout-minutes: 15
+    timeout-minutes: 20
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -22,7 +22,10 @@ jobs:
           "$RUNNER_TEMP/qa-python/bin/python" -m pip install --require-hashes -r distribution/dmg/requirements.txt
           echo "$RUNNER_TEMP/qa-python/bin" >> "$GITHUB_PATH"
       - name: Observe the downloaded candidate without rebuilding
-        run: python3 qa/run-diagnostics.py
+        run: |
+          npm --prefix Benchmarks ci --ignore-scripts
+          (cd Benchmarks && npx playwright install chromium)
+          python3 qa/run-native-workflow.py
       - name: Encrypt raw evidence before uploading
         if: always()
         run: |
