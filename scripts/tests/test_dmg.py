@@ -60,48 +60,46 @@ class DiskImageSafetyTests(unittest.TestCase):
             self.assertEqual(target.read_bytes(), b'immutable')
 
 
-class FinderBackgroundReferenceTests(unittest.TestCase):
-    """Model the on-volume records without requiring native build dependencies on Linux."""
+class FinderIconSettingsTests(unittest.TestCase):
+    """Finder rejects picture settings without its fallback RGB color components."""
     def setUp(self):
-        self.records = {'.': {}, 'ContextLens.app': {}, 'Applications': {}}
-        self.bookmark = {1: ['.background', 'background.tiff'], 2: 'ContextLens',
-                         3: [21, 22], 4: 'synthetic-volume-uuid'}
         from unittest.mock import MagicMock
-        self.store = MagicMock()
-        self.store.__enter__.return_value = self.records
-        self.alias = SimpleNamespace(target=SimpleNamespace(posix_path='/.background/background.tiff'),
-                                     volume=SimpleNamespace(name='ContextLens'), to_bytes=lambda: b'alias')
+        self.records = {'.': {}, 'ContextLens.app': {}, 'Applications': {}}
+        store = MagicMock()
+        store.__enter__.return_value = self.records
+        alias = SimpleNamespace(target=SimpleNamespace(posix_path='/.background/background.tiff'),
+                                volume=SimpleNamespace(name='ContextLens'), to_bytes=lambda: b'alias')
         modules = {
-            'ds_store': SimpleNamespace(DSStore=SimpleNamespace(open=lambda *args: self.store)),
-            'mac_alias': SimpleNamespace(Alias=SimpleNamespace(for_file=lambda path: self.alias,
-                                                               from_bytes=lambda value: self.alias),
-                                         Bookmark=SimpleNamespace(for_file=lambda path: dict(self.bookmark))),
-            'mac_alias.bookmark': SimpleNamespace(kBookmarkPath=1, kBookmarkVolumeName=2,
-                                                  kBookmarkCNIDPath=3, kBookmarkVolumeUUID=4),
+            'ds_store': SimpleNamespace(DSStore=SimpleNamespace(open=lambda *args: store)),
+            'mac_alias': SimpleNamespace(Alias=SimpleNamespace(for_file=lambda path: alias,
+                                                               from_bytes=lambda value: alias)),
         }
         self.modules = patch.dict(sys.modules, modules)
         self.modules.start()
         self.addCleanup(self.modules.stop)
         configure(Path('/tmp/synthetic-volume'))
-        # DSStore decodes explicitly typed entries when reading them back.
         self.records['.']['icvl'] = (b'type', b'icnv')
 
-    def test_alias_only_layout_is_rejected(self):
-        self.records['.'].pop('pBBk', None)
-        with self.assertRaisesRegex(ValueError, 'bookmark'):
+    def test_picture_requires_every_fallback_color_component(self):
+        options = self.records['.']['icvp']
+        # This is the original blank-background layout despite a valid alias and artwork.
+        for channel in ['backgroundColorRed', 'backgroundColorGreen', 'backgroundColorBlue']:
+            options.pop(channel, None)
+        with self.assertRaisesRegex(ValueError, 'color'):
             verify_layout(Path('/tmp/synthetic-volume'))
 
-    def test_bookmark_must_identify_the_background_on_this_volume(self):
+    def test_complete_picture_settings_and_each_missing_or_malformed_component(self):
+        options = self.records['.']['icvp']
         verify_layout(Path('/tmp/synthetic-volume'))
-        self.assertEqual(self.records['.']['pBBk'][1], ['.background', 'background.tiff'])
-        for key, replacement in [(1, ['elsewhere', 'background.tiff']), (2, 'Other volume'),
-                                 (3, [99, 100]), (4, 'other-volume-uuid')]:
-            with self.subTest(key=key):
-                original = self.records['.']['pBBk'][key]
-                self.records['.']['pBBk'][key] = replacement
-                with self.assertRaisesRegex(ValueError, 'bookmark'):
-                    verify_layout(Path('/tmp/synthetic-volume'))
-                self.records['.']['pBBk'][key] = original
+        for channel in ['backgroundColorRed', 'backgroundColorGreen', 'backgroundColorBlue']:
+            self.assertEqual(options[channel], 1.0)
+            for value in [None, '1.0', True, 0.5]:
+                with self.subTest(channel=channel, value=value):
+                    if value is None: options.pop(channel)
+                    else: options[channel] = value
+                    with self.assertRaisesRegex(ValueError, 'color'):
+                        verify_layout(Path('/tmp/synthetic-volume'))
+                    options[channel] = 1.0
 
 
 if __name__ == '__main__': unittest.main()

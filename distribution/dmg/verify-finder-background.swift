@@ -26,8 +26,9 @@ func rgb(_ rep: NSBitmapImageRep, _ x: Int, _ y: Int) -> [Double] {
 }
 var best = Double.infinity, bestOffset = 0, bestPatches: [Double] = []
 // Include the system titlebar in the screenshot; discover its height rather than cropping pixels.
+let lastPatchRow = patches.map { $0.maxY }.max() ?? 440
 for offset in 0...64 {
-    guard Int((440 + Double(offset)) * scale) <= capture.pixelsHigh + 2 else { continue }
+    guard Int((lastPatchRow + Double(offset)) * scale) <= capture.pixelsHigh + 2 else { continue }
     let errors = patches.map { patch -> Double in
         var error = 0.0, count = 0
         for y in stride(from: Int(patch.minY), to: Int(patch.maxY), by: 2) {
