@@ -384,7 +384,8 @@ private struct AppIcon: View {
 private struct PermissionBlock: View {
     @EnvironmentObject var model: AppModel
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        ScrollView {
+          VStack(alignment: .leading, spacing: 10) {
             Label(model.screenAccess.title, systemImage: "macwindow").font(Lens.font(13.5, .heavy)).foregroundStyle(Lens.ink)
             Text(model.screenAccess.message)
                 .font(Lens.font(12)).foregroundStyle(Lens.muted).fixedSize(horizontal: false, vertical: true)
@@ -394,10 +395,11 @@ private struct PermissionBlock: View {
                 Button("Open System Settings", action: Permissions.openScreenSettings)
                     .buttonStyle(.lens(.ghost, height: 34, fullWidth: true))
             }
-            ScrollView { ScreenAccessDetails() }
-                .frame(maxHeight: 220)
+            ScreenAccessDetails()
+          }
+          .padding(12)
         }
-        .padding(12)
+        .frame(height: 260)
         .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Lens.warningFill))
     }
 }

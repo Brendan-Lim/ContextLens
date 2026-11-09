@@ -11,12 +11,12 @@ struct ScreenAccessDetails: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
+            Text("Running copy: \(Bundle.main.bundleURL.path)")
+                .font(Lens.mono(10.5)).textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
             if let message = model.screenAccess.errorDetails {
                 Text(message).font(Lens.mono(10.5)).textSelection(.enabled)
                     .fixedSize(horizontal: false, vertical: true)
             }
-            Text("Running copy: \(Bundle.main.bundleURL.path)")
-                .font(Lens.mono(10.5)).textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
             DisclosureGroup("Copy and signing details", isExpanded: $showIdentity) {
                 Text(identity).font(Lens.mono(10.5)).textSelection(.enabled)
                     .fixedSize(horizontal: false, vertical: true).padding(.top, 4)
