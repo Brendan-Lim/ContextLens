@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / 'scripts'))
 from release import require, run, verify
 
-ASSETS = Path(__file__).with_name('assets')
+BACKGROUND = Path('ContextLens.app/Contents/Resources/InstallerBackground.tiff')
 POSITIONS = {'ContextLens.app': (214, 254), 'Applications': (506, 254)}
 BOUNDS = '{{160, 120}, {720, 440}}'
 
@@ -66,7 +66,7 @@ def mounted(image, readonly=True):
 def configure(mount):
     from ds_store import DSStore
     from mac_alias import Alias
-    alias = Alias.for_file(str((mount / '.background/background.tiff').resolve())).to_bytes()
+    alias = Alias.for_file(str((mount / BACKGROUND).resolve())).to_bytes()
     with DSStore.open(str(mount / '.DS_Store'), 'w+') as store:
         store['.']['vSrn'] = ('long', 1)
         store['.']['icvl'] = ('type', b'icnv')
@@ -99,10 +99,17 @@ def verify_layout(mount):
                     ['backgroundColorRed', 'backgroundColorGreen', 'backgroundColorBlue']),
                 'Finder picture settings require fallback RGB color components')
         alias = Alias.from_bytes(options['backgroundImageAlias'])
-        require(alias.target.posix_path == '/.background/background.tiff'
+        require(alias.target.posix_path == '/' + BACKGROUND.as_posix()
                 and alias.volume.name == 'ContextLens', 'Background alias points outside this volume')
         for name, position in POSITIONS.items():
             require(tuple(store[name]['Iloc']) == position, 'Finder icon position differs')
+
+
+def verify_root(mount):
+    # These are the only authored root entries. Fail closed if artwork, indexing
+    # markers or any other file/directory would become visible with hidden files on.
+    require({path.name for path in Path(mount).iterdir()} ==
+            {'ContextLens.app', 'Applications', '.DS_Store'}, 'Unexpected or missing DMG top-level entries')
 
 
 def verify_dmg(image, app=None, install_copy=False):
@@ -110,12 +117,13 @@ def verify_dmg(image, app=None, install_copy=False):
     run('hdiutil', 'verify', image)  # Validates the UDIF checksum, separately from SHA-256.
     with mounted(image) as mount:
         run('diskutil', 'verifyVolume', mount)
+        verify_root(mount)
         shortcut = mount / 'Applications'
         require(shortcut.is_symlink() and os.readlink(shortcut) == '/Applications'
                 and shortcut.resolve() == Path('/Applications'), 'Applications must be the real destination')
         bundle = mount / 'ContextLens.app'
         data = verify(bundle, 'development')
-        require((mount / '.background/background.tiff').stat().st_size > 0, 'Missing Retina background')
+        require((mount / BACKGROUND).stat().st_size > 0, 'Missing signed Retina background')
         verify_layout(mount)
         contents = inventory(bundle)
         if app is not None:
@@ -130,7 +138,7 @@ def verify_dmg(image, app=None, install_copy=False):
     return dict(version=data['version'], build=data['build'], architecture='arm64', minimumMacOS=data['minimumMacOS'],
                 sha256=sha256(image), bundleInventorySHA256=hashlib.sha256(
                     __import__('json').dumps(contents, sort_keys=True).encode()).hexdigest(),
-                mount='pass', filesystem='pass', signature='pass', layoutMetadata='pass',
+                mount='pass', filesystem='pass', signature='pass', layoutMetadata='pass', rootEntries='pass',
                 copyRoundTrip='pass' if install_copy else 'not-run', finderAppearance='pending-isolated-GUI',
                 applicationFirstLaunch='pending-isolated-GUI')
 
@@ -139,6 +147,7 @@ def build(app, target):
     app, target = Path(app).resolve(), Path(target).resolve()
     require(target.suffix == '.dmg' and not target.exists(), 'Choose a new .dmg; replacement is forbidden')
     verify(app, 'development')
+    require((app.parent / BACKGROUND).is_file(), 'Build the signed app with its installer background first')
     original = inventory(app)
     target.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix='.contextlens-dmg-', dir=target.parent) as temporary:
@@ -146,19 +155,12 @@ def build(app, target):
         stage = work / 'root'; stage.mkdir()
         run('ditto', app, stage / 'ContextLens.app')
         os.symlink('/Applications', stage / 'Applications')
-        (stage / '.background').mkdir()
-        run('sips', '-s', 'format', 'tiff', '-s', 'dpiWidth', '72', '-s', 'dpiHeight', '72',
-            ASSETS / 'background@1x.png', '--out', work / '1x.tiff')
-        run('sips', '-s', 'format', 'tiff', '-s', 'dpiWidth', '144', '-s', 'dpiHeight', '144',
-            ASSETS / 'background.png', '--out', work / '2x.tiff')
-        run('tiffutil', '-cathidpicheck', work / '1x.tiff', work / '2x.tiff',
-            '-out', stage / '.background/background.tiff')
-        (stage / '.metadata_never_index').touch()
         rw = work / 'staging.dmg'
         run('hdiutil', 'create', '-srcfolder', stage, '-volname', 'ContextLens', '-fs', 'HFS+', '-format', 'UDRW', rw)
         with mounted(rw, readonly=False) as mount:
             configure(mount)
             verify_layout(mount)
+            verify_root(mount)
         compressed = work / 'final.dmg'
         run('hdiutil', 'convert', rw, '-format', 'UDZO', '-imagekey', 'zlib-level=9', '-o', compressed)
         result = verify_dmg(compressed, app, install_copy=True)

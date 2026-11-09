@@ -45,6 +45,14 @@ cp "$bin_dir/ContextLens" "$APP/Contents/MacOS/ContextLens"
 cp "$bin_dir/contextlens-cli" "$APP/Contents/MacOS/contextlens-cli"
 cp Brand/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
 cp LICENSE "$APP/Contents/Resources/LICENSE"
+# Keep Finder artwork inside the package, before signing, so hidden files do not
+# expose an auxiliary artwork directory in the installer. ZIP and DMG share it.
+sips -s format tiff -s dpiWidth 72 -s dpiHeight 72 \
+    distribution/dmg/assets/background@1x.png --out "$build_stage/1x.tiff" >/dev/null
+sips -s format tiff -s dpiWidth 144 -s dpiHeight 144 \
+    distribution/dmg/assets/background.png --out "$build_stage/2x.tiff" >/dev/null
+tiffutil -cathidpicheck "$build_stage/1x.tiff" "$build_stage/2x.tiff" \
+    -out "$APP/Contents/Resources/InstallerBackground.tiff"
 python3 scripts/release.py plist "$APP/Contents/Info.plist"
 if [[ "$mode" == preview ]]; then
     python3 scripts/preview-release.py provenance "$preview_version" "$APP"

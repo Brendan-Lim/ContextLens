@@ -67,11 +67,16 @@ class FinderIconSettingsTests(unittest.TestCase):
         self.records = {'.': {}, 'ContextLens.app': {}, 'Applications': {}}
         store = MagicMock()
         store.__enter__.return_value = self.records
-        alias = SimpleNamespace(target=SimpleNamespace(posix_path='/.background/background.tiff'),
+        self.alias_paths = []
+        alias = SimpleNamespace(target=SimpleNamespace(posix_path='/ContextLens.app/Contents/Resources/InstallerBackground.tiff'),
                                 volume=SimpleNamespace(name='ContextLens'), to_bytes=lambda: b'alias')
+        self.alias = alias
+        def for_file(path):
+            self.alias_paths.append(path)
+            return alias
         modules = {
             'ds_store': SimpleNamespace(DSStore=SimpleNamespace(open=lambda *args: store)),
-            'mac_alias': SimpleNamespace(Alias=SimpleNamespace(for_file=lambda path: alias,
+            'mac_alias': SimpleNamespace(Alias=SimpleNamespace(for_file=for_file,
                                                                from_bytes=lambda value: alias)),
         }
         self.modules = patch.dict(sys.modules, modules)
@@ -79,6 +84,13 @@ class FinderIconSettingsTests(unittest.TestCase):
         self.addCleanup(self.modules.stop)
         configure(Path('/tmp/synthetic-volume'))
         self.records['.']['icvl'] = (b'type', b'icnv')
+
+    def test_background_alias_uses_the_signed_bundle_resource(self):
+        self.assertEqual(self.alias_paths, [str(Path('/tmp/synthetic-volume/ContextLens.app/Contents/Resources/InstallerBackground.tiff').resolve())])
+        verify_layout(Path('/tmp/synthetic-volume'))
+        self.alias.target.posix_path = '/.background/background.tiff'
+        with self.assertRaisesRegex(ValueError, 'Background alias'):
+            verify_layout(Path('/tmp/synthetic-volume'))
 
     def test_picture_requires_every_fallback_color_component(self):
         options = self.records['.']['icvp']
@@ -100,6 +112,27 @@ class FinderIconSettingsTests(unittest.TestCase):
                     with self.assertRaisesRegex(ValueError, 'color'):
                         verify_layout(Path('/tmp/synthetic-volume'))
                     options[channel] = 1.0
+
+
+class InstallerRootTests(unittest.TestCase):
+    def test_only_the_app_shortcut_and_finder_store_are_allowed(self):
+        from dmg import verify_root
+        with tempfile.TemporaryDirectory() as temporary:
+            mount = Path(temporary)
+            (mount / 'ContextLens.app').mkdir()
+            (mount / 'Applications').symlink_to('/Applications')
+            (mount / '.DS_Store').touch()
+            verify_root(mount)
+            for name in ['.background', '.metadata_never_index', 'background.tiff', 'README.txt', '.Spotlight-V100']:
+                with self.subTest(name=name):
+                    extra = mount / name
+                    extra.touch()
+                    with self.assertRaisesRegex(ValueError, 'top-level'):
+                        verify_root(mount)
+                    extra.unlink()
+            (mount / '.DS_Store').unlink()
+            with self.assertRaisesRegex(ValueError, 'top-level'):
+                verify_root(mount)
 
 
 if __name__ == '__main__': unittest.main()
