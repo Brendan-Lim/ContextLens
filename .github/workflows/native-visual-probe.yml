@@ -7,6 +7,7 @@ permissions:
   actions: read
 jobs:
   observe:
+    if: "!contains(github.event.head_commit.message, '[trust-observation]')"
     runs-on: macos-15
     timeout-minutes: 20
     env:
@@ -27,6 +28,35 @@ jobs:
           (cd Benchmarks && npx playwright install chromium)
           python3 qa/run-native-workflow.py
       - name: Encrypt raw evidence before uploading
+        if: always()
+        run: |
+          mkdir -p "$RUNNER_TEMP/native-evidence"
+          tar -C "$RUNNER_TEMP" -cf "$RUNNER_TEMP/evidence.tar" native-evidence
+          openssl cms -encrypt -binary -aes256 -in "$RUNNER_TEMP/evidence.tar" -out "$RUNNER_TEMP/evidence.cms" -outform DER qa/evidence-public.crt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: encrypted-native-visual-evidence
+          path: ${{ runner.temp }}/evidence.cms
+          if-no-files-found: error
+          retention-days: 3
+  trust-observation:
+    if: contains(github.event.head_commit.message, '[trust-observation]')
+    runs-on: macos-15
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Genuine browser download; no trust or privacy approvals
+        run: |
+          npm --prefix Benchmarks ci --ignore-scripts
+          (cd Benchmarks && npx playwright install chromium)
+          python3 qa/run-trust-observation.py
+      - name: Encrypt all raw evidence
         if: always()
         run: |
           mkdir -p "$RUNNER_TEMP/native-evidence"
