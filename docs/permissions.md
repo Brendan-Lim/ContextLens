@@ -1,36 +1,22 @@
-# Screen Recording: enabled in Settings, unavailable in the app
+# Screen Recording and development signing
 
-An enabled System Settings switch does not prove that the currently running binary matches the approved identity. The initial local build script signed ContextLens ad-hoc. Its designated requirement was pinned to a specific code hash, so changing the executable could invalidate an earlier approval while the Settings entry remained visible.
+Grant Screen Recording for the copy you actually launch in **System Settings → Privacy & Security → Screen & System Audio Recording** (Screen Recording on older macOS). Relaunch when macOS requests it, then use **Check Access** and explicitly select a window. Accessibility is optional and enables clicked-control labels; typed text and editable field values are not collected.
 
-Apple confirms that ad-hoc builds are treated as new identities, and recommends a stable development signing identity: [Apple Developer Forums / DTS response](https://developer.apple.com/forums/thread/819406).
+An enabled Settings entry does not prove the running binary matches its approved identity. Ad-hoc signing changes can invalidate consent while an old entry remains visible. Apple recommends a stable development signing identity: [Apple Developer Forums / DTS](https://developer.apple.com/forums/thread/819406).
 
-## Fixed in 0.2.1
+## Build identity
 
-- The local build script uses an available Apple Development certificate, or the identity explicitly selected with `CONTEXTLENS_SIGN_IDENTITY`. It falls back to ad-hoc only when no identity is available or `-` is explicitly selected (for example, CI). The fallback message explains the permission consequence.
-- On this machine, the rebuilt bundle was signed and verified with an Apple Development identity. Its designated requirement is certificate/identifier based, not pinned to the executable hash. The private key is not exported and no upload or distribution is performed.
-- The permission preflight is only a hint. A user-initiated **Check Access** or refresh attempts actual ScreenCaptureKit window enumeration even if preflight is false. Successful enumeration verifies access; an API failure does not become success merely because preflight is true.
-- Returning to ContextLens refreshes access/window state automatically. Passive initial startup does not trigger a first-use permission prompt when no approval is known.
-- Recovery text distinguishes unavailable access from a proven disabled switch, and shows the running app path to avoid approving a different copy. Stale selected-window IDs are cleared or replaced only within the picker; an ongoing capture still never switches targets.
+Local builds use an available Apple Development certificate or `CONTEXTLENS_SIGN_IDENTITY`, falling back to ad-hoc when none exists or `-` is selected. Apple Development signatures do not establish public distribution trust. Official unnotarized/preview builds deliberately use ad-hoc signatures and updates may require new consent. [Build instructions](building.md).
 
-## One-time repair after switching signing identity
+The app treats permission preflight as a hint. User-initiated **Check Access** attempts real ScreenCaptureKit enumeration even when preflight is false. Successful enumeration verifies access; positive preflight does not turn API errors into success. Passive initial launch avoids prompting when no approval is known, and reactivation refreshes access/window state. The running-copy path helps distinguish installations. Ongoing capture never changes targets when picker state refreshes.
 
-If the old enabled entry still fails:
+## Recover a stale entry
 
-1. Quit ContextLens fully.
-2. In System Settings → Privacy & Security → Screen & System Audio Recording, remove **only ContextLens** using the minus button.
-3. Add the rebuilt `dist/ContextLens.app` using the plus button and enable it.
-4. Open that copy and press **Check Access**, then choose a window.
+1. Quit ContextLens fully and confirm which copy you intend to use.
+2. In the Screen Recording settings, remove **only ContextLens** with the minus button.
+3. Add that intended app with the plus button, enable it and reopen it.
+4. Use **Check Access**, then choose a window.
 
-This replaces the old identity's approval. ContextLens does not reset privacy settings or grant consent on the user's behalf. It does not alter approvals for other applications.
+This replaces the old identity's approval through the user's settings. Builds/installations never reset TCC or grant consent automatically. The maintainer-only `scripts/repair-screen-access.sh` performs a targeted reset and relaunch; inspect it and obtain explicit user authorization before running it. It is not an automated test or ordinary installation step.
 
-## Verification
-
-28 Swift tests passed, including explicit retry with false preflight, passive startup without prompting, rechecking previously verified access, and actual API errors despite positive preflight. Release signing and bundle integrity checks passed. Full capture verification for the new identity still requires the user's macOS approval; test success is not represented as a substitute for that consent.
-
-## Confirmed stale-record failure and targeted repair
-
-During the subsequent user report, `tccd` logged “Failed to match existing code requirement” for ContextLens Screen Capture. Its stored requirement still referred to an old ad-hoc hash, whereas the current signed bundle had a different hash and certificate-based requirement. This explained the repeated request despite the enabled Settings entry; it was confirmed from system logs rather than inferred from the checkbox.
-
-With explicit user approval, `scripts/repair-screen-access.sh` quit ContextLens normally, preserved a backup while refreshing bundle file identities, ran **only** `tccutil reset ScreenCapture dev.contextlens.app`, and relaunched it. After the fresh macOS approval, the user confirmed application windows appeared. A subsequent generated-window test obtained actual ScreenCaptureKit pixels and verified movement and resize handling. See repair verification (local-only evidence `examples/permission-repair-verification.json`).
-
-Future builds now construct and sign a separate complete bundle, verify it, then publish it using renames while retaining the previous bundle. They no longer copy over a running executable in place. A controlled staged rebuild preserved the exact signing requirement while replacing the executable inode. The repair script is never run automatically by the app or build.
+Build publishing stages/signs/verifies a complete bundle and replaces it with renames, retaining the previous bundle instead of copying over a running executable. Unit tests cover passive startup, false-preflight retry and actual API failures. They cannot establish a person's consent. Fresh denial, grant/relaunch and revocation/recovery remain human acceptance cases; see [the isolated procedure](beta-acceptance.md) and [current release baseline](official-release-preparation.md).

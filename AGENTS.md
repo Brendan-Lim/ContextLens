@@ -19,7 +19,7 @@ When logic in the app target needs a test, move it into Core as a pure type firs
 ## Build and verify
 
 - `scripts/build-app.sh` builds and signs `dist/ContextLens.app` and `dist/contextlens-cli`.
-- `scripts/verify.sh` is the baseline gate: Swift tests, Python tests, package and replay verification. Green on 2026-11-07: 48 Swift tests, 13 Python tests, 10 deterministic replays.
+- `scripts/verify.sh` is the baseline gate: Swift tests, Python tests, package and replay verification. Use current command output for test totals; `scripts/ci.sh` adds the full build, tooling, fixture and packaging gates.
 - Benchmarks and browser fixtures: [Benchmarks/README.md](Benchmarks/README.md).
 
 ## Driving the app without a person
@@ -51,10 +51,10 @@ Sessions to test with: `dist/contextlens-cli demo <dir>` makes a 3-state session
 - **Signing and permissions.** Screen Recording approval is tied to the code signature. `build-app.sh` signs with the first "Apple Development" identity it finds; an ad-hoc build loses approval on every rebuild. Repair steps: [docs/permissions.md](docs/permissions.md).
 - **Snapshot gaps.** `--smoke-snapshot` uses `cacheDisplay`, which leaves Hand Off's left column blank. Judge Hand Off from `--native-capture-test` output, which uses ScreenCaptureKit and needs Screen Recording.
 - **Known failing check.** `native-capture-verification.json` reports `"status": "failed"` because `closure_detected_without_fallback` is false; movement and resize pass. This predates current work; treat a change in the other fields as the regression signal.
-- **Native diagnostics.** The closure probe defaults to `orderFront`, keeps its original retained/titled lifetime, and reports bounded observations separately from the first lookup after the original 200 ms wait. `--native-probe-key-window` explicitly compares the old key ordering; `--native-probe-style closable` compares styles. Other fixture helpers can still make windows key. All need isolation; see [capture reliability](docs/native-capture-reliability.md). No new live closure result exists yet.
+- **Native diagnostics.** The closure probe defaults to `orderFront`, keeps its original retained/titled lifetime, and reports bounded observations separately from the first lookup after the original 200 ms wait. `--native-probe-key-window` explicitly compares the old key ordering; `--native-probe-style closable` compares styles. Other fixture helpers can still make windows key. All need isolation; see [capture reliability](docs/native-capture-reliability.md). The official baseline passed real production target closure/application-exit checks; that does not reinterpret the separate legacy diagnostic. See [release preparation](docs/official-release-preparation.md) for exact-candidate scope and pending human security cases.
 - **Restored window state** can suppress the main window in a test launch; the app then opens a stand-in fixture window whose model is `LensDelegate.model`. `NSApp.delegate` is SwiftUI's wrapper, not `LensDelegate`.
 - **Oversized SwiftUI children** inside a fixed `.frame` are centred, not top-left aligned. Zoomed content therefore lives in an `.overlay(alignment: .topLeading)`; keep it that way or zoom-to-pointer drifts.
-- **Shell.** `rg` and `timeout` are not installed: use `grep`, and `perl -e 'alarm 60; exec @ARGV' <cmd>` for a time limit.
+- **Shell.** Prefer `rg` when available, otherwise use `grep`. On macOS without `timeout`, use `perl -e 'alarm 60; exec @ARGV' <cmd>` for a time limit.
 
 ## Testing and performance handoff
 

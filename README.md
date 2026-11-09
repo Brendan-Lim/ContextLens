@@ -14,6 +14,14 @@ Capture the window you’re building, mark what should change, and hand the resu
 
 [**Download for macOS**](https://github.com/Brendan-Lim/ContextLens/releases/tag/v0.3.0-preview.1) &nbsp;·&nbsp; [**Install with Homebrew**](#install) &nbsp;·&nbsp; [**Get started**](#get-started)
 
+<p>
+  <a href="Package.swift"><img src="https://img.shields.io/badge/Swift-native-F05138?style=flat&amp;logo=swift&amp;logoColor=white" alt="Native Swift app"></a>
+  <a href="docs/building.md"><img src="https://img.shields.io/badge/macOS-14%2B-555555?style=flat&amp;logo=apple&amp;logoColor=white" alt="Minimum deployment target: macOS 14 or later"></a>
+  <a href="docs/building.md"><img src="https://img.shields.io/badge/Apple_Silicon-arm64-55677D?style=flat&amp;logo=apple&amp;logoColor=white" alt="Apple Silicon arm64"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/github/license/Brendan-Lim/ContextLens?style=flat&amp;color=2ea44f" alt="MIT license"></a>
+  <a href=".github/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/Brendan-Lim/ContextLens/ci.yml?branch=main&amp;event=push&amp;style=flat&amp;label=CI&amp;logo=githubactions&amp;logoColor=white" alt="GitHub Actions CI status on main"></a>
+</p>
+
 <sub>Free and open source &nbsp;·&nbsp; Apple Silicon &nbsp;·&nbsp; macOS 14 Sonoma or later</sub>
 
 </div>
@@ -211,7 +219,7 @@ scripts/build-app.sh      # builds dist/ContextLens.app and dist/contextlens-cli
 scripts/verify.sh         # runs the test suite
 ```
 
-[Building](docs/building.md) · [Architecture](docs/architecture.md) · [Export format](docs/export-format.md) · [Using with Claude Code](Integrations/claude-code.md) · [Releases and testing](docs/official-release-preparation.md)
+[Building](docs/building.md) · [Testing](docs/native-testing.md) · [Research](docs/research.md) · [Architecture](docs/architecture.md) · [Export format](docs/export-format.md) · [Using with Claude Code](Integrations/claude-code.md) · [Releases and testing](docs/official-release-preparation.md)
 
 Contributions are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) first, and [open an issue](https://github.com/Brendan-Lim/ContextLens/issues) for bugs you can reproduce.
 

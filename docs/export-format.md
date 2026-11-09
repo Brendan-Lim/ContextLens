@@ -40,7 +40,7 @@ Use `python3 scripts/validate_package.py EXPORT` for offline semantic/schema che
 
 The app uses one capture workflow. Older session/manifest `mode` values remain readable for compatibility, but there is no mode selector and the current human-readable report omits that label.
 
-## Lean first read (7 November 2026)
+## First read
 
 The copied prompt names the exact `context.md` file, with image paths resolved relative to its directory. It does not require a second manifest read. Work continues in the user's code project; the export folder is evidence.
 
@@ -50,7 +50,7 @@ The copied prompt names the exact `context.md` file, with image paths resolved r
 - All explicit requests and unlabelled annotation IDs remain in the brief. No request is truncated to meet a size budget. With no visible annotations, the first three reference states are listed and the complete timeline remains accessible; they are not ranked as the most relevant states.
 - Crops are for small/unclear details; full frames and adjacent timeline states remain available for layout and interaction questions. Reading fewer files is not a reason to skip evidence required for a correct fix.
 
-Deterministic preservation checks and the unrun/live status of the controlled comparison are recorded in `Benchmarks/reports/lean-handoff/`. Text bytes are not provider tokens. See [positioning and measurement](product-positioning.md).
+Core report and Imaging export tests verify instruction and image preservation. Text bytes are not provider tokens; [research and reproducibility](research.md) describes measurement limits and the reusable benchmark protocol.
 
 ## Source consistency and validation
 
@@ -59,3 +59,7 @@ An export plan now binds each candidate source file to a SHA-256 of the exact by
 Each source image's digest and decoder use the same owned byte buffer. Existing sibling staging, cancellation checks, no-overwrite finalization and cleanup remain. Ordinary failures leave the final destination absent, preserve the saved session and allow retry. Process termination or a machine crash can still leave a hidden `.contextlens-*` staging folder; a subsequent export uses a fresh unique stage and does not delete unrelated recoverable work.
 
 The offline validator checks PNG chunk CRCs, complete compressed scanlines, dimensions and safe paths. Current `# ContextLens feedback` briefs additionally require their promised overview images and timeline references. Earlier v1/v2 layouts remain supported; exported redaction instructions must be empty. The validator is structural validation, not a visual privacy audit. Review visible screenshots, titles and user instructions before sharing. No session or manifest schema version changes are required.
+
+The validator limits each PNG to 128 MiB encoded, 256 MiB of declared decoded scanlines (including Adam7 passes), and 16,384 chunks. It rejects invalid reserved chunk bits, oversized indexed palettes and image roles resolving to the same path. These are bounded structural checks, not palette-pixel semantics or a visual privacy audit.
+
+Planning and verification bind each candidate/read separately, without a global filesystem transaction. Path containment checks do not provide an atomic `openat` sandbox against hostile same-user symlink replacement; use trusted locally owned session storage. Cancellation checks surround preparation, rendering and staging, but one synchronous ImageIO decode/hash cannot be interrupted mid-call. No worst-case latency or throughput claim is made. Disk-full and power-loss fault injection need a controlled machine.

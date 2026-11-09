@@ -1,8 +1,8 @@
 # README screenshot kit
 
-The README shows only genuine screenshots of the current app and the real Finder installer window. This kit describes the seven approved images, how to take replacements, and how to check them before publication. Generated, mocked-up or edited UI is never acceptable. Cropping, resizing and lossless optimization are the only changes allowed.
+The README shows only genuine screenshots of the current app and the real Finder installer window. This kit describes the seven approved images, how to take replacements, and how to check them before publication. Generated, mocked-up or edited UI is never acceptable. For future replacements, capture native 2× pixels and remove metadata without changing them; review each exact file with the owner. Preserve the integrated seven files byte for byte, including their original aspect ratios.
 
-**Status (9 November 2026): all seven corrected screenshots are owner-approved and integrated into the README.** The exact sanitized copies are in [docs/media/screens](../media/screens/); their reviewed hashes are in [the publication policy](../../config/publication-policy.json). They come from genuine native windows in [development run 42573485879](https://github.com/Brendan-Lim/ContextLens/actions/runs/42573485879), whose application and packaging inputs match the production fix source. Twin Glass renders in Light/Dark Finder, and the recording pill shows the full Stop label. Originals and raw evidence remain private. Code review, merge, post-integration CI and a fresh official candidate still precede exact-byte release acceptance.
+**Status (9 November 2026): all seven genuine native Retina 2× screenshots are owner-approved and integrated.** Exact sanitized files are in [docs/media/screens](../media/screens/), with reviewed hashes in [the publication policy](../../config/publication-policy.json). They were captured in [run 42588372941](https://github.com/Brendan-Lim/ContextLens/actions/runs/42588372941) and integrated through [PR #3](https://github.com/Brendan-Lim/ContextLens/pull/3). Originals remain private. The separate [official candidate baseline](../official-release-preparation.md) passed 14 native engineering cases; five human security cases remain pending. Product screenshots do not attest to first-launch security.
 
 ## Where to take them
 
@@ -12,9 +12,7 @@ A second user account on the owner's Mac is **not** enough: `/Applications` is s
 
 ## What to install
 
-**Do not promote or use run `42557369631` for final acceptance after these fixes.** It is the pre-fix 0.3.1/build 6 candidate, source `5e786bc5dc144f0debe7f05f1957489e5600c256`. Its historical hashes and original verification remain in [the candidate report](../final-0.3.1-candidate.md).
-
-Use a clearly identified development build to verify the production fixes and prepare authentic media. After owner approval, integrate selected screenshots and complete code review. Run full CI and Publication Security on the final integrated source, then prepare a **new official candidate**. Independently verify its ZIP/DMG hashes, signatures and identical bundle inventory, and repeat applicable native acceptance against those exact new bytes. Do not relax the release-input inventory or reuse old acceptance.
+Use an identified development build for replacement media. For release acceptance use a fresh, independently verified official candidate from integrated main; see [release preparation](../official-release-preparation.md). Preserve candidate ZIP/DMG bytes, signatures, bundle inventory and provenance. Repeat applicable engineering acceptance after a protected input changes. Development screenshots are publication media, not acceptance of different official binaries.
 
 For genuine first-launch acceptance, download that fresh Actions artifact through a browser inside the disposable Mac. Keep the original downloaded inode and quarantine metadata; never remove or fabricate quarantine or disable Gatekeeper. Observe actual user-controlled Open Anyway and Screen Recording authorization. A completed automation job, direct executable launch or existing runner permission does not prove these cases. No passing maintainer attestation is supplied by the diagnostic harness.
 
@@ -52,7 +50,7 @@ Check each image at full size for:
 Then put the originals in one folder, for example `~/Desktop/contextlens-shots/`, and tell the agent where they are. The agent will:
 
 1. Remove screenshot metadata (XMP, Apple and EXIF chunks) without changing a pixel: `python3 scripts/strip-png-metadata.py IN.png docs/media/screens/A-capture.png`.
-2. Resize to at most 2400 px wide if needed, using `sips --resampleWidth 2400`.
+2. Preserve native pixel dimensions and aspect ratio. Set README CSS widths to at most half the source width for Retina sharpness; never upscale a 1× capture to claim genuine 2×.
 3. Open and review every image, record its SHA-256 and purpose in `config/publication-policy.json`, and run `python3 scripts/audit-public-files.py --staged`.
 4. Add the images to the README: Capture under the hero, Review, Mark Up and Hand Off in the workflow section, and the Finder window under **Install**. Each gets a plain caption naming the app version.
 
@@ -67,7 +65,7 @@ Keep original downloaded ZIP/DMG bytes and their hashes. Record observations and
 2. Open the real DMG in Finder in Light and Dark modes. Inspect Retina background, labels, icon positions and the Applications shortcut; take E-light/E-dark screenshots. Drag to Applications inside this disposable environment, eject, and launch the installed copy. Confirm **0.3.1 (6)**.
 3. With fresh guest Screen Recording permissions, deny access and observe recovery. Grant access through System Settings, relaunch, and verify window selection. Never reset the owner's permissions.
 4. Record only the fictional Tidewater browser window, first at Low and then High sensitivity. Exercise dialog/tab changes and continuous scrolling. Verify Review has the expected distinct states, selected-window content only, and a settled Scrolled state.
-5. Reorder, rename and deselect states in Review. In Mark Up, add the Box/Highlight instructions above, a redaction and an unlabelled reference; exercise undo/redo and verify stable issue IDs. Capture B/C only from this real app.
+5. Reorder, rename and deselect states in Review. In Mark Up, add the Box/Highlight instructions above and an unlabelled reference; use a synthetic legacy session for redaction coverage because the toolbar does not create new redactions; exercise undo/redo and verify stable issue IDs. Capture B/C only from this real app.
 6. Save Hand Off and inspect `context.md`, overview, crops, timeline and redacted pixels. Confirm source files stay private and unchanged. Take D after a real successful export. Copy the prompt and verify its destination.
 7. Exercise stale-preview refusal using a disposable copy of the synthetic session: after Hand Off preparation, replace a source PNG with a different same-size image. Save must fail without a final package. Toggle export filters and restore the desired selection to refresh preparation, then retry and verify the new pixels. Do not use a personal session for this fault injection.
 8. Save, quit and reopen the session. Verify state order, marks, redactions and issue IDs. Test selected-window closure while another window remains present, then target-browser exit: capture must stop without substitution.

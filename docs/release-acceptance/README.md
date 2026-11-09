@@ -13,7 +13,7 @@ If a candidate changes, repeat acceptance for its new hashes. If its artifact ex
 
 ## Candidate freshness
 
-The earlier prepare run `42504640955` predates the Hand Off reliability changes and is obsolete for v0.3.1. Do not promote its ZIP/DMG or reuse its hashes or acceptance. Use the replacement candidate recorded in [the final candidate report](../final-0.3.1-candidate.md).
+See [official release preparation](../official-release-preparation.md) for the tested baseline, candidate identity, 14 native engineering results and five pending human security cases. Repository cleanup changes protected inputs, so a fresh candidate is required after integration. Earlier candidate hashes and observations cannot authorize replacement bytes.
 
 New official bundles embed a versioned `releaseInputs` SHA-256 inventory in `official.json`, repeated in `provenance.json`. It binds every tracked input path, Git object ID and executable/symlink mode. The build dependency closure includes Swift source and the embedded CLI, SwiftPM manifests/lockfiles, all scripts and imported helpers, version/signing configuration, icon/license/resources, DMG artwork/layout/packaging and pinned dependencies, and workflows/toolchain configuration. Unknown/new files are protected by default, including files under docs. No production dependency is added.
 

@@ -4,7 +4,7 @@ For the separately gated **official unnotarized** channel, see [official release
 
 This document describes the future signed/notarized stable channel. The separate [unnotarized preview channel](preview-releases.md) requires no Apple credentials and uses `preview-release.yml`; it does not weaken or replace any gate below.
 
-Public binary distribution is pending Apple credentials. Ordinary pushes run CI and never publish binaries. Only a manual release workflow on current `main` can publish, after tests, Developer ID signing, notarization, stapling, archive verification and Gatekeeper assessment. The app bundle identity remains `dev.contextlens.app`.
+Developer ID signed/notarized distribution is pending Apple credentials; the ad-hoc preview is already published. Ordinary pushes run CI and never publish binaries. Only a manual release workflow on current `main` can publish, after tests, Developer ID signing, notarization, stapling, archive verification and Gatekeeper assessment. The app bundle identity remains `dev.contextlens.app`.
 
 ## Credential setup
 
@@ -33,7 +33,7 @@ The workflow creates an isolated temporary keychain with a random masked passwor
 3. Dispatch the release workflow. For the current metadata the command will be:
 
    ```sh
-   gh workflow run release.yml --repo Brendan-Lim/ContextLens --ref main -f version=0.3.0
+   gh workflow run release.yml --repo Brendan-Lim/ContextLens --ref main -f version=0.3.1
    gh run list --repo Brendan-Lim/ContextLens --workflow release.yml
    ```
 
@@ -51,7 +51,7 @@ With a real Developer ID Application identity in your keychain, set `CONTEXTLENS
 ```sh
 scripts/build-app.sh --distribution --output /tmp/contextlens-signed
 python3 scripts/release.py notarize /tmp/contextlens-signed/ContextLens.app /tmp/contextlens-release-assets --profile ContextLensRelease
-python3 scripts/release.py verify-archive /tmp/contextlens-release-assets/ContextLens-0.3.0-arm64.zip
+python3 scripts/release.py verify-archive /tmp/contextlens-release-assets/ContextLens-0.3.1-arm64.zip
 ```
 
 These commands require credentials that were unavailable during setup. They have not been claimed successful. Never pass development archives to the release publisher. `scripts/release.py package` without `--development` requires a properly signed/stapled app and Gatekeeper acceptance.
