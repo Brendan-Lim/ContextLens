@@ -24,7 +24,7 @@ Capture the window you’re building, mark what should change, and hand the resu
   <img src="docs/media/screens/A-capture.png" width="300" alt="ContextLens capture panel with the Tidewater browser window selected.">
 </p>
 <p align="center">
-  <img src="docs/media/screens/A2-recording.png" width="441" alt="The compact recording pill with Snapshot and Stop controls.">
+  <img src="docs/media/screens/A2-recording.png" width="440" alt="The compact recording pill with Snapshot and Stop controls.">
   <br>
   <sub>Choose one window. Keep working while ContextLens captures its states. · ContextLens 0.3.1</sub>
 </p>
@@ -51,7 +51,7 @@ You spot it straight away: the button that’s a few pixels off, the avatar that
 **2 · Review.** Flip through the states you captured. Untick the ones you don’t need, and click the one that shows the problem.
 
 <p align="center">
-  <img src="docs/media/screens/B-review.png" width="100%" alt="Review five captured Tidewater states, with the first state unticked.">
+  <img src="docs/media/screens/B-review.png" width="1320" alt="Review five captured Tidewater states, with the first state unticked.">
   <br>
   <sub>Keep the states that matter. · ContextLens 0.3.1</sub>
 </p>
@@ -61,7 +61,7 @@ You spot it straight away: the button that’s a few pixels off, the avatar that
 **4 · Hand Off.** Save the package and copy the ready-made prompt. Paste it into Claude Code, Codex or another coding agent, and it starts with your words and your pictures.
 
 <p align="center">
-  <img src="docs/media/screens/D-handoff.png" width="100%" alt="A saved Hand Off with both written instructions in the context preview and Copy prompt ready.">
+  <img src="docs/media/screens/D-handoff.png" width="1320" alt="A saved Hand Off with both written instructions in the context preview and Copy prompt ready.">
   <br>
   <sub>Save the package. Copy the prompt. Get back to building. · ContextLens 0.3.1</sub>
 </p>
@@ -110,7 +110,7 @@ Built with SwiftUI and ScreenCaptureKit, with a floating capture panel and point
 Say you’re tidying up a **Share workspace** dialog. Its buttons stop short of the email field’s right edge, and one avatar sits lower than the others.
 
 <p align="center">
-  <img src="docs/media/screens/C-markup.png" width="100%" alt="A Box around the dialog buttons and a Highlight over the misaligned avatar, each with a specific instruction.">
+  <img src="docs/media/screens/C-markup.png" width="1320" alt="A Box around the dialog buttons and a Highlight over the misaligned avatar, each with a specific instruction.">
   <br>
   <sub>Box the buttons. Highlight the avatar. Give each mark one clear instruction. · ContextLens 0.3.1</sub>
 </p>
