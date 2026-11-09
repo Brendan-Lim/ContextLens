@@ -4,6 +4,22 @@ import ContextLensCore
 @testable import ContextLensImaging
 
 final class HandoffReliabilityTests: XCTestCase {
+    func testCancelledPreparationPreservesSourceSessionAndImages() async throws {
+        let (session, root) = try fixture()
+        defer { try? FileManager.default.removeItem(at: root.deletingLastPathComponent()) }
+        let before = try Data(contentsOf: root.appendingPathComponent("session.json"))
+        let task = Task {
+            withUnsafeCurrentTask { $0?.cancel() }
+            return try ExportPlan.prepare(session, source: root, options: .allFrames)
+        }
+        do { _ = try await task.value; XCTFail("Expected cancellation") }
+        catch is CancellationError { }
+        XCTAssertEqual(try Data(contentsOf: root.appendingPathComponent("session.json")), before)
+        for frame in session.frames {
+            XCTAssertNoThrow(try Images.load(root.appendingPathComponent(frame.imagePath)))
+        }
+    }
+
     func fixture(_ dimensions: [(Int, Int)] = [(100, 100), (100, 100)]) throws -> (Session, URL) {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent("handoff-\(UUID().uuidString)/Project space 画面")
         try FileManager.default.createDirectory(at: root.appendingPathComponent("frames"), withIntermediateDirectories: true)
