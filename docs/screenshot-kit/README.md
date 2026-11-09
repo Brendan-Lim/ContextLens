@@ -1,8 +1,8 @@
 # README screenshot kit
 
-The README shows only genuine screenshots of the current app and the real Finder installer window. This kit lists the five images it needs, how to take them, and how to check them before they are published. Generated, mocked-up or edited UI is never acceptable. Cropping, resizing and lossless optimization are the only changes allowed.
+The README shows only genuine screenshots of the current app and the real Finder installer window. This kit describes the seven approved images, how to take replacements, and how to check them before publication. Generated, mocked-up or edited UI is never acceptable. Cropping, resizing and lossless optimization are the only changes allowed.
 
-**Status (9 November 2026): genuine native screenshots exist privately.** The pre-fix candidate completed the Tidewater Capture → Review → Mark Up → Hand Off workflow on disposable GitHub-hosted macOS. Its recording pill truncates Stop and its Finder installer lacks the Twin Glass background. New code and packaging changes require corrected native evidence and a fresh official candidate. Product images stay private until owner review and publication approval.
+**Status (9 November 2026): all seven corrected screenshots are owner-approved and integrated into the README.** The exact sanitized copies are in [docs/media/screens](../media/screens/); their reviewed hashes are in [the publication policy](../../config/publication-policy.json). They come from genuine native windows in [development run 42573485879](https://github.com/Brendan-Lim/ContextLens/actions/runs/42573485879), whose application and packaging inputs match the production fix source. Twin Glass renders in Light/Dark Finder, and the recording pill shows the full Stop label. Originals and raw evidence remain private. Code review, merge, post-integration CI and a fresh official candidate still precede exact-byte release acceptance.
 
 ## Where to take them
 
@@ -26,13 +26,13 @@ For genuine first-launch acceptance, download that fresh Actions artifact throug
 - **ContextLens window:** about **1280 × 800**.
 - **Capture method:** press <kbd>⌘</kbd><kbd>⇧</kbd><kbd>4</kbd>, then <kbd>Space</kbd>, then click the window. This captures one window with its shadow and no desktop. Do not use a full-screen capture.
 
-## The five shots
+## The screenshot set
 
 Record one session first; it supplies B–D. In ContextLens, press <kbd>⌘</kbd><kbd>N</kbd>, pick the browser window under **Which window?**, keep **High** sensitivity, and click **Start Capture**. In the browser, wait two seconds and then click **Share workspace**. Wait, click the **Link** tab, wait, click **Invite**, wait, and then click **Cancel**. Click **Stop Capture**.
 
 | File | Shot | What must be visible |
 |---|---|---|
-| `A-capture.png` | **Capture** | The capture panel with the Tidewater browser window selected under **Which window?** and its preview loaded, just before **Start Capture**. If you can, also take `A2-recording.png`: the recording pill during capture. |
+| `A-capture.png` | **Capture** | The capture panel with the Tidewater browser window selected under **Which window?** and its preview loaded, just before **Start Capture**. Also take `A2-recording.png`: the recording pill during a genuine capture, with the complete Stop label visible. |
 | `B-review.png` | **Review** | The Review tab with the 3–5 captured states, one unticked and the dialog state selected. |
 | `C-markup.png` | **Mark Up** | The dialog state with two marks. **Box** the Cancel and Send invite buttons with the note *“Align the action buttons with the right edge of the email field.”* **Highlight** Sam Okafor's avatar with the note *“Center this avatar vertically in its row, like the one above.”* Take the shot at 100% zoom with both notes visible. |
 | `D-handoff.png` | **Hand Off** | Set the task to *“Polish the Share workspace dialog.”* Click **Save Hand Off** into a folder whose path holds no personal name, for example `/tmp/share-dialog-feedback` (press <kbd>⌘</kbd><kbd>⇧</kbd><kbd>G</kbd> in the folder picker). Take the shot after saving, with the `context.md` preview and **Copy prompt** visible. |

@@ -20,6 +20,17 @@ Capture the window you’re building, mark what should change, and hand the resu
 
 <br>
 
+<p align="center">
+  <img src="docs/media/screens/A-capture.png" width="300" alt="ContextLens capture panel with the Tidewater browser window selected.">
+</p>
+<p align="center">
+  <img src="docs/media/screens/A2-recording.png" width="441" alt="The compact recording pill with Snapshot and Stop controls.">
+  <br>
+  <sub>Choose one window. Keep working while ContextLens captures its states. · ContextLens 0.3.1</sub>
+</p>
+
+<br>
+
 ## Your UI feedback shouldn’t need an essay.
 
 You spot it straight away: the button that’s a few pixels off, the avatar that doesn’t line up, the helper text nobody can read. Explaining it is the slow part. Which screen? Which button? How far is “a little to the right”? You crop a screenshot, describe it in a paragraph, paste both into your agent, and do it all again on the next round.
@@ -39,9 +50,21 @@ You spot it straight away: the button that’s a few pixels off, the avatar that
 
 **2 · Review.** Flip through the states you captured. Untick the ones you don’t need, and click the one that shows the problem.
 
+<p align="center">
+  <img src="docs/media/screens/B-review.png" width="100%" alt="Review five captured Tidewater states, with the first state unticked.">
+  <br>
+  <sub>Keep the states that matter. · ContextLens 0.3.1</sub>
+</p>
+
 **3 · Mark Up.** Drag a box around the problem, or highlight it freehand, then write what should change. Each mark gets a stable ID such as `CL-001`, so you and your agent always mean the same thing.
 
 **4 · Hand Off.** Save the package and copy the ready-made prompt. Paste it into Claude Code, Codex or another coding agent, and it starts with your words and your pictures.
+
+<p align="center">
+  <img src="docs/media/screens/D-handoff.png" width="100%" alt="A saved Hand Off with both written instructions in the context preview and Copy prompt ready.">
+  <br>
+  <sub>Save the package. Copy the prompt. Get back to building. · ContextLens 0.3.1</sub>
+</p>
 
 <br>
 
@@ -86,6 +109,12 @@ Built with SwiftUI and ScreenCaptureKit, with a floating capture panel and point
 
 Say you’re tidying up a **Share workspace** dialog. Its buttons stop short of the email field’s right edge, and one avatar sits lower than the others.
 
+<p align="center">
+  <img src="docs/media/screens/C-markup.png" width="100%" alt="A Box around the dialog buttons and a Highlight over the misaligned avatar, each with a specific instruction.">
+  <br>
+  <sub>Box the buttons. Highlight the avatar. Give each mark one clear instruction. · ContextLens 0.3.1</sub>
+</p>
+
 1. Capture the browser window while you open the dialog.
 2. In Mark Up, box the buttons and write: *“Align the action buttons with the right edge of the email field.”*
 3. Highlight the avatar and write: *“Center this avatar vertically in its row, like the one above.”*
@@ -119,6 +148,15 @@ ContextLens prepares the context. Your agent makes the change in your codebase, 
 **[Download ContextLens for macOS](https://github.com/Brendan-Lim/ContextLens/releases/tag/v0.3.0-preview.1)**. Unzip it, move **ContextLens** into your Applications folder, and open it from there.
 
 ContextLens is in public preview. The first stable release, v0.3.1, will add a drag-to-install disk image.
+
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/media/screens/E-dmg-dark.png">
+    <img src="docs/media/screens/E-dmg-light.png" width="720" alt="The ContextLens Mac installer: drag ContextLens into Applications.">
+  </picture>
+  <br>
+  <sub>Drag ContextLens into Applications. · v0.3.1</sub>
+</p>
 
 ### Homebrew
 
