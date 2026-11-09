@@ -51,8 +51,6 @@ python3 distribution/dmg/generate-background.py /tmp/contextlens-new-designs
 
 ## Real Finder checks
 
-See the [hidden-file verification report](../../docs/dmg-hidden-files-verification.md) for the disposable Finder matrix and the separate installed-app discovery investigation.
-
 Metadata verification does **not** verify Finder rendering. On a disposable GUI Mac, open the actual DMG in light and dark appearances, with Show Hidden Files both disabled and enabled, at 1× and Retina where available. Inspect text, precise icons/labels, arrow clearance, window bounds and background sharpness. Drag onto the actual Applications shortcut, eject and launch the installed copy. Restore the disposable environment's original Finder and appearance settings afterward. Record results against the exact candidate hashes using [isolated acceptance](../../docs/beta-acceptance.md). Do not change the owner's settings, overwrite their installation or capture private desktop content.
 
 After capturing only the actual Finder installer window without its shadow, check the rendered artwork as well:
