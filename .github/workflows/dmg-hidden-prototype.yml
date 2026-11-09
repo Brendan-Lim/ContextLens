@@ -1,0 +1,42 @@
+name: Disposable DMG hidden-file prototype
+on:
+  push:
+    branches: [qa/dmg-hidden-prototype]
+permissions:
+  contents: read
+jobs:
+  finder:
+    runs-on: macos-15
+    timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Apply uncommitted packaging proposal for prototype only
+        run: git apply qa/prototype.patch
+      - name: Pinned build-only dependencies
+        run: |
+          python3 -m venv "$RUNNER_TEMP/qa-python"
+          "$RUNNER_TEMP/qa-python/bin/python" -m pip install --require-hashes -r distribution/dmg/requirements.txt
+          echo "$RUNNER_TEMP/qa-python/bin" >> "$GITHUB_PATH"
+      - name: Fresh ad-hoc build with background before signing
+        env:
+          CONTEXTLENS_SIGN_IDENTITY: '-'
+        run: scripts/build-app.sh --output "$RUNNER_TEMP/unpacked"
+      - name: Real Finder matrix and drag installation
+        run: python3 qa/verify-finder.py
+      - name: Encrypt raw evidence before upload
+        if: always()
+        run: |
+          mkdir -p "$RUNNER_TEMP/native-evidence"
+          tar -C "$RUNNER_TEMP" -cf "$RUNNER_TEMP/evidence.tar" native-evidence
+          openssl cms -encrypt -binary -aes256 -in "$RUNNER_TEMP/evidence.tar" -out "$RUNNER_TEMP/evidence.cms" -outform DER qa/evidence-public.crt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: encrypted-dmg-prototype-evidence
+          path: ${{ runner.temp }}/evidence.cms
+          if-no-files-found: error
+          retention-days: 3
