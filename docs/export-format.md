@@ -51,3 +51,11 @@ The copied prompt names the exact `context.md` file, with image paths resolved r
 - Crops are for small/unclear details; full frames and adjacent timeline states remain available for layout and interaction questions. Reading fewer files is not a reason to skip evidence required for a correct fix.
 
 Deterministic preservation checks and the unrun/live status of the controlled comparison are recorded in `Benchmarks/reports/lean-handoff/`. Text bytes are not provider tokens. See [positioning and measurement](product-positioning.md).
+
+## Source consistency and validation
+
+An export plan now binds each candidate source file to a SHA-256 of the exact bytes read for its preview. Export checks included files against that binding before rendering and also checks candidates omitted as duplicates. Replacing an image at the same dimensions can no longer silently change a prepared handoff or hide a newly distinct state. A mismatch fails with a request to refresh Hand Off; prepare a fresh plan and retry. Harmless container/metadata edits also invalidate the plan conservatively. These digests are internal to the plan, not additional manifest/session fields.
+
+Each source image's digest and decoder use the same owned byte buffer. Existing sibling staging, cancellation checks, no-overwrite finalization and cleanup remain. Ordinary failures leave the final destination absent, preserve the saved session and allow retry. Process termination or a machine crash can still leave a hidden `.contextlens-*` staging folder; a subsequent export uses a fresh unique stage and does not delete unrelated recoverable work.
+
+The offline validator checks PNG chunk CRCs, complete compressed scanlines, dimensions and safe paths. Current `# ContextLens feedback` briefs additionally require their promised overview images and timeline references. Earlier v1/v2 layouts remain supported; exported redaction instructions must be empty. The validator is structural validation, not a visual privacy audit. Review visible screenshots, titles and user instructions before sharing. No session or manifest schema version changes are required.
