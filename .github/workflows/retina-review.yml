@@ -1,0 +1,32 @@
+name: Disposable Retina display diagnostics
+on:
+  push:
+    branches: [qa/retina-review-20261109]
+permissions:
+  contents: read
+jobs:
+  display:
+    runs-on: macos-15
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - name: Inspect offered display modes without capturing owner data
+        run: |
+          sw_vers
+          sysctl hw.model hw.memsize
+          swiftc qa/display-proof.swift -o "$RUNNER_TEMP/display-proof"
+          "$RUNNER_TEMP/display-proof"
+      - name: Try session-only virtual Retina display on disposable runner
+        run: |
+          clang -fobjc-arc -framework AppKit -framework CoreGraphics qa/retina-display.m -o "$RUNNER_TEMP/retina-display"
+          "$RUNNER_TEMP/retina-display" "$RUNNER_TEMP/retina-display.json" > "$RUNNER_TEMP/virtual-display.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/retina-display.pid"
+          sleep 6
+          cat "$RUNNER_TEMP/retina-display.json"
+          "$RUNNER_TEMP/display-proof" --fixture
+      - name: Remove session-only display
+        if: always()
+        run: |
+          if [[ -f "$RUNNER_TEMP/retina-display.pid" ]]; then kill "$(cat "$RUNNER_TEMP/retina-display.pid")" || true; fi
