@@ -1,0 +1,45 @@
+name: Disposable development visual checks
+on:
+  push:
+    branches: [qa/native-visual-fixes-20261109]
+permissions:
+  contents: read
+jobs:
+  observe:
+    runs-on: macos-15
+    timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pinned build-only dependencies
+        run: |
+          python3 -m venv "$RUNNER_TEMP/qa-python"
+          "$RUNNER_TEMP/qa-python/bin/python" -m pip install --require-hashes -r distribution/dmg/requirements.txt
+          echo "$RUNNER_TEMP/qa-python/bin" >> "$GITHUB_PATH"
+          npm --prefix Benchmarks ci --ignore-scripts
+          (cd Benchmarks && npx playwright install chromium)
+      - name: Development build only
+        env:
+          CONTEXTLENS_SIGN_IDENTITY: '-'
+        run: scripts/build-app.sh --output "$RUNNER_TEMP/unpacked"
+      - name: Genuine Finder controls and patched artwork
+        run: python3 qa/finder-check.py
+      - name: Genuine Tidewater workflow
+        run: python3 qa/run-native-workflow.py
+      - name: Encrypt raw evidence before upload
+        if: always()
+        run: |
+          mkdir -p "$RUNNER_TEMP/native-evidence"
+          tar -C "$RUNNER_TEMP" -cf "$RUNNER_TEMP/evidence.tar" native-evidence
+          openssl cms -encrypt -binary -aes256 -in "$RUNNER_TEMP/evidence.tar" -out "$RUNNER_TEMP/evidence.cms" -outform DER qa/evidence-public.crt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: encrypted-development-visual-evidence
+          path: ${{ runner.temp }}/evidence.cms
+          if-no-files-found: error
+          retention-days: 3
