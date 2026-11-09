@@ -80,7 +80,7 @@ def choose_folder(path):
     ui('type',index=fields[-1]['index'],value=str(path));keys(36);time.sleep(.7)
     press('Save Hand Off',required=False);time.sleep(1)
 def status_text():return ' '.join(str(n.get('AXValue',''))+' '+str(n.get('AXTitle','')) for n in ui('tree').get('nodes',[]))
-browser_process=None
+browser_process=None;candidate_process=None
 try:
     r=command(['gh','run','download','42557369631','--repo','Brendan-Lim/ContextLens','--name','official-candidate-0.3.1','--dir',candidate],'download')
     assert r.get('exitCode')==0
@@ -95,7 +95,9 @@ try:
     browser_process=subprocess.Popen(['node','qa/tidewater.cjs'],stdout=browser_log,stderr=browser_log)
     assert wait_for(lambda:(out/'browser-ready.json').exists(),30),'Browser failed'
     origin=json.loads((out/'browser-ready.json').read_text())['origin']
-    r=command(['open','-n',app,'--args','--isolated-native-test','--capture-preview','-onboardingComplete','YES','-storagePath',storage,'-NSRequiresAquaSystemAppearance','YES'],'open-candidate')
+    application_log=(out/'candidate-process.log').open('w')
+    candidate_process=subprocess.Popen([str(app/'Contents/MacOS/ContextLens'),'--isolated-native-test','--capture-preview','-onboardingComplete','YES','-storagePath',str(storage),'-ApplePersistenceIgnoreState','YES','-NSRequiresAquaSystemAppearance','YES'],stdout=application_log,stderr=application_log)
+    record('launch-candidate',method='direct exact binary; existing runner execution context, no privacy settings changed',pid=candidate_process.pid)
     time.sleep(4)
     nodes=tree('launch')
     press('Start using ContextLens',required=False)

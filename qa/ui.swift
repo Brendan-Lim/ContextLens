@@ -11,7 +11,16 @@ if command=="display" {
     let display=CGMainDisplayID()
     let modes=CGDisplayCopyAllDisplayModes(display,nil) as? [CGDisplayMode] ?? []
     let candidates=modes.filter{$0.width>=1440 && $0.height>=900 && $0.width<=1920 && $0.height<=1200}.sorted{$0.width*$0.height > $1.width*$1.height}
-    var status:CGError?;if let mode=candidates.first {status=CGDisplaySetDisplayMode(display,mode,nil)}
+    var status:CGError?
+    if let mode=candidates.first {
+        var configuration:CGDisplayConfigRef?
+        status=CGBeginDisplayConfiguration(&configuration)
+        if status == .success,let configuration {
+            status=CGConfigureDisplayWithDisplayMode(configuration,display,mode,nil)
+            if status == .success {status=CGCompleteDisplayConfiguration(configuration,.forSession)}
+            else{CGCancelDisplayConfiguration(configuration)}
+        }
+    }
     finish(["modes":modes.map{["width":$0.width,"height":$0.height]},"setStatus":status?.rawValue ?? -1,"screens":NSScreen.screens.map{["width":$0.frame.width,"height":$0.frame.height,"scale":$0.backingScaleFactor]}])
 }
 guard AXIsProcessTrusted(), CGPreflightPostEventAccess() else{finish(["blocked":"Existing Accessibility/input access unavailable; no permission requested"],2)}
@@ -80,7 +89,7 @@ if command=="type" {
     let chars=Array(text.utf16)
     let event=CGEvent(keyboardEventSource:nil,virtualKey:0,keyDown:true)!
     chars.withUnsafeBufferPointer{event.keyboardSetUnicodeString(stringLength:chars.count,unicodeString:$0.baseAddress!)}
-    event.post(tap:.cghidEventTap);key(48);drain(0.5)
+    event.post(tap:.cghidEventTap);CGEvent(keyboardEventSource:nil,virtualKey:0,keyDown:false)?.post(tap:.cghidEventTap);key(48);drain(0.5)
     finish(["typed":text,"index":i])
 }
 if command=="keys" {
