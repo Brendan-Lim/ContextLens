@@ -470,6 +470,8 @@ private struct RecordingPill: View {
                 HStack(spacing: 6) { Image(systemName: "stop.fill").font(.system(size: 10)); Text("Stop") }
             }
             .buttonStyle(.lens(.record, height: 36))
+            // Keep the complete action and its padding in the intrinsically sized pill.
+            .fixedSize(horizontal: true, vertical: false)
             .disabled(model.stopping)
         }
         .padding(.leading, 8).padding(.trailing, 9)

@@ -73,7 +73,9 @@ def configure(mount):
         store['.']['bwsp'] = dict(ShowToolbar=False, ShowStatusBar=False, ShowSidebar=False,
                                  ShowPathbar=False, ShowTabView=False, WindowBounds=BOUNDS,
                                  ContainerShowSidebar=False, PreviewPaneVisibility=False)
+        # Finder requires the fallback RGB fields even when backgroundType selects a picture.
         store['.']['icvp'] = dict(viewOptionsVersion=1, backgroundType=2, backgroundImageAlias=alias,
+                                 backgroundColorRed=1.0, backgroundColorGreen=1.0, backgroundColorBlue=1.0,
                                  iconSize=104.0, textSize=13.0, labelOnBottom=True,
                                  showItemInfo=False, showIconPreview=False, gridSpacing=100.0,
                                  gridOffsetX=0.0, gridOffsetY=0.0, scrollPositionX=0.0,
@@ -93,6 +95,9 @@ def verify_layout(mount):
         options = store['.']['icvp']
         require(options['iconSize'] == 104 and options['backgroundType'] == 2
                 and options['labelOnBottom'] and options['arrangeBy'] == 'none', 'Finder icon layout differs')
+        require(all(type(options.get(channel)) is float and options[channel] == 1.0 for channel in
+                    ['backgroundColorRed', 'backgroundColorGreen', 'backgroundColorBlue']),
+                'Finder picture settings require fallback RGB color components')
         alias = Alias.from_bytes(options['backgroundImageAlias'])
         require(alias.target.posix_path == '/.background/background.tiff'
                 and alias.volume.name == 'ContextLens', 'Background alias points outside this volume')
