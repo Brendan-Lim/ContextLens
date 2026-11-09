@@ -26,4 +26,4 @@ Use a compatible Xcode and inspect `xcode-select -p`, `xcodebuild -version` and 
 
 A development build may use an Apple Development certificate or ad-hoc signing. `--distribution` deliberately fails without a Developer ID Application identity. See [releasing](releasing.md) for the exact seven required CI secrets. Missing credentials are not repaired by fake secrets or a weaker signature.
 
-Native smoke checks require WindowServer access and may abort inside a restricted shell sandbox. Use the documented background-launch flags outside that sandbox; never simulate permission success. The known native closure-detection failure and compositor snapshot gaps are recorded in [native testing](native-testing.md).
+Native smoke checks require WindowServer access and may abort inside a restricted shell sandbox. Use the documented flags only in a genuine disposable interactive test environment; never simulate permission success. The known native closure-detection failure and compositor snapshot gaps are recorded in [native testing](native-testing.md).

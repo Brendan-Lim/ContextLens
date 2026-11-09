@@ -8,4 +8,4 @@
 - Agent CLIs: external, optional, user-installed tools. Observed Codex 0.163.0 and Claude Code 2.1.303. They are not redistributed or invoked by the app.
 - Competitor documentation was read for public behavior only. Annotake GPL implementation was not incorporated. MarkuprPlus and Shotback MIT code was not copied. Mean has no verified source licence in the reviewed page.
 
-Before distributing a signed binary, review current Apple SDK/SF Symbols distribution terms and sign/notarize under your own developer identity. The local build is ad-hoc signed for development; no distribution credentials are used.
+Before distributing a signed binary, review current Apple SDK/SF Symbols distribution terms and sign/notarize under your own developer identity. Local builds use Apple Development when available or fall back to ad-hoc; no distribution credentials are used.

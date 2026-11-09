@@ -34,7 +34,7 @@ From a clean source checkout matching the release metadata, with `gh` authentica
 
 ```sh
 gh repo clone Brendan-Lim/homebrew-tap /tmp/contextlens-tap-update
-python3 scripts/update-homebrew.py 0.3.0 /tmp/contextlens-tap-update
+python3 scripts/update-homebrew.py 0.3.1 /tmp/contextlens-tap-update
 python3 /tmp/contextlens-tap-update/scripts/validate.py
 ```
 
@@ -44,7 +44,7 @@ After generation, validate with Homebrew against that inspected checkout. A main
 
 ```sh
 brew tap Brendan-Lim/tap
-brew style --cask /tmp/contextlens-tap-update/Casks/contextlens.rb
+brew style --cask Brendan-Lim/tap/contextlens
 brew audit --cask --online Brendan-Lim/tap/contextlens
 brew fetch --cask Brendan-Lim/tap/contextlens
 ```
@@ -53,7 +53,7 @@ Review `git diff` in the tap checkout, commit and push independently. The main r
 
 ## Clean-install verification (pending)
 
-Use a fresh macOS account/VM or disposable Homebrew installation. Preserve an existing manually installed app by moving it to a safe backup location; do not force-overwrite it. A custom `--appdir` isolates the app but does **not** isolate Homebrew's CLI symlink or Caskroom, so a custom app directory alone is insufficient if those already contain ContextLens.
+Use a disposable macOS VM or dedicated test Mac. A new account or custom app directory alone does not isolate shared installations and CLI links. Preserve an existing manually installed app by moving it to a safe backup location; do not force-overwrite it. A custom `--appdir` isolates the app but does **not** isolate Homebrew's CLI symlink or Caskroom, so a custom app directory alone is insufficient if those already contain ContextLens.
 
 Once the cask exists, record actual results for:
 
@@ -69,6 +69,6 @@ Check `/Applications/ContextLens.app`, `command -v contextlens-cli`, permissions
 
 Upgrade requires two genuinely verified releases and a clean install of the earlier version. Only then test `brew update` and `brew upgrade --cask contextlens`, verify the new version/signatures/CLI and preserved sessions. An upgrade command with no second version is not an upgrade test.
 
-These installation/upgrade/uninstall commands are **future instructions, not successful test results**. No signed public release exists yet. See the [release report](distribution-release-report.md) for status.
+These installation/upgrade/uninstall commands are **future instructions, not successful test results**. No signed public release exists yet. See [official release preparation](official-release-preparation.md) for the tested baseline and pending human security cases.
 
 References checked 8 November 2026: [Cask Cookbook](https://docs.brew.sh/Cask-Cookbook) (minimum OS, arm64 and embedded binary DSL), [Homebrew commands](https://docs.brew.sh/Manpage) (install, update, upgrade, uninstall, audit, style and appdir options). Local command syntax was checked with Homebrew 7.0.10; installation was deferred to protect the current app and because no trusted artifact exists.

@@ -2,7 +2,10 @@
 
 The selected **Twin Glass** design is a 720 × 440 point icy-blue surface with two translucent wells, the owned ContextLens wordmark, a restrained directional curve and a short footer. Composition B uses one continuous glass tray. Both were rendered and visually inspected; separate wells give each real icon more definition.
 
-![Selected design, illustrated icon placement — not a Finder screenshot](../../docs/media/installer-preview.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="../../docs/media/screens/E-dmg-dark.png">
+  <img src="../../docs/media/screens/E-dmg-light.png" width="720" alt="Genuine Retina Finder window showing ContextLens and the Applications shortcut.">
+</picture>
 
 | Element | Geometry in Finder points, from top left |
 |---|---|
@@ -12,7 +15,7 @@ The selected **Twin Glass** design is a 720 × 440 point icy-blue surface with t
 | Real icon size | 104; labels below, 13 point |
 | Background | 720 × 440 at 72 DPI + 1440 × 880 at 144 DPI, combined TIFF |
 
-`assets/background.png` is the chosen 2× artwork; `background@1x.png` is 1×; `composition-b.png` is the alternative. The background has **no app or Applications icons**. The public preview adds an explicitly labeled placement illustration; its diagrammatic folder is never included in the disk background. Only the real app and `/Applications` symlink supply Finder icons.
+`assets/background.png` is the chosen 2× artwork; `background@1x.png` is 1×; `composition-b.png` is the alternative. The background has **no app or Applications icons**. The genuine Finder screenshots above show the installed layout. The renderer can also produce an optional labeled design proof in a new output directory; no diagrammatic folder is included in the disk background. Only the real app and `/Applications` symlink supply Finder icons.
 
 ## Build and verify
 

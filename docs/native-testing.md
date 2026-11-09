@@ -1,41 +1,32 @@
-> Current 0.3.1 source status: **interactive acceptance remains pending**. See [capture reliability](native-capture-reliability.md) and the [isolated acceptance procedure](beta-acceptance.md). The historical artifacts below remain local-only. All native fixture launches now require an explicit isolation acknowledgment; no new live closure result is claimed. The default probe is non-key, but input/smoke helpers can still make windows key.
-
-> Expanded historical verification, coverage and performance evidence: rigorous testing report (local-only evidence `testing-report.md`). Historical checks below retain their original scope.
-
-> Permission recovery and stable local signing were updated in 0.2.1; see [permissions](permissions.md). Earlier ad-hoc build checks below are historical.
-
 # Native integration testing
 
-Verified on the supplied arm64 Mac with Swift 6.3.3 and Xcode's macOS 26.5 SDK. Deployment target is macOS 14; macOS 14 hardware/runtime was not available for execution. Development builds use an available Apple Development identity, otherwise ad-hoc signing, with bundle ID `dev.contextlens.app`. The CLI is embedded and also copied to `dist/contextlens-cli`. Developer ID distribution is a separate [release workflow](releasing.md).
+Use a disposable interactive Apple Silicon macOS VM or dedicated test Mac. Preserve the owner's installation, sessions, focus and permissions. `--isolated-native-test` and the Python launcher's `--isolated-environment` acknowledge isolation; they do not create it. Native fixture/input helpers can make windows key.
 
-Automated evidence is in initial MVP native check (local-only evidence `examples/native-capture-verification-v1.json`), native-editor.png (local-only evidence `examples/native-editor.png`), and the Swift test suites. A real app window was launched and rendered. Where already granted, the self-test uses ScreenCaptureKit's desktop-independent selected-window filter against **only that app's own generated fixture window**; it never takes a display screenshot. The test command does not request permission when unavailable:
+The [official candidate baseline](official-release-preparation.md) passed 14 exact-byte native engineering cases. Five human security cases remain pending. Repeat applicable engineering checks for every replacement candidate; unit tests, a directly launched executable and pre-existing runner consent cannot prove fresh authorization. macOS 14 runtime, mixed displays and sustained real-workload measurements remain unverified.
+
+## Automated and fixture checks
+
+Run `scripts/ci.sh` for the complete deterministic gate; [building](building.md) lists development dependencies. It performs no desktop capture, live model calls or TCC changes. The [coverage map](testing-coverage.md) describes test boundaries.
+
+For an isolated development fixture run, build into a new destination and choose a new output directory:
 
 ```sh
-scripts/build-app.sh
-dist/ContextLens.app/Contents/MacOS/ContextLens --isolated-native-test \
-  --session "$PWD/docs/examples/source-session" \
-  --smoke-snapshot "$PWD/docs/examples/native-editor.png" \
-  --native-capture-test
+CONTEXTLENS_SIGN_IDENTITY=- scripts/build-app.sh --output /tmp/contextlens-native-build
+python3 scripts/verify-native.py --isolated-environment   --app /tmp/contextlens-native-build/ContextLens.app   --output /tmp/contextlens-native-results
 ```
 
-If WindowServer access is blocked by an execution sandbox, use a terminal inside the disposable test environment; do not move the test onto the owner desktop. The restricted CLI's permission preflight may differ from the launched app's TCC access. Denied access is recorded as blocked rather than reported as capture success. Without SCK permission, the fallback NSView rendering can omit compositor-backed sidebar effects; historical screenshots used actual selected-window capture; none is new candidate acceptance evidence.
+This exercises Review, Mark Up, zoom and Hand Off in Light/Dark. Open every output and record failures. `cacheDisplay` snapshots can omit Hand Off's compositor-backed sidebar; judge it from genuine ScreenCaptureKit output. The legacy closure probe's first post-wait enumeration and eventual result are separate; see [capture diagnostics](native-capture-reliability.md). A failed diagnostic is never silently counted as passing production acceptance.
 
-The retained historical result is movement/resize passing and `closure_detected_without_fallback: false`. The new probe records a positive pre-close identity match, close notification/visibility and timed post-close enumeration. Its first lookup after the original 200 ms wait is preserved separately (query completion may be later) from eventual identity absence or timeout. The source retains the probe under Swift/ARC rather than changing its lifetime to force a pass. Actual root cause and native capture-loop closure behavior remain pending. Deterministic tests now use the production coordinator with real CGImages/processor/session persistence and injected window providers; they do not manufacture ScreenCaptureKit objects or prove WindowServer behavior.
+## Interactive release checklist
 
-Remaining interactive release checklist:
+Use [exact-candidate acceptance](release-acceptance/README.md) and [the isolated matrix](beta-acceptance.md), recording pass/fail/pending, exact source/assets, environment, observations and safe evidence locators. Use only fictional content:
 
-- Fresh-user Screen Recording denied/granted/relaunch flows and Accessibility denied/granted with a real target application's clicked role.
-- Picker/preview/start/stop on Safari, Chrome and a native app; window moved between Retina/non-Retina displays, minimized, moved to another Space, closed and reopened. Verify no substitute display/window capture.
-- Rapid checkbox/dropdown/error/toast changes, very small low-contrast controls, loaders and highly animated content at all sensitivity settings. Manual hotkey conflicts should recover through the in-app Snapshot button.
-- Draw/label/edit/delete each tool; resize the editor; check rectangles and freehand highlighter strokes; confirm older arrows/markers/redactions still reopen. Undo/redo labels, geometry, frame operations and persistence after quit/reopen.
-- Export destination with spaces, external/project folders, low disk space, permission denial and a preexisting export; inspect burned redactions in every full frame/crop/overlay and labels/titles for sensitive text.
-- Stop during a delay/in-flight sample, quit while recording, import errors, session deletion and retention cleanup in a disposable storage folder.
-- Measure CPU, peak resident memory and prolonged capture responsiveness on real workflows. The comparator microbenchmark alone does not establish whole-app resource use.
+- Preserve a genuine download's quarantine and observe first-launch policy and user-controlled Open Anyway. Test fresh Screen Recording denial, grant/relaunch and revocation/recovery. Accessibility is optional; verify clicked roles without editable field values.
+- Capture a deliberately chosen browser/native window at Low/High sensitivity. Move/resize it, close it while another window remains, and quit the target app. Verify original-only frames, no substitution, correct original dimensions and pending-frame persistence.
+- Exercise rapid start/stop, delayed/in-flight stop, ContextLens quit during capture, and failed capture-save/retry using disposable storage. Preserve recoverable data and verify the reopened session.
+- Reorder, rename and deselect states; draw Box/Highlight, edit notes and geometry, zoom, undo/redo, and reopen legacy marks/redactions. Verify stable issue IDs. New redaction creation is absent from the toolbar; use a synthetic legacy session for redaction checks.
+- Save Hand Off, inspect all image derivatives, notes, paths and timeline, and copy/paste the prompt deliberately. Test stale source refusal, refresh/retry, unwritable destinations, spaces/Unicode and no overwrite in throwaway folders. Validate with `python3 scripts/validate_package.py EXPORT`.
+- Inspect the real DMG in Finder Light/Dark and at available display densities; drag/install/eject/launch inside the disposable machine. Follow [installer checks](../distribution/dmg/README.md#real-finder-checks).
+- Record unavailable macOS 14/mixed-display, minimized/Spaces, tiny/transient UI, hotkey conflict and external-app cases as pending. Measure sustained CPU/RSS, keystroke-to-display latency and zoom/pan FPS separately from comparator/image microbenchmarks; see [benchmark instructions](../Benchmarks/README.md).
 
-No automated claim of every UI gesture being exercised is made. The app's end-to-end controller needs broader real-application soak testing before a public binary release. Developer ID signing, notarization and distribution packaging remain separate from this local MVP.
-
-## Annotation/export update (0.2.0)
-
-`--export-preview` opens the filtered export view during a smoke snapshot. `--exercise-highlighter`, when paired with `--smoke-snapshot` and the generated `demo-session` fixture, posts local mouse events into the app's own window to exercise a real highlighter drag. It never runs in ordinary sessions. Local view-cache snapshots are in `.build/editor-v2.png` and `.build/export-v2.png`; they can omit the compositor-backed sidebar. Current results are recorded in `examples/annotation-update-verification.json`. The new ad-hoc signed build did not have Screen Recording access during that check; no permission was requested automatically. The default export switches are both enabled; all annotated copies must remain even when image pixels match.
-
-For smoke runs, copy generated fixtures to an OS temporary directory. A raw command-line read from the protected project Documents directory stalled during testing; the temporary fixture completed successfully. Ordinary session selection uses NSOpenPanel.
+Keep raw screenshots, sessions and permission observations private. Only reviewed fictional images with explicit publication hashes belong in Git. Do not manufacture a passing human acceptance record or use a source fixture launch as verification of official candidate bytes.
