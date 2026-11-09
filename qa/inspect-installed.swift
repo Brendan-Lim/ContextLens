@@ -10,5 +10,6 @@ if let app=NSWorkspace.shared.runningApplications.first(where:{$0.bundleIdentifi
     let target=AXUIElementCreateApplication(app.processIdentifier)
     var windows:CFTypeRef?;AXUIElementCopyAttributeValue(target,kAXWindowsAttribute as CFString,&windows)
     result["windowCount"]=(windows as? [AXUIElement] ?? []).count
+    if CommandLine.arguments.contains("--terminate"), ProcessInfo.processInfo.environment["GITHUB_ACTIONS"] == "true" { result["terminationRequested"] = app.terminate() }
 }else{result["runningInstalledCopy"]=false}
 print(String(data:try JSONSerialization.data(withJSONObject:result,options:[.prettyPrinted,.sortedKeys]),encoding:.utf8)!)

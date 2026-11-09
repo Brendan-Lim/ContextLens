@@ -244,6 +244,21 @@ finally:
         cases['dmg-drag-install-eject-launch']=dict(status='pass' if observed.get('runningInstalledCopy') and observed.get('version')=='0.3.1' and observed.get('build')=='6' and observed.get('windowCount',0)>0 else 'pending',drag=drag,eject=detached,installedObservation=observed)
         installed_images=out/'installed-launch';installed_images.mkdir()
         command(['swift','qa/capture-windows.swift',installed_images,'dev.contextlens.app'],'installed-launch-images')
+        # Compare LaunchServices with a direct launch of the identical installed bytes.
+        # Never count this diagnostic fallback as a successful normal Finder installation launch.
+        if observed.get('windowCount',0)==0:
+            command(['swift','qa/inspect-installed.swift','--terminate'],'installed-ls-termination')
+            time.sleep(3)
+            direct_log=(out/'installed-direct-process.log').open('w')
+            direct=subprocess.Popen(['/Applications/ContextLens.app/Contents/MacOS/ContextLens'],stdout=direct_log,stderr=direct_log)
+            time.sleep(5)
+            command(['swift','qa/inspect-installed.swift'],'installed-direct-observation')
+            direct_images=out/'installed-direct';direct_images.mkdir()
+            command(['swift','qa/capture-windows.swift',direct_images,'dev.contextlens.app'],'installed-direct-images')
+            command(['swift','qa/inspect-installed.swift','--terminate'],'installed-direct-termination')
+            try:direct.wait(timeout=5)
+            except subprocess.TimeoutExpired:direct.terminate()
+
     except Exception as error:cases['dmg-drag-install-eject-launch']=dict(status='pending',observation=repr(error))
     (out/'native-case-results.json').write_text(json.dumps(dict(cases=cases,maintainerApproval=False,noTCCChanges=True,exactCandidate=False,developmentBuild=True,realNativeRecording=bool(cases.get('selected-window-high',{}).get('status')=='pass')),indent=2))
     if browser_process:

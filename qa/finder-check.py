@@ -42,7 +42,7 @@ control = candidate / 'ContextLens-alias-only-control.dmg'
 (out / 'control-structural-verification.json').write_text(json.dumps(scope['build'](app, control), indent=2))
 patched = candidate / 'ContextLens-development.dmg'
 (out / 'patched-structural-verification.json').write_text(json.dumps(dmg.build(app, patched), indent=2))
-(out / 'development-zip-verification.json').write_text(json.dumps(package(app, candidate, development=True), indent=2))
+(out / 'development-zip-verification.json').write_text(json.dumps(package(app, candidate, development=True), indent=2, default=str))
 # Keep only public-source provenance and final-byte hashes here; all evidence is encrypted.
 (out / 'development-hashes.json').write_text(json.dumps({p.name: dmg.sha256(p) for p in candidate.iterdir() if p.is_file()}, indent=2))
 for label, image in [('alias-only-control', control), ('patched', patched)]:
