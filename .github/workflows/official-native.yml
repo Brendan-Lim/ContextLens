@@ -1,0 +1,65 @@
+name: Exact official candidate native observations
+on:
+  push:
+    branches: [qa/postcleanup-v031-native-20261109]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  observe:
+    runs-on: macos-15
+    timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pinned diagnostic dependencies only
+        run: |
+          python3 -m venv "$RUNNER_TEMP/qa-python"
+          "$RUNNER_TEMP/qa-python/bin/python" -m pip install --require-hashes -r distribution/dmg/requirements.txt
+          "$RUNNER_TEMP/qa-python/bin/python" -m pip install jsonschema==4.23.0
+          echo "$RUNNER_TEMP/qa-python/bin" >> "$GITHUB_PATH"
+          npm --prefix Benchmarks ci --ignore-scripts
+          (cd Benchmarks && npx playwright install chromium)
+      - name: Download exact successful official prepare artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 42614894584 --repo Brendan-Lim/ContextLens --name official-candidate-0.3.1 --dir "$RUNNER_TEMP/official-candidate"
+          mkdir -p "$RUNNER_TEMP/native-evidence"
+          sw_vers > "$RUNNER_TEMP/native-evidence/macos.txt"
+          sysctl hw.model hw.memsize > "$RUNNER_TEMP/native-evidence/machine.txt"
+      - name: Verify exact bytes and extract original signed app
+        id: candidate
+        run: python3 qa/prepare-exact-candidate.py
+      - name: Real Finder Light and Dark on exact official DMG
+        run: python3 qa/official-finder.py
+      - name: Real recording annotation export lifecycle recovery and install
+        if: "always() && steps.candidate.outcome == 'success'"
+        run: python3 qa/run-native-workflow.py
+      - name: Full native Stop label through local OCR
+        if: "always() && steps.candidate.outcome == 'success'"
+        run: |
+          swift qa/verify-pill.swift "$RUNNER_TEMP/native-evidence/product-originals/A2-recording.png" "$RUNNER_TEMP/native-evidence/product-originals/A2-recording-three-states.png" "$RUNNER_TEMP/native-evidence/product-originals/A2-recording-1600.png" > "$RUNNER_TEMP/native-evidence/pill-ocr.json"
+      - name: Original candidate bundle remains unchanged
+        if: "always() && steps.candidate.outcome == 'success'"
+        run: python3 qa/verify-bundle-after.py
+      - name: Project explicit non-private evidence allowlist only
+        if: always()
+        run: python3 qa/project-safe-evidence.py
+      - name: Encrypt fictional screenshots and sanitized observations only
+        if: always()
+        run: |
+          mkdir -p "$RUNNER_TEMP/safe-native-evidence"
+          tar -C "$RUNNER_TEMP" -cf "$RUNNER_TEMP/safe-evidence.tar" safe-native-evidence
+          openssl cms -encrypt -binary -aes256 -in "$RUNNER_TEMP/safe-evidence.tar" -out "$RUNNER_TEMP/safe-evidence.cms" -outform DER qa/evidence-public.crt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: encrypted-official-native-observations
+          path: ${{ runner.temp }}/safe-evidence.cms
+          if-no-files-found: error
+          retention-days: 3
