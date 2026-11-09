@@ -32,7 +32,7 @@ def command(args, name, check=True, timeout=90, env=None):
 def native():
     command(['sw_vers'], 'macos')
     command(['git', 'rev-parse', 'HEAD'], 'diagnostic-source')
-    command(['git', 'diff', '--exit-code', '0b2c9a95927175d05222aa79aa9cc33ac2c8a38e', '--', 'Sources', 'scripts', 'distribution', 'config'], 'production-input-equality')
+    command(['git', 'diff', '--exit-code', '65d2c4f2756db06f33034667a4a7c0eb10fda40d', '--', 'Sources', 'scripts', 'distribution', 'config'], 'production-input-equality')
     command(['swiftc', 'qa/ui.swift', '-o', temp / 'ui-helper'], 'native-compile-ui-helper')
     install = temp / 'same-path-install/ContextLens.app'
     install.parent.mkdir()
@@ -120,6 +120,15 @@ def ui():
             tree = command([temp / 'ui-helper', 'tree'], state + '-ui-tree', check=False, env=env)
             capture = command([temp / 'capture-helper', folder, 'dev.contextlens.app'], state + '-capture', check=False, env=env)
             results[state] = dict(treeExit=tree.get('exitCode'), captureExit=capture.get('exitCode'), screenshots=len(list(folder.glob('*.png'))))
+            if capture.get('exitCode') == 0:
+                windows = json.loads(capture['stdout'])
+                panels = [w for w in windows if w['bounds']['Width'] == 300]
+                assert len(panels) == 1, 'No unique real capture panel'
+                panel = panels[0]
+                bounds, visible = panel['bounds'], panel['visibleScreenBounds']
+                assert bounds['Y'] >= visible['top'] and bounds['Y'] + bounds['Height'] <= visible['bottom'], 'Recovery controls extend off screen'
+                results[state]['panelFitsVisibleScreen'] = True
+                results[state]['panelHeight'] = bounds['Height']
             if tree.get('exitCode') == 0:
                 expected = {'unverified': 'access unverified', 'denied': 'access denied', 'failed': 'verification failed'}[state]
                 assert expected in tree['stdout'], 'Distinct access state missing from native UI'

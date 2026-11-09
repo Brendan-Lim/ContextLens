@@ -19,6 +19,9 @@ for item in list {
     process.executableURL = URL(fileURLWithPath: "/usr/sbin/screencapture")
     process.arguments = ["-x", "-o", "-l", String(number), output.appendingPathComponent(filename).path]
     try process.run(); process.waitUntilExit()
-    report.append(["bundle": bundle, "id": number, "bounds": item[kCGWindowBounds as String] ?? [:], "file": filename, "exitCode": process.terminationStatus])
+    let screen = NSScreen.main ?? NSScreen.screens[0]
+    let visible = screen.visibleFrame
+    let visibleBounds: [String: CGFloat] = ["top": screen.frame.maxY - visible.maxY, "bottom": screen.frame.maxY - visible.minY]
+    report.append(["bundle": bundle, "id": number, "bounds": item[kCGWindowBounds as String] ?? [:], "visibleScreenBounds": visibleBounds, "file": filename, "exitCode": process.terminationStatus])
 }
 print(String(data: try JSONSerialization.data(withJSONObject: report, options: [.prettyPrinted, .sortedKeys]), encoding: .utf8)!)
