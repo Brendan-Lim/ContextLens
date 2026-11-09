@@ -30,6 +30,7 @@ jobs:
         run: |
           if [[ "${{ contains(github.event.head_commit.message, '[finder-matrix]') }}" == "true" ]]; then
             python3 qa/finder-matrix.py
+            python3 qa/pill-check.py
           else
             python3 qa/finder-check.py
           fi
