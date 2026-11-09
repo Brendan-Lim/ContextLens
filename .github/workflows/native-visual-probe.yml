@@ -17,12 +17,16 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Existing pinned layout dependencies only
-        run: python3 -m pip install --require-hashes -r distribution/dmg/requirements.txt
+        run: |
+          python3 -m venv "$RUNNER_TEMP/qa-python"
+          "$RUNNER_TEMP/qa-python/bin/python" -m pip install --require-hashes -r distribution/dmg/requirements.txt
+          echo "$RUNNER_TEMP/qa-python/bin" >> "$GITHUB_PATH"
       - name: Observe the downloaded candidate without rebuilding
         run: python3 qa/run-diagnostics.py
       - name: Encrypt raw evidence before uploading
         if: always()
         run: |
+          mkdir -p "$RUNNER_TEMP/native-evidence"
           tar -C "$RUNNER_TEMP" -cf "$RUNNER_TEMP/evidence.tar" native-evidence
           openssl cms -encrypt -binary -aes256 -in "$RUNNER_TEMP/evidence.tar" -out "$RUNNER_TEMP/evidence.cms" -outform DER qa/evidence-public.crt
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
