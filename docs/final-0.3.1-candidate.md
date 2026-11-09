@@ -1,5 +1,7 @@
 # Final v0.3.1 candidate integration — 9 November 2026
 
+**Historical pre-fix candidate; do not promote after the native visual fixes.** Genuine testing found a missing Finder background and truncated Stop label. Production/packaging corrections and approved media must be integrated before preparing a fresh candidate and repeating exact-byte acceptance. See [the screenshot kit](screenshot-kit/README.md).
+
 **Prepared release work; publication and genuine interactive acceptance remain blocked.** Version 0.3.1/build 6, arm64, macOS 14+. Only v0.3.0-preview.1 is published. No passing human acceptance record exists.
 
 ## PR #1 review and integration
