@@ -19,7 +19,15 @@ main = '40ad911d5c5fa68f4325e5ae0afc41da1de158ad'
 paths = ['Sources','Package.swift','Brand','distribution/dmg','scripts','config','docs/screenshot-kit/demo-site']
 assert not subprocess.check_output(['git','diff','--name-only',main,'HEAD','--',*paths],text=True).strip()
 (out/'production-input-comparison.json').write_text(json.dumps(dict(source=source,productionSource=main,matchingProductionPaths=paths,officialCandidate=False),indent=2))
-(out/'dmg-verification.json').write_text(json.dumps(dmg.build(app,image),indent=2))
+for attempt in range(1,4):
+    try:
+        verification=dmg.build(app,image)
+        (out/'dmg-verification.json').write_text(json.dumps(verification,indent=2))
+        break
+    except subprocess.CalledProcessError as error:
+        (out/('dmg-build-failed-attempt-'+str(attempt)+'.json')).write_text(json.dumps(dict(command=error.cmd,exitCode=error.returncode,stdout=error.stdout,stderr=error.stderr),indent=2))
+        if attempt==3:raise
+        time.sleep(5)
 def command(args,name):
     p = subprocess.run(list(map(str,args)),capture_output=True,text=True,timeout=90)
     (out/(name+'.json')).write_text(json.dumps(dict(exitCode=p.returncode,stdout=p.stdout,stderr=p.stderr),indent=2))

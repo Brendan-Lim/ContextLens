@@ -31,7 +31,7 @@ let context,page,other;
       res.end(JSON.stringify(state));
     }catch(e){res.writeHead(500);res.end(JSON.stringify({error:String(e)}));}
   });
-  await new Promise(r=>server.listen(0,'127.0.0.1',r));
+  await new Promise(r=>server.listen(49184,'127.0.0.1',r));
   const origin='http://127.0.0.1:'+server.address().port;
   async function newWindow(){
     const next=context.waitForEvent('page');

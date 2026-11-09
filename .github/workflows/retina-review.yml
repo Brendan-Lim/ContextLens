@@ -54,6 +54,7 @@ jobs:
           CONTEXTLENS_SIGN_IDENTITY: '-'
         run: scripts/build-app.sh --output "$RUNNER_TEMP/unpacked"
       - name: Establish and verify genuine native Retina display
+        id: retina
         run: |
           mkdir -p "$RUNNER_TEMP/native-evidence"
           sw_vers > "$RUNNER_TEMP/native-evidence/macos.txt"
@@ -70,6 +71,7 @@ jobs:
       - name: Real current Finder installer Light and Dark
         run: python3 qa/retina-finder.py
       - name: Real Tidewater recording annotation and saved Hand Off
+        if: "always() && steps.retina.outcome == 'success'"
         run: python3 qa/run-retina-workflow.py
       - name: Encrypt evidence with existing reviewed public recipient
         if: always()
