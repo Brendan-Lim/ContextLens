@@ -30,10 +30,41 @@ Promotion checks every intervening descendant tree, including changed-then-rever
 
 ## Replacement hosted candidate
 
-Prepare-only workflow, source identity, exact hashes, toolchain and artifact expiration: pending the newly verified source. No local development output is represented as a hosted candidate.
+[Prepare-only run 42557369631](https://github.com/Brendan-Lim/ContextLens/actions/runs/42557369631) succeeded; the promotion job was **skipped**. Source `5e786bc5dc144f0debe7f05f1957489e5600c256` had green [CI](https://github.com/Brendan-Lim/ContextLens/actions/runs/42557069137) and [Publication Security](https://github.com/Brendan-Lim/ContextLens/actions/runs/42557069051) before dispatch. Hosted macOS CI passed all 78 script tests; Linux security passed 75 with three intentional platform/setup skips. Its history audit covered 654 file versions / 592 blobs with zero findings, and independent Gitleaks found none.
+
+| Identity | Exact value |
+|---|---|
+| Source commit | `5e786bc5dc144f0debe7f05f1957489e5600c256` |
+| Source tree | `0415e9f4ceee487ea16864f95048c9092ea04f6f` |
+| ZIP SHA-256 | `f4ac0a2cc3dc5fd6f120a21e3f7152f86351b7f8bf93e3908f57bc5a9ad3425e` |
+| DMG SHA-256 | `52872a5e0221fac2960fb8d5c349743201bbb5800a914eb77b1b48416473b37d` |
+| Shared bundle inventory SHA-256 | `9e689eba51491066164b315dd2ac94d525154d4d7c8dadd1ea5124ed5775e1db` |
+| Release input inventory SHA-256 | `e622b42ea49ac57b278b3a0f857219ceeed7db3f4e9e4e77be3001cffe5a7331` (508 protected files) |
+| Artifact expiration | **9 December 2026, 11:40 SGT** (`2026-12-09T03:40:00Z`) |
+
+Hosted toolchain: **Xcode 26.3 / build 17C529**, **Swift 6.2.4**, **arm64 macOS 15.8.2**. Version **0.3.1/build 6**, bundle ID **dev.contextlens.app**, minimum macOS **14.0**, ad-hoc signatures; **no Developer ID or notarization**. Both containers derive from one official app bundle. `SHA256SUMS` also covers `provenance.json`.
+
+The actual Actions artifact was downloaded with `gh run download 42557369631 --repo Brendan-Lim/ContextLens --name official-candidate-0.3.1 --dir CANDIDATE`. On the independent arm64 Mac running **macOS 26.6.2**, `shasum -a 256 -c SHA256SUMS` passed. The hash-pinned DMG Python environment ran `python scripts/unnotarized-release.py verify-assets CANDIDATE` successfully. This repeated exact source/tree/input binding, strict ad-hoc signatures, CLI embedding/help, architecture/deployment metadata, ZIP paths/CRCs, private read-only DMG mount and filesystem validation, background/layout metadata and Applications symlink, normal temporary install copy, clean unmount and complete ZIP/DMG bundle equality. It did not launch the GUI or certify actual Finder appearance.
+
+Documentation-only follow-ups use the explicitly allowed report/kit paths. The exact candidate source and protected inventory remain fixed; acceptance must continue to name the source and hashes above, rather than the later documentation commit. No candidate bytes, tags, published releases or Homebrew casks were changed.
 
 ## Genuine visual and native acceptance
 
 Genuine Capture, Review, Mark Up, Hand Off and Finder light/dark screenshots remain pending. No app GUI or personal-window capture was launched. ZIP/DMG automation can verify structure and install-copy integrity; it cannot establish actual Finder appearance, quarantined first launch, permissions or capture/recovery behavior.
 
 Use [the existing screenshot kit](screenshot-kit/README.md) and [exact-candidate acceptance](release-acceptance/README.md) in a disposable macOS VM or spare Mac. The owner's installed app, sessions, exports, TCC and Gatekeeper settings are outside this task. No quarantine removal or permission reset is authorized. Only genuine observed results may populate the still-absent `docs/release-acceptance/0.3.1.json`.
+
+
+Accepted filesystem boundary: source-path containment is checked before opening; this does not provide an atomic `openat` sandbox against hostile same-user directory/symlink swaps. Export digests reject changed bytes on verification, but session storage is assumed to be locally owned and trusted. No global cross-file transaction or hostile-writer guarantee is claimed.
+
+
+## Measured export engineering sample
+
+The independently verified hosted CLI above exported 100 synthetic 960×600 states made by repeating the three CLI demo images, with no annotations. Machine: **Mac16,1 / Apple M4 / arm64 macOS 26.6.2**. Each setting was measured once with `/usr/bin/time -l`; wall time includes process startup. No source images or owner sessions were captured.
+
+| Export options | Included states | Wall seconds | Peak resident bytes | Package bytes |
+|---|---:|---:|---:|---:|
+| `--all-frames --keep-duplicates` | 100 | 0.7458 | 41,549,824 | 1,368,669 |
+| `--all-frames` | 3 | 0.2827 | 40,304,640 | 43,690 |
+
+Command: `/usr/bin/time -l CANDIDATE_CLI export SYNTHETIC_100_STATE_SESSION NEW_OUTPUT OPTIONS`. The local-only JSON evidence is saved as `Benchmarks/reports/final-0.3.1-export-5e786bc.json`; the public repository intentionally excludes generated reports. These measurements include planning, hashing, optional pixel fingerprinting, verification and writing; they do not isolate hashing cost or establish worst-case memory, 2× GUI responsiveness, cancellation latency, or an improvement over an older binary. The existing detached workers and per-export-frame autorelease pool are preserved. Genuine native responsiveness and capture-loop performance remain unmeasured here.

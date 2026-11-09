@@ -15,9 +15,25 @@ A second user account on your own Mac is **not** enough: `/Applications` is shar
 
 ## What to install
 
-Use the replacement official candidate from [the final v0.3.1 report](../final-0.3.1-candidate.md), once its prepare-only workflow and downloaded bytes have been verified. Exact download instructions and hashes will be recorded here after preparation. **The older run `42504640955` is obsolete and must not be promoted or used for final acceptance.**
+Use the independently verified hosted candidate from [prepare-only run 42557369631](https://github.com/Brendan-Lim/ContextLens/actions/runs/42557369631), source `5e786bc5dc144f0debe7f05f1957489e5600c256`. The older run `42504640955` is obsolete and must not be promoted or used for final acceptance.
 
-For a genuine Gatekeeper first launch, download the new candidate through a browser inside the disposable environment so it receives quarantine. Keep quarantine and Gatekeeper enabled. Confirm **ContextLens → About** shows **0.3.1 (6)** before taking screenshots.
+```sh
+gh run download 42557369631 --repo Brendan-Lim/ContextLens --name official-candidate-0.3.1 --dir candidate-42557369631
+cd candidate-42557369631
+shasum -a 256 -c SHA256SUMS
+```
+
+| Candidate identity | Exact value |
+|---|---|
+| Version / build | **0.3.1 / 6** |
+| ZIP SHA-256 | `f4ac0a2cc3dc5fd6f120a21e3f7152f86351b7f8bf93e3908f57bc5a9ad3425e` |
+| DMG SHA-256 | `52872a5e0221fac2960fb8d5c349743201bbb5800a914eb77b1b48416473b37d` |
+| Bundle inventory SHA-256 | `9e689eba51491066164b315dd2ac94d525154d4d7c8dadd1ea5124ed5775e1db` |
+| Artifact expiration | **9 December 2026, 11:40 SGT** (`2026-12-09T03:40:00Z`) |
+
+For genuine first-launch acceptance, download the Actions artifact through a browser while signed in to GitHub **inside the disposable macOS VM or spare Mac**. The CLI command verifies bytes but does not establish quarantine. Retain the downloaded container and confirm its quarantine metadata is present; never remove or fabricate quarantine or disable Gatekeeper. Confirm **ContextLens → About** shows **0.3.1 (6)**. Record the actual macOS version and policy observations. The deployment metadata is macOS 14.0; runtime behavior on macOS 14 remains unverified.
+
+Both containers were independently reverified on macOS 26.6.2 using the trusted scripts: hashes, strict ad-hoc signatures, embedded CLI, source/input identity, ZIP safety, actual DMG mount/filesystem/layout metadata, clean detach, temporary installation copy and complete bundle equality passed. Actual Finder appearance and native capture/permission behavior remain pending. See [the final candidate report](../final-0.3.1-candidate.md).
 
 ## Set the stage
 
