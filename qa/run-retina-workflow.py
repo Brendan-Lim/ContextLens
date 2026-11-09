@@ -154,7 +154,7 @@ try:
     exported=exported.parent
     validation=command(['python3','scripts/validate_package.py',exported],'ui-export-validation')
     assert validation['exitCode']==0
-    press('Copy prompt');copied=command(['pbpaste'],'actual-agent-prompt');assert str(exported/'context.md') in copied['stdout'];assert 'Polish the Share workspace dialog.' in copied['stdout'];time.sleep(2)
+    press('Copy prompt');copied=command(['pbpaste'],'actual-agent-prompt');assert str((exported/'context.md').resolve()) in copied['stdout'];assert 'Polish the Share workspace dialog.' in copied['stdout'];time.sleep(2)
     snapshot('D-handoff.png');shutil.copytree(exported,out/'ui-export');shutil.copytree(high,out/'high-session')
     cases['handoff-export']=dict(status='pass',package=str(exported),validation=json.loads(validation['stdout']),promptCopied=True)
     # Reproduce the approved reopened Mark Up state through the real file picker.
@@ -174,6 +174,9 @@ except Exception as error:
     except Exception:pass
     raise
 finally:
+    # Retain the real sessions/export even if a later capture or assertion fails.
+    shutil.copytree(storage,out/'all-native-sessions',dirs_exist_ok=True)
+    shutil.copytree(parent,out/'all-native-exports',dirs_exist_ok=True)
     if candidate_process and candidate_process.poll() is None:
         candidate_process.terminate()
         try:candidate_process.wait(timeout=5)
