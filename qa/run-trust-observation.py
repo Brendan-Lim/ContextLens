@@ -6,6 +6,7 @@ import os
 from pathlib import Path,PurePosixPath
 import plistlib
 import subprocess
+import sys
 import time
 import zipfile
 
@@ -39,6 +40,9 @@ try:
     assert receipt.get('apiDigestMatched',True),'Authenticated artifact digest mismatch'
     if not receipt['savedQuarantine']['present']:
         summary['cases']['gatekeeper-first-launch']=dict(status='pending',observation='Actual Chromium download completed without quarantine metadata; no metadata fabricated and no first-launch claim.')
+        command(['swift','qa/security-observation.swift'],'safari-download-observation')
+        windows=out/'download-originals';windows.mkdir()
+        command(['swift','qa/capture-windows.swift',windows,'com.apple.Safari'],'safari-download-captures')
     else:
         archive=Path(receipt['localFile']);safe_zip(archive)
         command(['open',archive],'archive-utility-outer')
@@ -52,6 +56,7 @@ try:
         app=info.parents[1];metadata=plistlib.loads(info.read_bytes())
         assert (metadata['CFBundleShortVersionString'],metadata['CFBundleVersion'],metadata['CFBundleIdentifier'])==('0.3.1','6','dev.contextlens.app')
         assert command(['codesign','--verify','--deep','--strict',app],'strict-signature')['exitCode']==0
+        sys.path.insert(0,'scripts')
         spec=importlib.util.spec_from_file_location('official','scripts/unnotarized-release.py');module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
         inventory=module.bundle_hash(app);assert inventory=='9e689eba51491066164b315dd2ac94d525154d4d7c8dadd1ea5124ed5775e1db'
         attribute=command(['xattr','-p','com.apple.quarantine',app],'genuine-app-quarantine')
