@@ -5,9 +5,10 @@ import subprocess
 import tempfile
 import unittest
 from unittest.mock import patch
+from types import SimpleNamespace
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / 'distribution/dmg'))
-from dmg import inventory, mounted, build
+from dmg import inventory, mounted, build, configure, verify_layout
 
 
 class DiskImageSafetyTests(unittest.TestCase):
@@ -57,6 +58,50 @@ class DiskImageSafetyTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'replacement'): build('ContextLens.app', target)
                 verify.assert_not_called()
             self.assertEqual(target.read_bytes(), b'immutable')
+
+
+class FinderBackgroundReferenceTests(unittest.TestCase):
+    """Model the on-volume records without requiring native build dependencies on Linux."""
+    def setUp(self):
+        self.records = {'.': {}, 'ContextLens.app': {}, 'Applications': {}}
+        self.bookmark = {1: ['.background', 'background.tiff'], 2: 'ContextLens',
+                         3: [21, 22], 4: 'synthetic-volume-uuid'}
+        from unittest.mock import MagicMock
+        self.store = MagicMock()
+        self.store.__enter__.return_value = self.records
+        self.alias = SimpleNamespace(target=SimpleNamespace(posix_path='/.background/background.tiff'),
+                                     volume=SimpleNamespace(name='ContextLens'), to_bytes=lambda: b'alias')
+        modules = {
+            'ds_store': SimpleNamespace(DSStore=SimpleNamespace(open=lambda *args: self.store)),
+            'mac_alias': SimpleNamespace(Alias=SimpleNamespace(for_file=lambda path: self.alias,
+                                                               from_bytes=lambda value: self.alias),
+                                         Bookmark=SimpleNamespace(for_file=lambda path: dict(self.bookmark))),
+            'mac_alias.bookmark': SimpleNamespace(kBookmarkPath=1, kBookmarkVolumeName=2,
+                                                  kBookmarkCNIDPath=3, kBookmarkVolumeUUID=4),
+        }
+        self.modules = patch.dict(sys.modules, modules)
+        self.modules.start()
+        self.addCleanup(self.modules.stop)
+        configure(Path('/tmp/synthetic-volume'))
+        # DSStore decodes explicitly typed entries when reading them back.
+        self.records['.']['icvl'] = (b'type', b'icnv')
+
+    def test_alias_only_layout_is_rejected(self):
+        self.records['.'].pop('pBBk', None)
+        with self.assertRaisesRegex(ValueError, 'bookmark'):
+            verify_layout(Path('/tmp/synthetic-volume'))
+
+    def test_bookmark_must_identify_the_background_on_this_volume(self):
+        verify_layout(Path('/tmp/synthetic-volume'))
+        self.assertEqual(self.records['.']['pBBk'][1], ['.background', 'background.tiff'])
+        for key, replacement in [(1, ['elsewhere', 'background.tiff']), (2, 'Other volume'),
+                                 (3, [99, 100]), (4, 'other-volume-uuid')]:
+            with self.subTest(key=key):
+                original = self.records['.']['pBBk'][key]
+                self.records['.']['pBBk'][key] = replacement
+                with self.assertRaisesRegex(ValueError, 'bookmark'):
+                    verify_layout(Path('/tmp/synthetic-volume'))
+                self.records['.']['pBBk'][key] = original
 
 
 if __name__ == '__main__': unittest.main()

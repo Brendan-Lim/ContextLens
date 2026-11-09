@@ -65,9 +65,13 @@ def mounted(image, readonly=True):
 
 def configure(mount):
     from ds_store import DSStore
-    from mac_alias import Alias
-    alias = Alias.for_file(str((mount / '.background/background.tiff').resolve())).to_bytes()
+    from mac_alias import Alias, Bookmark
+    background = str((mount / '.background/background.tiff').resolve())
+    alias = Alias.for_file(background).to_bytes()
+    bookmark = Bookmark.for_file(background)
     with DSStore.open(str(mount / '.DS_Store'), 'w+') as store:
+        # Modern Finder consumes a separate background bookmark, in addition to the legacy alias.
+        store['.']['pBBk'] = bookmark
         store['.']['vSrn'] = ('long', 1)
         store['.']['icvl'] = ('type', b'icnv')
         store['.']['bwsp'] = dict(ShowToolbar=False, ShowStatusBar=False, ShowSidebar=False,
@@ -84,7 +88,9 @@ def configure(mount):
 
 def verify_layout(mount):
     from ds_store import DSStore
-    from mac_alias import Alias
+    from mac_alias import Alias, Bookmark
+    from mac_alias.bookmark import (kBookmarkPath, kBookmarkVolumeName,
+                                    kBookmarkCNIDPath, kBookmarkVolumeUUID)
     with DSStore.open(str(mount / '.DS_Store'), 'r') as store:
         require(store['.']['icvl'] == (b'type', b'icnv'), 'Finder must use icon view')
         window = store['.']['bwsp']
@@ -96,6 +102,14 @@ def verify_layout(mount):
         alias = Alias.from_bytes(options['backgroundImageAlias'])
         require(alias.target.posix_path == '/.background/background.tiff'
                 and alias.volume.name == 'ContextLens', 'Background alias points outside this volume')
+        try:
+            bookmark = store['.']['pBBk']
+        except KeyError:
+            raise ValueError('Missing Finder background bookmark') from None
+        expected = Bookmark.for_file(str((mount / '.background/background.tiff').resolve()))
+        require(all(bookmark[key] == expected[key] for key in
+                    [kBookmarkPath, kBookmarkVolumeName, kBookmarkCNIDPath, kBookmarkVolumeUUID]),
+                'Finder background bookmark does not identify this volume artwork')
         for name, position in POSITIONS.items():
             require(tuple(store[name]['Iloc']) == position, 'Finder icon position differs')
 
