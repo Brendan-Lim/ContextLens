@@ -6,6 +6,7 @@ permissions:
   contents: read
 jobs:
   display:
+    if: "!contains(github.event.head_commit.message, '[retina-recapture]')"
     runs-on: macos-15
     timeout-minutes: 8
     steps:
@@ -26,6 +27,63 @@ jobs:
           sleep 6
           cat "$RUNNER_TEMP/retina-display.json"
           "$RUNNER_TEMP/display-proof" --fixture
+      - name: Remove session-only display
+        if: always()
+        run: |
+          if [[ -f "$RUNNER_TEMP/retina-display.pid" ]]; then kill "$(cat "$RUNNER_TEMP/retina-display.pid")" || true; fi
+  recapture:
+    if: "contains(github.event.head_commit.message, '[retina-recapture]')"
+    runs-on: macos-15
+    timeout-minutes: 25
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_26.3.app/Contents/Developer
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Pinned build-only dependencies
+        run: |
+          python3 -m venv "$RUNNER_TEMP/qa-python"
+          "$RUNNER_TEMP/qa-python/bin/python" -m pip install --require-hashes -r distribution/dmg/requirements.txt
+          echo "$RUNNER_TEMP/qa-python/bin" >> "$GITHUB_PATH"
+          npm --prefix Benchmarks ci --ignore-scripts
+          (cd Benchmarks && npx playwright install chromium)
+      - name: Current integrated source development build only
+        env:
+          CONTEXTLENS_SIGN_IDENTITY: '-'
+        run: scripts/build-app.sh --output "$RUNNER_TEMP/unpacked"
+      - name: Establish and verify genuine native Retina display
+        run: |
+          mkdir -p "$RUNNER_TEMP/native-evidence"
+          sw_vers > "$RUNNER_TEMP/native-evidence/macos.txt"
+          sysctl hw.model hw.memsize > "$RUNNER_TEMP/native-evidence/machine.txt"
+          clang -fobjc-arc -framework AppKit -framework CoreGraphics qa/retina-display.m -o "$RUNNER_TEMP/retina-display"
+          swiftc qa/display-proof.swift -o "$RUNNER_TEMP/display-proof"
+          swiftc qa/window-proof.swift -o "$RUNNER_TEMP/window-proof"
+          "$RUNNER_TEMP/display-proof" > "$RUNNER_TEMP/native-evidence/display-before.json"
+          "$RUNNER_TEMP/retina-display" "$RUNNER_TEMP/native-evidence/virtual-display.json" > "$RUNNER_TEMP/native-evidence/virtual-display.log" 2>&1 &
+          echo $! > "$RUNNER_TEMP/retina-display.pid"
+          sleep 6
+          "$RUNNER_TEMP/display-proof" --fixture > "$RUNNER_TEMP/native-evidence/display-after.json"
+          python3 -c 'import json,os; from pathlib import Path; r=json.loads((Path(os.environ["RUNNER_TEMP"])/"native-evidence/display-after.json").read_text()); assert r["fixtureWindow"]["backingScaleFactor"]==2; assert r["ScreenCaptureKit"]["pointPixelScale"]==2'
+      - name: Real current Finder installer Light and Dark
+        run: python3 qa/retina-finder.py
+      - name: Real Tidewater recording annotation and saved Hand Off
+        run: python3 qa/run-retina-workflow.py
+      - name: Encrypt evidence with existing reviewed public recipient
+        if: always()
+        run: |
+          mkdir -p "$RUNNER_TEMP/native-evidence"
+          tar -C "$RUNNER_TEMP" -cf "$RUNNER_TEMP/evidence.tar" native-evidence
+          openssl cms -encrypt -binary -aes256 -in "$RUNNER_TEMP/evidence.tar" -out "$RUNNER_TEMP/evidence.cms" -outform DER qa/evidence-public.crt
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: encrypted-retina-review-evidence
+          path: ${{ runner.temp }}/evidence.cms
+          if-no-files-found: error
+          retention-days: 3
       - name: Remove session-only display
         if: always()
         run: |
