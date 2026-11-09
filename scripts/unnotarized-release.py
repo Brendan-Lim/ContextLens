@@ -30,6 +30,55 @@ CASES = ('gatekeeper-first-launch', 'open-anyway', 'screen-recording-denied',
          'dmg-finder-dark', 'dmg-drag-install-eject-launch')
 
 
+def release_input_identity(revision):
+    """Inventory the tracked dependency closure; unknown inputs are protected.
+
+    The actual build reads SwiftPM source/dependencies, scripts and their imports,
+    version/signing metadata, icon/license, DMG assets/layout/dependencies and the
+    pinned workflow/toolchain. Protect the entire tree, including new files,
+    except regular documentation and this version's separately verified evidence.
+    Symlinks, executable documentation and all non-Markdown docs stay protected.
+    """
+    acceptance_path = 'docs/release-acceptance/' + metadata()['version'] + '.json'
+    policy = json.loads(run('git', '-C', ROOT, 'show', revision + ':config/release-input-policy.json'))
+    require(set(policy) == {'schemaVersion', 'nonArtifactDocumentation'} and policy['schemaVersion'] == 1,
+            'Unsupported release input policy')
+    docs = policy['nonArtifactDocumentation']
+    require(isinstance(docs, list) and all(isinstance(path, str) for path in docs), 'Invalid documentation inventory')
+    require(len(set(docs)) == len(docs) and all(
+        (path == 'README.md' or path.startswith('docs/') and path.endswith('.md'))
+        and '\\' not in path and all(part not in ('', '.', '..') for part in path.split('/'))
+        for path in docs), 'Invalid documentation exemption')
+    entries = []
+    for record in run('git', '-C', ROOT, 'ls-tree', '-r', '-z', '--full-tree', revision).split('\0'):
+        if not record: continue
+        header, path = record.split('\t', 1)
+        mode, kind, oid = header.split()
+        if mode == '100644' and (path in docs or path == acceptance_path): continue
+        require(kind == 'blob' and mode in ('100644', '100755', '120000'),
+                'Unsupported release input: ' + path)
+        entries.append([path, mode, oid])
+    encoded = json.dumps(sorted(entries), separators=(',', ':'), ensure_ascii=True).encode('utf-8')
+    return dict(schemaVersion=1, sha256=hashlib.sha256(encoded).hexdigest(), files=len(entries))
+
+
+def assert_fresh_candidate(receipt, current='origin/main'):
+    source = receipt.get('sourceCommit', '')
+    require(isinstance(source, str) and re.fullmatch(r'[0-9a-f]{40}', source), 'Invalid candidate source')
+    identity = receipt.get('releaseInputs')
+    require(isinstance(identity, dict) and set(identity) == {'schemaVersion', 'sha256', 'files'},
+            'Candidate release input inventory missing or mismatched')
+    expected = release_input_identity(source)
+    require(identity == expected, 'Candidate release input inventory missing or mismatched')
+    run('git', '-C', ROOT, 'merge-base', '--is-ancestor', source, current)
+    # Inspect every intervening tree as well, so a changed-then-reverted input
+    # cannot reuse acceptance for a candidate from before that change.
+    revisions = [current] + run('git', '-C', ROOT, 'rev-list', '--ancestry-path', source + '..' + current).splitlines()
+    for revision in dict.fromkeys(revisions):
+        require(release_input_identity(revision) == expected,
+                'Release inputs changed after candidate preparation; prepare and test a new candidate')
+
+
 def asset_names(version):
     require(isinstance(version, str), 'Exact release version required')
     metadata(version)
@@ -43,6 +92,7 @@ def bundle_hash(app):
 def write_provenance(app):
     data = metadata()
     receipt = dict(preview.source(), version=data['version'], build=data['build'],
+                   releaseInputs=release_input_identity('HEAD'),
                    architecture='arm64', minimumMacOS=data['minimumMacOS'], trust=TRUST,
                    notarized=False, developerIDSigned=False,
                    xcode=run('xcodebuild', '-version').strip(), swift=run('swift', '--version').strip(),
@@ -67,6 +117,8 @@ def verify_bundle(app):
         require(re.fullmatch(r'[0-9a-f]{40}', receipt.get(key, '')), 'Invalid source identity')
     require(run('git', '-C', ROOT, 'rev-parse', receipt['sourceCommit'] + '^{tree}').strip()
             == receipt['sourceTree'], 'Embedded tree differs from source commit')
+    require(receipt.get('releaseInputs') == release_input_identity(receipt['sourceCommit']),
+            'Embedded release input inventory differs from source commit')
     return receipt
 
 
@@ -179,6 +231,7 @@ def publish(output, evidence_path, run_id):
     candidate_run(json.loads(run('gh', 'api', f'repos/{REPO}/actions/runs/{run_id}')), receipt)
     unused_version(receipt['version'])
     run('git', '-C', ROOT, 'merge-base', '--is-ancestor', receipt['sourceCommit'], 'origin/main')
+    assert_fresh_candidate(receipt)
     verify_assets(output)
     notes = f'''ContextLens v{receipt['version']}
 
@@ -204,6 +257,10 @@ This is project stability acceptance; it is not Apple trust or measured agent-ef
         path = Path(temporary)
         (path / 'notes.md').write_text(notes)
         (path / 'acceptance.json').write_text(json.dumps(evidence, indent=2) + '\n')
+        # Mount/copy verification can take time. Recheck current main and inputs
+        # immediately before the first remote mutation, retaining all old gates.
+        unused_version(receipt['version'])
+        assert_fresh_candidate(receipt)
         run('gh', 'api', f'repos/{REPO}/git/refs', '-f', 'ref=refs/tags/v' + receipt['version'], '-f', 'sha=' + receipt['sourceCommit'])
         run('gh', 'release', 'create', 'v' + receipt['version'], '--repo', REPO, '--verify-tag', '--draft',
             '--title', 'ContextLens v' + receipt['version'], '--notes-file', path / 'notes.md',
@@ -222,6 +279,7 @@ def main():
     provenance = commands.add_parser('provenance'); provenance.add_argument('app')
     packaging = commands.add_parser('package'); packaging.add_argument('app'); packaging.add_argument('output')
     check = commands.add_parser('verify-assets'); check.add_argument('output')
+    inputs = commands.add_parser('input-identity'); inputs.add_argument('revision', nargs='?', default='HEAD')
     preflight = commands.add_parser('preflight'); preflight.add_argument('version')
     promote = commands.add_parser('publish'); promote.add_argument('output'); promote.add_argument('evidence'); promote.add_argument('candidate_run_id')
     args = parser.parse_args()
@@ -229,6 +287,7 @@ def main():
     elif args.command == 'package': print(json.dumps(package(args.app, args.output), indent=2))
     elif args.command == 'verify-assets': print(json.dumps(verify_assets(args.output), indent=2))
     elif args.command == 'preflight': unused_version(args.version)
+    elif args.command == 'input-identity': print(json.dumps(release_input_identity(args.revision), indent=2))
     elif args.command == 'publish': publish(args.output, args.evidence, args.candidate_run_id)
 
 

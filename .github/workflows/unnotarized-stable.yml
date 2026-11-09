@@ -44,6 +44,8 @@ jobs:
         with:
           node-version: '24'
       - run: python3 scripts/unnotarized-release.py preflight "$RELEASE_VERSION"
+      - name: Record fail-closed release input inventory
+        run: python3 scripts/unnotarized-release.py input-identity
       - run: python3 -m pip install jsonschema==4.23.0
       - run: python3 -m pip install --require-hashes -r distribution/dmg/requirements.txt
       - run: scripts/ci.sh

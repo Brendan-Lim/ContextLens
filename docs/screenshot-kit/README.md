@@ -15,14 +15,9 @@ A second user account on your own Mac is **not** enough: `/Applications` is shar
 
 ## What to install
 
-Use the exact official candidate, not a local build:
+Use the replacement official candidate from [the final v0.3.1 report](../final-0.3.1-candidate.md), once its prepare-only workflow and downloaded bytes have been verified. Exact download instructions and hashes will be recorded here after preparation. **The older run `42504640955` is obsolete and must not be promoted or used for final acceptance.**
 
-```sh
-gh run download 42504640955 --repo Brendan-Lim/ContextLens --name official-candidate-0.3.1 --dir candidate
-cd candidate && shasum -a 256 -c SHA256SUMS
-```
-
-Expected hashes: ZIP `1744796e…e501e`, DMG `2c0e1adf…bf76`. The full values are in [official-release preparation](../official-release-preparation.md). The artifact expires on **8 December 2026**. For a genuine Gatekeeper first launch, the DMG must arrive in the VM through a browser download, so it receives quarantine. Downloading the artifact zip from the Actions run page while signed in to GitHub inside the VM works. Confirm the version before capturing: **ContextLens → About** should show 0.3.1 (6).
+For a genuine Gatekeeper first launch, download the new candidate through a browser inside the disposable environment so it receives quarantine. Keep quarantine and Gatekeeper enabled. Confirm **ContextLens → About** shows **0.3.1 (6)** before taking screenshots.
 
 ## Set the stage
 
@@ -63,3 +58,21 @@ Then put the originals in one folder, for example `~/Desktop/contextlens-shots/`
 4. Add the images to the README: Capture under the hero, Review, Mark Up and Hand Off in the workflow section, and the Finder window under **Install**. Each gets a plain caption naming the app version.
 
 Owner-supplied images stay out of the repository until that review passes.
+
+
+## Ordered native acceptance session
+
+Keep original downloaded ZIP/DMG bytes and their hashes. Record observations and evidence for the exact candidate, using the case names in the [acceptance template](../release-acceptance/template.json). Automated checks do not supply passing observations.
+
+1. In a disposable macOS VM or spare Mac, download the Actions artifact through the browser. Verify `SHA256SUMS`, version/build and provenance. Keep quarantine; observe the genuine first-launch warning and normal user-controlled **Open Anyway** authorization. Do not disable Gatekeeper or remove quarantine.
+2. Open the real DMG in Finder in Light and Dark modes. Inspect Retina background, labels, icon positions and the Applications shortcut; take E-light/E-dark screenshots. Drag to Applications inside this disposable environment, eject, and launch the installed copy. Confirm **0.3.1 (6)**.
+3. With fresh guest Screen Recording permissions, deny access and observe recovery. Grant access through System Settings, relaunch, and verify window selection. Never reset the owner's permissions.
+4. Record only the fictional Tidewater browser window, first at Low and then High sensitivity. Exercise dialog/tab changes and continuous scrolling. Verify Review has the expected distinct states, selected-window content only, and a settled Scrolled state.
+5. Reorder, rename and deselect states in Review. In Mark Up, add the Box/Highlight instructions above, a redaction and an unlabelled reference; exercise undo/redo and verify stable issue IDs. Capture B/C only from this real app.
+6. Save Hand Off and inspect `context.md`, overview, crops, timeline and redacted pixels. Confirm source files stay private and unchanged. Take D after a real successful export. Copy the prompt and verify its destination.
+7. Exercise stale-preview refusal using a disposable copy of the synthetic session: after Hand Off preparation, replace a source PNG with a different same-size image. Save must fail without a final package. Toggle export filters and restore the desired selection to refresh preparation, then retry and verify the new pixels. Do not use a personal session for this fault injection.
+8. Save, quit and reopen the session. Verify state order, marks, redactions and issue IDs. Test selected-window closure while another window remains present, then target-browser exit: capture must stop without substitution.
+9. Exercise ContextLens exit during capture, pending-frame persistence, rapid start/stop, and capture failed-save/retry using the disposable session storage only, following [beta acceptance](../beta-acceptance.md). Restore write access and verify pending frames save on retry. Also test Hand Off refusal/retry with an unwritable disposable output folder; that export test does not substitute for capture-save recovery. Preserve recoverable data; do not fault-inject against the owner's disk or files.
+10. Revoke Screen Recording permission in the guest, observe failure/recovery, grant and relaunch again. Check reopening the saved session and repeating Hand Off still work.
+11. Review genuine A–E screenshots at full size, remove metadata without changing UI pixels, and retain originals privately. Mark each acceptance case pass/fail/pending with observations; any unresolved failure blocks release.
+12. Only after a maintainer reviews all evidence, fill the exact candidate acceptance record. This task creates no passing record, stable tag, release or Homebrew cask.
