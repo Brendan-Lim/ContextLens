@@ -9,6 +9,12 @@ import sys
 import zlib
 if not __debug__: raise RuntimeError("Validation requires assertions enabled; do not use Python -O.")
 
+# Per-image work limits, including ignored ancillary data. These permit 8K RGBA
+# captures while refusing multi-gigabyte inflation and pathological chunk lists.
+MAX_PNG_BYTES = 128 * 1024 * 1024
+MAX_PNG_DECODED_BYTES = 256 * 1024 * 1024
+MAX_PNG_CHUNKS = 16384
+
 def schema_check(value, schema, at='$'):
     # All keywords emitted by make-schemas.py are checked; unsupported keywords fail closed.
     supported = {'$schema','title','type','properties','required','additionalProperties','items','enum','const','minimum','maximum','exclusiveMinimum','pattern','format'}
@@ -57,12 +63,14 @@ def png_size(path):
                 for _ in range(h): yield (w * depth * channels + 7) // 8
 
     with path.open('rb') as stream:
+        assert path.stat().st_size <= MAX_PNG_BYTES, 'PNG file limit exceeded'
         assert stream.read(8) == b'\x89PNG\r\n\x1a\n', 'Expected PNG '+str(path)
         width = height = color = None
         palette = idat = idat_ended = False
         decoder = zlib.decompressobj()
         row_lengths = iter(())
         row_width = remaining = None
+        chunks, consumed = 0, 8
 
         def pixels(block):
             nonlocal row_width, remaining
@@ -88,12 +96,18 @@ def png_size(path):
             header = stream.read(8)
             assert len(header) == 8, 'Truncated PNG chunk'
             size, kind = struct.unpack('>I4s', header)
+            chunks += 1
+            consumed += size + 12
+            assert chunks <= MAX_PNG_CHUNKS, 'PNG chunk limit exceeded'
+            assert consumed <= MAX_PNG_BYTES, 'PNG file limit exceeded'
             assert size <= 0x7fffffff and all(65 <= c <= 90 or 97 <= c <= 122 for c in kind), 'Invalid PNG chunk'
+            assert not kind[2] & 32, 'Invalid PNG reserved chunk bit'
             assert width is not None or kind == b'IHDR', 'PNG must begin with IHDR'
             assert kind in (b'IHDR', b'PLTE', b'IDAT', b'IEND') or kind[0] & 32, 'Unknown critical PNG chunk'
             if kind == b'IHDR': assert width is None and size == 13, 'Invalid PNG header'
             if kind == b'PLTE':
                 assert not palette and not idat and 0 < size <= 768 and size % 3 == 0 and color not in (0, 4), 'Invalid PNG palette'
+                assert color != 3 or size // 3 <= 1 << depth, 'Invalid PNG palette capacity'
                 palette = True
             if kind == b'IDAT':
                 assert not idat_ended and (color != 3 or palette), 'Invalid PNG image data order'
@@ -112,7 +126,9 @@ def png_size(path):
                     depths = {0: (1, 2, 4, 8, 16), 2: (8, 16), 3: (1, 2, 4, 8), 4: (8, 16), 6: (8, 16)}
                     assert 0 < width <= 32768 and 0 < height <= 32768, 'Invalid PNG dimensions'
                     assert color in depths and depth in depths[color] and compression == filtering == 0 and interlace in (0, 1), 'Unsupported PNG header'
-                    row_lengths = iter(rows(width, height, depth, {0: 1, 2: 3, 3: 1, 4: 2, 6: 4}[color], interlace))
+                    channels = {0: 1, 2: 3, 3: 1, 4: 2, 6: 4}[color]
+                    assert sum(n + 1 for n in rows(width, height, depth, channels, interlace)) <= MAX_PNG_DECODED_BYTES, 'PNG decoded work limit exceeded'
+                    row_lengths = iter(rows(width, height, depth, channels, interlace))
                     row_width = next(row_lengths, None); remaining = row_width + 1
                 elif kind == b'IDAT': pixels(block)
             crc = stream.read(4)
@@ -130,6 +146,11 @@ def validate(root):
     s = json.loads((root/'metadata/session.json').read_text()); schema_check(s,json.loads((schemas/'session.schema.json').read_text()))
     assert m['sessionID'] == s['id'] and m['frames'] == s['frames'] and m['mode'] == s['mode']
     frames = {f['id']:f for f in m['frames']}; assert len(frames) == len(m['frames']) and frames
+    paths = [f['imagePath'] for f in frames.values()]
+    paths += [issue[key] for issue in m['issues'] for key in ('annotatedPath', 'cropPath')]
+    image_paths = [safe_path(root, path) for path in paths]
+    assert len(set(image_paths)) == len(image_paths), 'Duplicate image path'
+    image_paths = set(image_paths)
     for f in frames.values(): assert png_size(safe_path(root,f['imagePath'])) == (f['width'],f['height'])
     annotations = {a['id']:a for a in s['annotations']}; assert len(annotations) == len(s['annotations'])
     for a in annotations.values():
@@ -165,6 +186,10 @@ def validate(root):
         expected = [(f['id'], 'annotated/states/'+f['id']+'.png' if f['id'] in marked else f['imagePath']) for f in initial]
         assert links == expected, 'Brief image references disagree with manifest'
         for frame_id, path in links:
+            if frame_id in marked:
+                target = safe_path(root, path)
+                assert target not in image_paths, 'Duplicate image path'
+                image_paths.add(target)
             assert png_size(safe_path(root,path)) == (frames[frame_id]['width'],frames[frame_id]['height'])
         timeline = safe_path(root,'metadata/timeline.md').read_text()
         for f in m['frames']:

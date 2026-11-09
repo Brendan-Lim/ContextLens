@@ -6,6 +6,7 @@ import struct
 import tempfile
 import unittest
 import zlib
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[2]
 SPEC = importlib.util.spec_from_file_location('package_validator', ROOT / 'scripts/validate_package.py')
@@ -14,6 +15,49 @@ SPEC.loader.exec_module(validator)
 
 
 class HandoffValidationTests(unittest.TestCase):
+    @staticmethod
+    def chunk(kind, data):
+        return struct.pack('>I', len(data)) + kind + data + struct.pack('>I', zlib.crc32(kind + data))
+
+    def test_png_declared_decode_work_is_bounded_before_inflation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'oversized.png'
+            header = struct.pack('>IIBBBBB', 32768, 32768, 16, 6, 0, 0, 1)
+            path.write_bytes(b'\x89PNG\r\n\x1a\n' + self.chunk(b'IHDR', header))
+            with self.assertRaisesRegex(AssertionError, 'work limit'):
+                validator.png_size(path)
+
+    def test_png_file_and_chunk_budgets_include_ancillary_chunks(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'bounded.png'
+            image = self.png()
+            path.write_bytes(image)
+            with patch.object(validator, 'MAX_PNG_BYTES', 32, create=True):
+                with self.assertRaisesRegex(AssertionError, 'file limit'): validator.png_size(path)
+            path.write_bytes(image[:33] + self.chunk(b'tEXt', b'') * 5 + image[33:])
+            with patch.object(validator, 'MAX_PNG_CHUNKS', 4, create=True):
+                with self.assertRaisesRegex(AssertionError, 'chunk limit'): validator.png_size(path)
+
+    def test_png_reserved_bit_and_palette_capacity_are_checked(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / 'structure.png'
+            image = self.png()
+            path.write_bytes(image[:33] + self.chunk(b'texT', b'') + image[33:])
+            with self.assertRaisesRegex(AssertionError, 'reserved'): validator.png_size(path)
+            image = self.png(color=3, depth=1, raw=b'\0\0\0\0')
+            path.write_bytes(image[:33] + self.chunk(b'PLTE', b'\0' * 9) + image[33:])
+            with self.assertRaisesRegex(AssertionError, 'palette'): validator.png_size(path)
+
+    def test_distinct_export_image_roles_cannot_alias_one_path(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = self.package(directory)
+            path = root / 'manifest.json'
+            manifest = json.loads(path.read_text())
+            manifest['issues'][0]['cropPath'] = manifest['issues'][0]['annotatedPath']
+            path.write_text(json.dumps(manifest))
+            with self.assertRaisesRegex(AssertionError, 'Duplicate image path'):
+                validator.validate(root)
+
     def package(self, directory):
         root = Path(directory) / 'Hand off 画面'
         shutil.copytree(ROOT / 'docs/examples/agent-session-v2', root)
