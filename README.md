@@ -197,6 +197,10 @@ Screenshots show whatever was on screen, so look over a hand-off before sharing 
 
 ## Get started
 
+On first launch, choose **Check Access**, follow macOS's Screen Recording permission prompts, and relaunch if macOS asks.
+
+> **Screen Recording enabled but capture still denied:** follow the [step-by-step Screen Recording recovery guide](docs/troubleshooting.md#screen-recording-enabled-but-capture-still-fails).
+
 1. Open the app you’re working on, such as a local dev server in your browser.
 2. In ContextLens, press <kbd>⌘</kbd><kbd>N</kbd>, choose that window under **Which window?**, and click **Start Capture**.
 3. Use your app as usual: open the menu, reproduce the bug, walk through the flow. Click **Stop Capture** when you’re done.
