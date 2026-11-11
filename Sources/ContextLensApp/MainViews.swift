@@ -291,7 +291,16 @@ struct ReviewView: View {
             }
         } else {
             content.disabled(model.recording)
-                .overlay { Lightbox(frameID: $enlargedID) }
+                .overlay {
+                    // Remove the entire preview host when closed; an empty
+                    // Lightbox can retain a hit-testing surface on macOS.
+                    Group {
+                        if let id = enlargedID, model.session.frames.contains(where: { $0.id == id }) {
+                            Lightbox(frameID: $enlargedID)
+                        }
+                    }
+                    .allowsHitTesting(enlargedID != nil)
+                }
                 .animation(reduce ? .easeOut(duration: 0.15) : Motion.standard, value: enlargedID == nil)
                 .task {
                     // macOS focuses the first text field on appear; keep focus off the state names until clicked.

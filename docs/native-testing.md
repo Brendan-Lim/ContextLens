@@ -34,6 +34,20 @@ Remaining interactive release checklist:
 
 No automated claim of every UI gesture being exercised is made. The app's end-to-end controller needs broader real-application soak testing before a public binary release. Developer ID signing, notarization and distribution packaging remain separate from this local MVP.
 
+## Review preview and PNG save regression (11 November 2026)
+
+The Review overlay now unmounts its preview host on dismissal and disables hit testing while closed. Previously the always-mounted host could leave an invisible hit-testing surface over the state cards. Native confirmation remains **needs a person**; no fixture was launched on the owner's desktop.
+
+In a disposable session, open Review, enlarge a state, close it with ×, then untick and retick multiple states without switching tabs. Repeat with Esc and a click on the preview background, including after stepping through states with arrow keys. Also repeat with Reduce Motion enabled. Each checkbox must respond immediately after dismissal; reopening the preview must still work. Switching between Mark Up and Review must not be necessary.
+
+The machine had only about 125 MiB available when investigated. `scripts/verify.sh` and `swiftc -print-target-info` initially failed with error 28 (ENOSPC); a shell here-document also failed with “no space left on device.” Removing regenerable compiler module caches restored the ability to build. This supports insufficient storage as the PNG failure's likely cause; the exact export shown in the report was not replayed against the user's session.
+
+PNG encoding now completes in memory before Foundation atomically writes the file. Filesystem errors, including out-of-space and permission errors, reach the alert instead of becoming the generic ImageIO “PNG encoding failed.” Existing images survive a failed replacement. One encoded PNG buffer is retained during each write; no second full-resolution bitmap is introduced.
+
+`scripts/swift.sh test --filter PNGWriteTests` reproduced hidden filesystem errors before the fix and passes afterward (2 tests). It covers a missing destination parent, successful retry, denied replacement, preservation of existing PNG bytes and temporary-file cleanup. Controlled disk exhaustion is still **needs a person**; the tests do not fill the owner's disk. Free sufficient storage before retrying a real export.
+
+Verification for this change: `scripts/verify.sh` passes (119 Swift tests, 49 benchmark Python tests, 13 package validations, 10 production replays). `scripts/build-app.sh` builds and verifies the development bundle at `dist/ContextLens.app`. `python3 -m unittest discover -s scripts/tests -v` passes all 80 supplementary tests with the rebuilt CLI; the preexisting `dist/contextlens-cli` initially failed an unrelated carriage-return quoting assertion that already passes in current source.
+
 ## Annotation/export update (0.2.0)
 
 `--export-preview` opens the filtered export view during a smoke snapshot. `--exercise-highlighter`, when paired with `--smoke-snapshot` and the generated `demo-session` fixture, posts local mouse events into the app's own window to exercise a real highlighter drag. It never runs in ordinary sessions. Local view-cache snapshots are in `.build/editor-v2.png` and `.build/export-v2.png`; they can omit the compositor-backed sidebar. Current results are recorded in `examples/annotation-update-verification.json`. The new ad-hoc signed build did not have Screen Recording access during that check; no permission was requested automatically. The default export switches are both enabled; all annotated copies must remain even when image pixels match.

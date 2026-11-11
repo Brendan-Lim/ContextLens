@@ -23,9 +23,14 @@ public enum Images {
         return image
     }
     public static func png(_ image: CGImage, to url: URL) throws {
-        guard let dest = CGImageDestinationCreateWithURL(url as CFURL, UTType.png.identifier as CFString, 1, nil) else { throw LensError.invalid("Cannot write PNG.") }
+        // ImageIO's URL writer hides disk-full and permission errors behind a false
+        // finalize result. Encode separately, then let Foundation report the file
+        // error and atomically preserve any existing image if the write fails.
+        let data = NSMutableData()
+        guard let dest = CGImageDestinationCreateWithData(data, UTType.png.identifier as CFString, 1, nil) else { throw LensError.invalid("Cannot encode PNG.") }
         CGImageDestinationAddImage(dest, image, nil)
         guard CGImageDestinationFinalize(dest) else { throw LensError.invalid("PNG encoding failed.") }
+        try (data as Data).write(to: url, options: .atomic)
     }
     public static func luma(_ image: CGImage) throws -> LumaFrame {
         let w = 240, h = max(1, Int(Double(image.height) / Double(image.width) * Double(w)))
